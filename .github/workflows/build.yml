@@ -87,3 +87,11 @@ jobs:
       # composite keys/FKs, table naming, lazy-loading proxies, DDL generation.
       - name: Test CC_Ingenio.Data model (net8 / EF Core port)
         run: dotnet test netcore/CC_Ingenio.Data.Tests/CC_Ingenio.Data.Tests.csproj --configuration Release
+
+      - name: Build CC_Ingenio.Repository (net8 port)
+        run: dotnet build netcore/CC_Ingenio.Repository/CC_Ingenio.Repository.csproj --configuration Release
+
+      # Constructs all 144 repositories and translates each one's query to SQL
+      # offline (no database).
+      - name: Test CC_Ingenio.Repository (net8 port)
+        run: dotnet test netcore/CC_Ingenio.Repository.Tests/CC_Ingenio.Repository.Tests.csproj --configuration Release

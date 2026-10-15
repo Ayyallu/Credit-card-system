@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>CC_Ingenio.Repository</RootNamespace>
+    <AssemblyName>CC_Ingenio.Repository</AssemblyName>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CC_Ingenio.Core\CC_Ingenio.Core.csproj" />
+    <ProjectReference Include="..\CC_Ingenio.Data\CC_Ingenio.Data.csproj" />
+  </ItemGroup>
+
+</Project>
