@@ -64,14 +64,19 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\TestTools\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TestTools\Microsoft.TestTools.targets')" />
+  <!--
+    MSTest.TestFramework 2.2.10 has no build/net45 (or net46/net48) folder at
+    all - only lib/net45 (used above) and a net5.0-only build folder. Only
+    MSTest.TestAdapter ships a net45 props/targets pair, so that's all that's
+    imported here; requiring MSTest.TestFramework's (nonexistent) net45
+    .targets file would always fail the build.
+  -->
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\MSTest.TestFramework.2.2.10\build\net45\MSTest.TestFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestFramework.2.2.10\build\net45\MSTest.TestFramework.targets'))" />
     <Error Condition="!Exists('..\packages\MSTest.TestAdapter.2.2.10\build\net45\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.2.2.10\build\net45\MSTest.TestAdapter.props'))" />
   </Target>
   <Import Project="..\packages\MSTest.TestAdapter.2.2.10\build\net45\MSTest.TestAdapter.props" Condition="Exists('..\packages\MSTest.TestAdapter.2.2.10\build\net45\MSTest.TestAdapter.props')" />
-  <Import Project="..\packages\MSTest.TestFramework.2.2.10\build\net45\MSTest.TestFramework.targets" Condition="Exists('..\packages\MSTest.TestFramework.2.2.10\build\net45\MSTest.TestFramework.targets')" />
   <Import Project="..\packages\MSTest.TestAdapter.2.2.10\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.2.2.10\build\net45\MSTest.TestAdapter.targets')" />
 </Project>
