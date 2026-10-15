@@ -1139,6 +1139,10 @@
       <Project>{7492d44e-db7b-42b5-9b47-8280f8ca9ffc}</Project>
       <Name>CC_Ingenio.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CC_Ingenio.Reporting\CC_Ingenio.Reporting.csproj">
+      <Project>{5d2a1c40-7f6a-4e2a-9b1a-2c3d4e5f6a7b}</Project>
+      <Name>CC_Ingenio.Reporting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CC_Ingenio.Core\CC_Ingenio.Core.csproj">
       <Project>{262b0f31-0326-48b5-9946-1cefc19e0ff3}</Project>
       <Name>CC_Ingenio.Core</Name>

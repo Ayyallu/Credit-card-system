@@ -66,15 +66,26 @@ Pushing `phase-1` to trigger the GitHub Actions build revealed a **pre-existing*
 
 I did not attempt to script an install of Crystal Reports for Visual Studio in CI — it's a licensed, interactively-installed product, and I wasn't confident enough in any specific download URL to use it (a wrong or stale one is worse than none). The workflow now runs the build and test steps with `continue-on-error: true` and a clear `::notice::` explaining the blocker, so CI doesn't silently claim success while also not masking the real cause.
 
-**Options going forward (need a decision, not more guessing):**
+**Options going forward:**
 - Set up a **self-hosted GitHub Actions runner** on a machine that already has Crystal Reports for Visual Studio installed (the most direct fix, if such a machine exists or can be provisioned).
-- **Isolate the Crystal Reports dependency out of `CC_Ingenio.Common`** — move `Report.cs`'s reporting logic into `CC_Ingenio.Web` (the only place it's actually consumed from, per the Phase 2 Office/Crystal investigation above) so `Common` and everything built on top of it (including the new test project) can build and test cleanly in CI even before Crystal Reports itself is replaced.
+- **Isolate the Crystal Reports dependency out of `CC_Ingenio.Common`** so everything that doesn't need it can build and test cleanly in CI even before Crystal Reports itself is replaced.
 - Accept that CI only validates syntax/intent via `continue-on-error` for now, and treat a local Visual Studio build (with Crystal Reports for VS installed) as the real gate until one of the above is done.
 
-My recommendation is the second option (move `Report.cs` into `CC_Ingenio.Web`) — it's a mechanical, low-risk move (no logic changes) that unblocks real CI validation for Phase 1's test project and everything in Phase 2/3, without needing any new infrastructure or a stakeholder decision on Crystal Reports' long-term replacement. I did not do this automatically since it touches a shared file multiple other things may reference — flagging it as the next concrete step rather than guessing at scope.
+### Correction: the extraction was bigger than first described
+
+I initially recommended "move `Report.cs` into `CC_Ingenio.Web`" as a mechanical, low-risk fix. That was wrong — checking all callers of `ReportGenerator`/`ReportParam` showed **`CC_Ingenio.Manager`** (`BillingManager.cs`, `CardBookingManager.cs`) also instantiates `ReportGenerator` directly, not just `CC_Ingenio.Web`. Since `Manager` sits below `Web` in the layering (`Web` depends on `Manager`, never the reverse), moving `Report.cs` into `Web` would have broken `Manager`'s build instead of fixing anything — just trading one failure for another.
+
+**What was actually done**: created a new project, **`CC_Ingenio.Reporting`**, containing `Report.cs` (namespace left as `CC_Ingenio.Common.Utils` unchanged, so none of the 6 call sites across `Manager` and `Web` needed any edits) plus the `CrystalDecisions.*` references. `CC_Ingenio.Common` no longer references Crystal Reports at all. `CC_Ingenio.Manager` and `CC_Ingenio.Web` now reference `CC_Ingenio.Reporting` via a `ProjectReference` instead of referencing Crystal Reports directly for this purpose (`CC_Ingenio.Web` still has its own direct `CrystalDecisions.*` references too, since its controllers use `ReportDocument` types directly for other things — those were left as-is).
+
+**Net effect for CI**: `CC_Ingenio.Common`, `CC_Ingenio.Core`, `CC_Ingenio.Data`, `CC_Ingenio.Repository`, `CC_Ingenio.DataTranfer`, `CC_Ingenio_Resources`, and — critically — **`CC_Ingenio.Tests`** can now build and run on a stock GitHub-hosted runner with no Crystal Reports install. `CC_Ingenio.Reporting`, `CC_Ingenio.Manager`, and `CC_Ingenio.Web` remain blocked until Crystal Reports for VS is available on the build machine (self-hosted runner) or is replaced (see the Crystal Reports replacement research above) — that scope is now much smaller and clearly isolated, rather than silently blocking everything.
+
+**Still unverified**: I have no MSBuild toolchain here to confirm this actually compiles — it needs a real CI run or local Visual Studio build to be trusted. The GUIDs used for the new project are freshly generated and not verified against VS's own GUID generator, though any well-formed GUID works for this purpose.
 
 ## Summary of what actually changed in this pass
 
 - `CC_Ingenio.Web/packages.config` + `CC_Ingenio.Web.csproj`: Newtonsoft.Json, Castle.Core, Castle.Windsor bumped to current versions (needs build verification)
 - `CC_Ingenio.Web/Controllers/BillingController.cs`: removed one unused `using Microsoft.Office.Interop.Excel` import (zero risk)
-- No other code, config, or dependency changes were made — Office Interop removal, Crystal Reports replacement, and front-end bumps are documented as follow-up work requiring either more information (macro contents, stakeholder decision) or test coverage that doesn't exist yet.
+- `CC_Ingenio.Common`, `CC_Ingenio.Core`, `CC_Ingenio.Manager`, `CC_Ingenio.DataTranfer`: fixed `System.Web.Mvc` references to resolve via the `Microsoft.AspNet.Mvc` NuGet package instead of relying on a GAC install
+- New `CC_Ingenio.Reporting` project: isolates the Crystal Reports dependency (previously in `CC_Ingenio.Common`) so it no longer blocks the rest of the solution, including the test suite, from building in CI
+- `.github/workflows/build.yml`: splits the build into a real CI gate (everything that doesn't need Crystal Reports, including running the test suite) and a `continue-on-error` attempt at the Crystal-Reports-dependent projects, with a clear notice explaining why
+- Office Interop removal (the macro-dependent path), Crystal Reports replacement, and front-end bumps remain documented as follow-up work requiring either more information (macro contents, stakeholder decision) or test coverage that doesn't exist yet.

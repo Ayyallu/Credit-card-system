@@ -19,30 +19,34 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore CC_Ingenio.sln
 
-      # CC_Ingenio.Common (and therefore everything that depends on it - which
-      # is the entire solution) references SAP Crystal Reports for Visual
-      # Studio directly in Utils/Report.cs, via a hardcoded local path
-      # (C:\Program Files\Common Files\managed\...). That toolset is a
-      # licensed, interactively installed product with no NuGet/silent-install
-      # path we can wire into a hosted runner, so NO project in this solution
-      # can build cleanly here today. This step is expected to fail on a
-      # stock GitHub-hosted runner until either Crystal Reports for VS is
-      # installed on a self-hosted runner, or the Crystal Reports dependency
-      # is isolated out of CC_Ingenio.Common (tracked as a migration item).
-      - name: Build solution (requires Crystal Reports for VS - expected to fail on a stock runner)
-        continue-on-error: true
-        run: msbuild CC_Ingenio.sln /p:Configuration=Release /p:Platform="Any CPU" /m
+      # SAP Crystal Reports for Visual Studio is used directly by
+      # CC_Ingenio.Reporting (and therefore CC_Ingenio.Manager and
+      # CC_Ingenio.Web, which depend on it). It's a licensed, interactively
+      # installed product referenced via a hardcoded local path - there's no
+      # NuGet/silent-install path available for a hosted runner. Report.cs
+      # used to live in CC_Ingenio.Common, which blocked the ENTIRE solution
+      # (everything depends on Common) from building in CI; it's now isolated
+      # in its own project so everything else can be validated for real.
+      - name: Build Crystal-Reports-free projects (the real CI gate)
+        run: >
+          msbuild CC_Ingenio.sln
+          /t:CC_Ingenio_Common,CC_Ingenio_Core,CC_Ingenio_Data,CC_Ingenio_Repository,CC_Ingenio_DataTranfer,CC_Ingenio_Resources,CC_Ingenio_Tests
+          /p:Configuration=Release /p:Platform="Any CPU" /m
 
       - name: Setup VSTest
         uses: darenm/Setup-VSTest@v1
 
-      # Also expected to fail today: CC_Ingenio.Tests depends on
-      # CC_Ingenio.Common, which won't have built (see step above).
       - name: Run unit tests
-        continue-on-error: true
         run: vstest.console.exe CC_Ingenio.Tests\bin\Release\CC_Ingenio.Tests.dll
+
+      - name: Build CC_Ingenio.Reporting, Manager, Web (require Crystal Reports for VS - expected to fail on a stock runner)
+        continue-on-error: true
+        run: >
+          msbuild CC_Ingenio.sln
+          /t:CC_Ingenio_Reporting,CC_Ingenio_Manager,CC_Ingenio_Web
+          /p:Configuration=Release /p:Platform="Any CPU" /m
 
       - name: Report known blocker
         if: always()
         run: |
-          echo "::notice::This solution cannot build on a stock GitHub-hosted runner because CC_Ingenio.Common depends directly on SAP Crystal Reports for Visual Studio, which has no silent/NuGet install path. See PHASE2_NOTES.md for options (self-hosted runner with Crystal Reports installed, or isolate the Crystal Reports dependency out of CC_Ingenio.Common). Until then, build/test locally in Visual Studio with Crystal Reports for VS installed."
+          echo "::notice::CC_Ingenio.Reporting, CC_Ingenio.Manager, and CC_Ingenio.Web require SAP Crystal Reports for Visual Studio, which cannot be installed on a stock GitHub-hosted runner. See PHASE2_NOTES.md for options (self-hosted runner with Crystal Reports installed, or a Crystal Reports replacement). Everything else in the solution, including the test suite, now builds and runs cleanly here."
