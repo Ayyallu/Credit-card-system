@@ -50,3 +50,20 @@ jobs:
         if: always()
         run: |
           echo "::notice::CC_Ingenio.Reporting, CC_Ingenio.Manager, and CC_Ingenio.Web require SAP Crystal Reports for Visual Studio, which cannot be installed on a stock GitHub-hosted runner. See PHASE2_NOTES.md for options (self-hosted runner with Crystal Reports installed, or a Crystal Reports replacement). Everything else in the solution, including the test suite, now builds and runs cleanly here."
+
+  # Phase 3: the .NET 8 strangler-fig port, under netcore/. Separate job
+  # because it's a completely independent toolchain (dotnet CLI, not
+  # MSBuild/.NET Framework) with no shared state with the legacy build.
+  build-netcore:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build CC_Ingenio.Core (net8 port)
+        run: dotnet build netcore/CC_Ingenio.Core/CC_Ingenio.Core.csproj --configuration Release
