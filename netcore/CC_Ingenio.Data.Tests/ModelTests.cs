@@ -48,19 +48,29 @@ namespace CC_Ingenio.Data.Tests
         }
 
         [TestMethod]
-        public void TableNames_Follow_Legacy_Convention_Not_DbSet_Property_Names()
+        public void TableNames_Match_Legacy_EF5_Naming()
         {
             using (var context = CreateContext())
             {
-                // DbSet property names differ from these two types' names.
-                Assert.AreEqual("CardReactivateReason",
-                    context.Model.FindEntityType(typeof(CardReactivateReason)).GetTableName());
-                Assert.AreEqual("UserGroupPrivilege",
-                    context.Model.FindEntityType(typeof(CC_Ingenio.Core.UserRepo.UserAggregate.UserGroupPrivilege)).GetTableName());
-
-                // Explicit [Table] still wins.
+                // Explicit [Table] always wins (including the two entities whose
+                // DbSet property names differ from their type names).
                 Assert.AreEqual("MT_BillingParameter",
                     context.Model.FindEntityType(typeof(BillingParameter)).GetTableName());
+                Assert.AreEqual("LT_Reactivation_Reason",
+                    context.Model.FindEntityType(typeof(CardReactivateReason)).GetTableName());
+                Assert.AreEqual("USR_GroupPrivilegeStandard",
+                    context.Model.FindEntityType(typeof(CC_Ingenio.Core.UserRepo.UserAggregate.UserGroupPrivilege)).GetTableName());
+
+                // Everything without [Table]: legacy context removed table-name
+                // pluralization, so the table is the CLR type name.
+                foreach (var entityType in context.Model.GetEntityTypes())
+                {
+                    if (entityType.ClrType.GetCustomAttribute<TableAttribute>() == null)
+                    {
+                        Assert.AreEqual(entityType.ClrType.Name, entityType.GetTableName(),
+                            "Table name for " + entityType.ClrType.Name);
+                    }
+                }
             }
         }
 

@@ -12,8 +12,11 @@ namespace CC_Ingenio.Data
     /// (see PORT_NOTES.md):
     ///  1. Table names: the legacy context removed PluralizingTableNameConvention,
     ///     so every table is named after the CLR type (unless [Table] says
-    ///     otherwise). EF Core would instead use the DbSet property name, which
-    ///     differs for two entities (CardReactivateReason, UserGroupPrivilege).
+    ///     otherwise). EF Core would instead use the DbSet property name. Today
+    ///     that makes no difference (the only two DbSets whose names differ from
+    ///     their type, CardReactivateReason and UserGroupPrivilege, have explicit
+    ///     [Table] attributes), so this is a safeguard against a future entity
+    ///     being added with a differently-named DbSet.
     ///  2. Composite primary keys: ~100 entities declare them as
     ///     [Key, Column(Order = n)]. EF Core refuses composite keys declared
     ///     through data annotations, so they are re-declared here via HasKey in
