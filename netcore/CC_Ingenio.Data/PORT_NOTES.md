@@ -1,8 +1,8 @@
 # CC_Ingenio.Data — .NET 8 / EF Core 8 port notes
 
-Fourth Phase 3 artifact, and the first one that changes *behaviour-bearing* code rather than just dropping dead references: the legacy project is an Entity Framework 5 `DbContext` (`UnitOfWork`, 246 `DbSet`s) plus a generic repository. This port targets **EF Core 8** (`Microsoft.EntityFrameworkCore.SqlServer`, `.Proxies`).
+Fourth Phase 3 artifact, and the first one that changes *behaviour-bearing* code rather than just dropping dead references: the legacy project is an Entity Framework 5 `DbContext` (`UnitOfWork`, 127 `DbSet` properties) plus a generic repository. This port targets **EF Core 8** (`Microsoft.EntityFrameworkCore.SqlServer`, `.Proxies`).
 
-**What is and isn't verified.** There is no database in CI or in this environment, so nothing here has run a query. What *is* verified, on every push, by `CC_Ingenio.Data.Tests`: EF Core builds and validates the entire model (~250 entity types), generates DDL, keeps composite primary keys and composite foreign keys in the legacy column order, and names tables the legacy way. Runtime query/save behaviour against a real SQL Server is **not** verified — see "Behaviour differences to check against a real database".
+**What is and isn't verified.** There is no database in CI or in this environment, so nothing here has run a query. What *is* verified, on every push, by `CC_Ingenio.Data.Tests`: EF Core builds and validates the entire model, generates DDL, keeps composite primary keys and composite foreign keys in the legacy column order, and names tables the legacy way. Runtime query/save behaviour against a real SQL Server is **not** verified — see "Behaviour differences to check against a real database".
 
 ## What was ported
 
