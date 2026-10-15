@@ -2,7 +2,7 @@
 
 > Companion to [CURRENT_VERSION.md](CURRENT_VERSION.md). This is a proposed phased plan — sequencing and scope should be confirmed before execution begins.
 >
-> **Progress:** Phases 0–2 have notes in [PHASE0_NOTES.md](PHASE0_NOTES.md), [PHASE1_NOTES.md](PHASE1_NOTES.md), [PHASE2_NOTES.md](PHASE2_NOTES.md). Phase 3 is under way — six projects are ported to .NET 8 under `netcore/`; current status and the measured scope of the remaining Manager/Web work are in [PHASE3_STATUS_AND_WEB_SCOPE.md](PHASE3_STATUS_AND_WEB_SCOPE.md).
+> **Progress:** Phases 0–2 have notes in [PHASE0_NOTES.md](PHASE0_NOTES.md), [PHASE1_NOTES.md](PHASE1_NOTES.md), [PHASE2_NOTES.md](PHASE2_NOTES.md). Phase 3 is under way — seven projects are ported to .NET 8 under `netcore/`; current status and the measured scope of the remaining Manager/Web work are in [PHASE3_STATUS_AND_WEB_SCOPE.md](PHASE3_STATUS_AND_WEB_SCOPE.md).
 
 ## Guiding principles
 

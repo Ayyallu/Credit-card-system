@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>CC_Ingenio.Manager</RootNamespace>
+    <AssemblyName>CC_Ingenio.Manager</AssemblyName>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.6" />
+    <PackageReference Include="ClosedXML" Version="0.104.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CC_Ingenio.Common\CC_Ingenio.Common.csproj" />
+    <ProjectReference Include="..\CC_Ingenio.Core\CC_Ingenio.Core.csproj" />
+    <ProjectReference Include="..\CC_Ingenio.DataTranfer\CC_Ingenio.DataTranfer.csproj" />
+    <ProjectReference Include="..\CC_Ingenio.Data\CC_Ingenio.Data.csproj" />
+    <ProjectReference Include="..\CC_Ingenio.Repository\CC_Ingenio.Repository.csproj" />
+    <ProjectReference Include="..\CC_Ingenio_Resources\CC_Ingenio_Resources.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -95,3 +95,11 @@ jobs:
       # offline (no database).
       - name: Test CC_Ingenio.Repository (net8 port)
         run: dotnet test netcore/CC_Ingenio.Repository.Tests/CC_Ingenio.Repository.Tests.csproj --configuration Release
+
+      - name: Build CC_Ingenio.Manager (net8 port)
+        run: dotnet build netcore/CC_Ingenio.Manager/CC_Ingenio.Manager.csproj --configuration Release
+
+      # Workbook reader (real .xlsx files), CommonManager characterization,
+      # report seam. No database.
+      - name: Test CC_Ingenio.Manager (net8 port)
+        run: dotnet test netcore/CC_Ingenio.Manager.Tests/CC_Ingenio.Manager.Tests.csproj --configuration Release

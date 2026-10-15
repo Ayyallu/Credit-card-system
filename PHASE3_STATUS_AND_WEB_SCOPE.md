@@ -4,7 +4,7 @@ Companion to [MIGRATION_PLAN.md](MIGRATION_PLAN.md). Every number below was meas
 
 ## 1. Where Phase 3 stands
 
-Six projects are ported to .NET 8 under `netcore/`, all building in CI on every push (`build-netcore` job), with no change to the legacy solution:
+Seven projects are ported to .NET 8 under `netcore/`, all building in CI on every push (`build-netcore` job), with no change to the legacy solution:
 
 | Project | Result | Verified by |
 |---|---|---|
@@ -14,14 +14,17 @@ Six projects are ported to .NET 8 under `netcore/`, all building in CI on every 
 | `CC_Ingenio.Common` | **Split**: framework-independent half ported; 43 `SelectListItem` helpers + MVC model binders left in legacy | builds (incl. the source-less `GemCryptor.dll`) |
 | `CC_Ingenio.Data` | EF5 → **EF Core 8** `DbContext` (127 DbSets) + legacy-mapping conventions | 7 offline model tests |
 | `CC_Ingenio.Repository` | 144 thin repositories | 3 offline tests (every query translates to SQL) |
+| `CC_Ingenio.Manager` | Business layer, ~24.6K lines, 0 compile errors; `ILoginSession` and `IReportGenerator` seams; Excel import moved off ACE/OLEDB | 15 offline tests |
 
 **What none of this proves:** that anything works against a real SQL Server. There is no database in CI. The offline tests prove the EF Core model is valid and every repository's query translates; they cannot catch the runtime differences listed in [`CC_Ingenio.Data/PORT_NOTES.md`](netcore/CC_Ingenio.Data/PORT_NOTES.md) (`datetime`→`datetime2`, default connection encryption, change-tracking semantics, lazy loading, cascade actions). A masked test database remains the single most valuable missing piece — see the still-open item in [PHASE0_NOTES.md](PHASE0_NOTES.md).
 
-**Remaining:** `CC_Ingenio.Manager` (business layer), `CC_Ingenio.Reporting` (Crystal Reports), `CC_Ingenio.Web` (UI). `Web` depends on `Manager`, so Manager comes first.
+**Remaining:** `CC_Ingenio.Reporting` (Crystal Reports; `Manager` now reaches it only through `IReportGenerator`) and `CC_Ingenio.Web` (UI).
 
-## 2. CC_Ingenio.Manager — about 24.6K lines in 21 files
+## 2. CC_Ingenio.Manager — ported
 
-Mostly business logic and DTO mapping, with a small, well-defined set of framework couplings.
+**Done** (see [`netcore/CC_Ingenio.Manager/PORT_NOTES.md`](netcore/CC_Ingenio.Manager/PORT_NOTES.md)): the `SqlParameter` swap, the `ILoginSession` and `IReportGenerator` seams, and the Excel import rewrite are all in; it compiles with 0 errors and 15 offline tests pass. What follows is the original measured scope, kept for reference. **Two things the port turned up that bear directly on `Web`:** (a) the legacy Windsor registration gives `UnitOfWork`, every repository and every manager the *default singleton* lifestyle — one `DbContext` for the whole process, which EF Core will not tolerate under concurrent requests, so the Web DI lifetimes must be a deliberate decision; (b) 133 `TransactionScope` blocks (`RequiresNew`, `ReadUncommitted`) and process-wide statics (`Utils.OrganizationCode`, `BusinessDate`) that are overwritten at each login.
+
+Original scope: mostly business logic and DTO mapping, with a small, well-defined set of framework couplings.
 
 | Concern | Measured | What it needs |
 |---|---|---|
@@ -60,7 +63,7 @@ Not a concern in Manager: no `ConfigurationManager`, no `FormsAuthentication`, n
 | `Server.MapPath` / `Response.` direct writes / `Request.` / `HttpPostedFileBase` | 37 / 63 / 12 / 4 | `IWebHostEnvironment` / `FileResult` / `IFormFile` | Mechanical; the 63 `Response.` writes are mostly report/file downloads. |
 | Custom `DateTime`/`Decimal` model binders (culture-aware) | 2 registrations | New `IModelBinder` implementations | Small, but the legacy ones stay behind in legacy `Common`. |
 | Per-request culture from `Session["Culture"]` (`Application_AcquireRequestState`) | 1 | `UseRequestLocalization` + middleware | Small, but coupled to the session redesign. |
-| Windsor DI | 1 installer | Built-in DI (or Windsor on Core) | Low. |
+| Windsor DI | 1 installer | Built-in DI (or Windsor on Core) | **Not low.** Only controllers are registered transient; `UnitOfWork`, repositories and managers are default-singleton (see §2). Choosing lifetimes (scoped `DbContext` per request is the safe default) changes tracking/caching behaviour the managers may rely on. |
 | Crystal Reports (`ReportDocument` ×4), `Excel.` ×11, HTML-table "Excel" exports | — | See §4 | Blocked on §4. |
 
 ### Configuration
