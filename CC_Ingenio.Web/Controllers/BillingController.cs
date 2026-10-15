@@ -23,7 +23,6 @@ using System.Text.RegularExpressions;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
 using System.Xml.Linq;
-using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Reflection;
