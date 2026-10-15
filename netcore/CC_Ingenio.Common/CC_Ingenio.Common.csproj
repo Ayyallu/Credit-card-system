@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>CC_Ingenio.Common</RootNamespace>
+    <AssemblyName>CC_Ingenio.Common</AssemblyName>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      GemCryptor.dll has no source available (see PHASE0_NOTES.md) and is a
+      .NET 2.0-era binary. Per an explicit decision, this references the
+      original compiled DLL directly rather than attempting a rewrite -
+      CI will tell us whether a .NET 8 app can actually load/call it.
+    -->
+    <Reference Include="GemCryptor">
+      <HintPath>lib\GemCryptor.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CC_Ingenio_Resources\CC_Ingenio_Resources.csproj" />
+  </ItemGroup>
+
+</Project>

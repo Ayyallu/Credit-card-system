@@ -73,3 +73,9 @@ jobs:
 
       - name: Build CC_Ingenio.DataTranfer (net8 port)
         run: dotnet build netcore/CC_Ingenio.DataTranfer/CC_Ingenio.DataTranfer.csproj --configuration Release
+
+      # GemCryptor.dll (referenced by this project) has no source and is a
+      # .NET 2.0-era binary - this is the real test of whether a .NET 8 app
+      # can reference/load it at all. See PORT_NOTES.md.
+      - name: Build CC_Ingenio.Common (net8 port)
+        run: dotnet build netcore/CC_Ingenio.Common/CC_Ingenio.Common.csproj --configuration Release
