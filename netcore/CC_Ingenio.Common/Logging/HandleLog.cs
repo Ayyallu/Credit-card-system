@@ -1,5 +1,5 @@
 using System;
-using MSLogging = Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace CC_Ingenio.Common.Logging
 {
@@ -18,10 +18,10 @@ namespace CC_Ingenio.Common.Logging
     /// </summary>
     public class HandleLog : ILogger
     {
-        private static readonly MSLogging.ILoggerFactory FactoryInstance =
-            MSLogging.LoggerFactory.Create(builder => builder.AddConsole());
+        private static readonly Microsoft.Extensions.Logging.ILoggerFactory FactoryInstance =
+            Microsoft.Extensions.Logging.LoggerFactory.Create(builder => builder.AddConsole());
 
-        private readonly MSLogging.ILogger _logger =
+        private readonly Microsoft.Extensions.Logging.ILogger _logger =
             FactoryInstance.CreateLogger("CC_Ingenio");
 
         public void LogError(String AMessage, int AEventId, int APriority)
