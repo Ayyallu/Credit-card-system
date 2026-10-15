@@ -15,11 +15,11 @@ Second Phase 3 artifact, following [CC_Ingenio.Core's port](../CC_Ingenio.Core/P
 
 Unlike `CC_Ingenio.Core` (which only had one real dependency), this project had two:
 
-### 1. `CC_Ingenio.Common.Utils.Utils` regex constants — shimmed
+### 1. `CC_Ingenio.Common.Utils.Utils` regex constants — shim retired
 
 7 `[RegularExpression(...)]` data annotations reference `const string` fields on `CC_Ingenio.Common.Utils.Utils` (`MSG_ALLOWED_CHARS`, `MSG_ALLOWED_NUMERALS`, `MSG_ALLOWED_NOSPACE`, `MSG_ALLOWED_PERCENTAGE`, `MSG_VALID_PHONENO`, `MSG_VALID_EMAIL`, `MSG_VALID_MERCHANTCODE`). Attribute arguments must be compile-time constants, so the containing type has to resolve even though the value gets inlined.
 
-**`UtilsConstsShim.cs`** declares `CC_Ingenio.Common.Utils.Utils` with just these 7 consts, copied verbatim from the legacy `Utils.cs`, so none of the call sites needed to change. Same temporary-shim pattern as `CC_Ingenio.Core`'s `BusinessDateShim.cs`.
+A temporary `UtilsConstsShim.cs` originally declared `CC_Ingenio.Common.Utils.Utils` with just these 7 consts. **Update**: [`CC_Ingenio.Common` has since been ported](../CC_Ingenio.Common/PORT_NOTES.md) and its real `Utils.cs` includes all 7 of these constants verbatim (they were part of the framework-independent half kept in that port). `UtilsConstsShim.cs` has been **deleted**, and this project now takes a real `ProjectReference` on `CC_Ingenio.Common` instead. No call sites changed.
 
 ### 2. `System.Web.Mvc.SelectListItem` in `UserDTO.UserAllowedBranch` — shimmed (per explicit decision)
 
@@ -32,4 +32,5 @@ Since `System.Web.Mvc` doesn't exist on .NET 8, this needed a real decision (ask
 - **Verified by CI, not locally.** Same as `CC_Ingenio.Core`: this environment has no .NET SDK, so this was ported via careful static analysis (grep-verified) rather than a local `dotnet build`. The CI job added for `CC_Ingenio.Core` (`build-netcore` in `.github/workflows/build.yml`) needs to be extended to also build this project and `CC_Ingenio_Resources` before this is actually confirmed to compile.
 - Not added to any solution file.
 - The 6 orphaned files weren't evaluated for whether they contain logic needed elsewhere — same caveat as `CC_Ingenio.Core`'s orphans.
-- `CC_Ingenio.DataTranfer` does **not** depend on `CC_Ingenio.Core` or vice versa (confirmed no cross-references), so these two ports remain independent standalone projects for now, both only consuming shims/`CC_Ingenio_Resources` instead of each other or the still-unported `CC_Ingenio.Common`.
+- `CC_Ingenio.DataTranfer` does **not** depend on `CC_Ingenio.Core` or vice versa (confirmed no cross-references) — they remain independent standalone projects, though both now reference the real ported `CC_Ingenio.Common`.
+- The `SelectListItemShim.cs` for `System.Web.Mvc.SelectListItem` (§2 above) is unrelated to `CC_Ingenio.Common` and is **not** retired by this update — it stays until `CC_Ingenio.Web` is ported.
