@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CC_Ingenio.DataTranfer.UserInfo
+{
+    public class LoginAuditDTO
+    {
+        public string UserName { get; set; }
+        public string NodeName { get; set; }
+        public string LoginDate { get; set; }
+        public string LogoutDate { get; set; }
+        public string LoginStatus { get; set; }
+
+    }
+}

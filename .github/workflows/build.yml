@@ -67,3 +67,9 @@ jobs:
 
       - name: Build CC_Ingenio.Core (net8 port)
         run: dotnet build netcore/CC_Ingenio.Core/CC_Ingenio.Core.csproj --configuration Release
+
+      - name: Build CC_Ingenio_Resources (net8 port)
+        run: dotnet build netcore/CC_Ingenio_Resources/CC_Ingenio_Resources.csproj --configuration Release
+
+      - name: Build CC_Ingenio.DataTranfer (net8 port)
+        run: dotnet build netcore/CC_Ingenio.DataTranfer/CC_Ingenio.DataTranfer.csproj --configuration Release

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>CC_Ingenio.DataTranfer</RootNamespace>
+    <AssemblyName>CC_Ingenio.DataTranfer</AssemblyName>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CC_Ingenio_Resources\CC_Ingenio_Resources.csproj" />
+  </ItemGroup>
+
+</Project>
