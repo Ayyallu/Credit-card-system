@@ -13,12 +13,12 @@ namespace CC_Ingenio.Core.MasterRepo.MasterAggregate
     {
         [Key]
         public int BlockCodeForCommissionExclusionId { get; set; }
-        [ForeignKey("Block"),Column(Order=0)]
+        [Column(Order=0)]
         public string BlockCode { get; set; }
         //[ForeignKey("Commission")]
         [Column(Order = 1)]
         public string CommissionCode { get; set; }
-        [ForeignKey("Block"), Column(Order = 2)]
+        [Column(Order = 2)]
         public string OrganizationCode { get; set; }
         public bool IsIncludeCharges { get; set; }
       
@@ -31,6 +31,9 @@ namespace CC_Ingenio.Core.MasterRepo.MasterAggregate
         public string LastUpdatedBy { get; set; }
         public DateTime LastUpdatedOn { get; set; }
 
+        // EF Core port of the EF5 property-level [ForeignKey("Block")] pair, in
+        // the original Column(Order) order (BlockCode=0, OrganizationCode=2).
+        [ForeignKey("BlockCode,OrganizationCode")]
         public virtual BlockCode Block { get; set; }
         public virtual Commission Commission { get; set; }
     }

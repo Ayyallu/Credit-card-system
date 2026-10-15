@@ -30,10 +30,10 @@ namespace CC_Ingenio.Core.MasterRepo.MasterAggregate
         public decimal MaximumCreditLine { get; set; }
         public decimal CashLimit { get; set; }
 
-        [ForeignKey("Currency"), Column(Order = 1)]
+        [Column(Order = 1)]
         public string CurrencyCode { get; set; }
         [Key]
-        [ForeignKey("Currency"),Column(Order = 0)]
+        [Column(Order = 0)]
         public string OrganizationCode { get; set; }
 
         [ForeignKey("ProductMemberType")]
@@ -97,6 +97,9 @@ namespace CC_Ingenio.Core.MasterRepo.MasterAggregate
         public string ApprovalStatus { get; set; }
 
 
+        // EF Core port of the EF5 property-level [ForeignKey("Currency")] pair,
+        // in the original Column(Order) order (OrganizationCode=0, CurrencyCode=1).
+        [ForeignKey("OrganizationCode,CurrencyCode")]
         public virtual Currency Currency { get; set; }
         public virtual SystemParameter BillingCycle { get; set; }
         //public virtual DefaultAffinity DefaultAffinity { get; set; }

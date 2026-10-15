@@ -39,10 +39,8 @@ namespace CC_Ingenio.Core.MasterRepo.MasterAggregate
     public class CreditSubSegment
     {
         [Key,Column(Order = 0)]
-        [ForeignKey("objCreditSegment")]
         public string CreditSegmentCode { get; set; }
           [Key, Column(Order = 1)]
-        [ForeignKey("objCreditSegment")]
         public string OrganizationCode { get; set; }
         [Key, Column(Order = 2)]
         [ForeignKey("objSystemParameter")]
@@ -56,6 +54,9 @@ namespace CC_Ingenio.Core.MasterRepo.MasterAggregate
         public string LastUpdatedBy { get; set; }
         public DateTime LastUpdatedOn { get; set; }
 
+        // EF Core port of the EF5 property-level [ForeignKey("objCreditSegment")]
+        // pair, in the original Column(Order) order.
+        [ForeignKey("CreditSegmentCode,OrganizationCode")]
         public virtual CreditSegment objCreditSegment { get; set; }
         public virtual SystemParameter objSystemParameter { get; set; }
 

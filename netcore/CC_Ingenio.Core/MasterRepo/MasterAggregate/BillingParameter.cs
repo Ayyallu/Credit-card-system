@@ -12,9 +12,9 @@ namespace CC_Ingenio.Core.MasterRepo.MasterAggregate
     [Table("MT_BillingParameter")]
     public class BillingParameter
     {
-        [Key, Column(Order = 1), ForeignKey("Product")]
+        [Key, Column(Order = 1)]
         public string ProductCode { get; set; }
-        [Key, Column(Order = 0), ForeignKey("Product")]
+        [Key, Column(Order = 0)]
         public string OrganizationCode { get; set; }
         public decimal MinTotalAmount { get; set; }
         public decimal MinTotalDebt { get; set; }
@@ -36,6 +36,9 @@ namespace CC_Ingenio.Core.MasterRepo.MasterAggregate
         public string LastUpdatedBy { get; set; }
         public DateTime LastUpdatedOn { get; set; }
 
+        // EF Core ports of the EF5 property-level [ForeignKey("Product")] pair,
+        // in the original Column(Order) order (OrganizationCode, ProductCode).
+        [ForeignKey("OrganizationCode,ProductCode")]
         public virtual Product Product { get; set; }
                 
     }

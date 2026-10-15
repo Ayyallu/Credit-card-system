@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace CC_Ingenio.Data
 {
@@ -21,10 +18,10 @@ namespace CC_Ingenio.Data
     ///     [Key, Column(Order = n)]. EF Core refuses composite keys declared
     ///     through data annotations, so they are re-declared here via HasKey in
     ///     the Column(Order) order.
-    ///  3. Composite foreign keys declared as property-level
-    ///     [ForeignKey("Navigation")] on several properties: EF5 paired them in
-    ///     Column(Order) order; EF Core doesn't guarantee an order, so it is
-    ///     enforced here.
+    /// Composite foreign keys are not handled here: the five entities that
+    /// used EF5's property-level [ForeignKey("Nav")] form were rewritten in the
+    /// ported CC_Ingenio.Core to the navigation-level [ForeignKey("A,B")] form,
+    /// which EF Core supports natively.
     /// </summary>
     internal static class LegacyEf5ModelConventions
     {
@@ -57,14 +54,6 @@ namespace CC_Ingenio.Data
                     modelBuilder.Entity(clr).HasKey(keyProperties);
                 }
             }
-
-            foreach (var entityType in entityTypes)
-            {
-                foreach (var foreignKey in entityType.GetDeclaredForeignKeys().ToList())
-                {
-                    EnforcePropertyLevelForeignKeyOrder(modelBuilder, entityType, foreignKey);
-                }
-            }
         }
 
         // Column(Order) when set, otherwise after everything that has one.
@@ -72,59 +61,6 @@ namespace CC_Ingenio.Data
         {
             var order = property.GetCustomAttribute<ColumnAttribute>()?.Order ?? -1;
             return order < 0 ? int.MaxValue : order;
-        }
-
-        private static void EnforcePropertyLevelForeignKeyOrder(
-            ModelBuilder modelBuilder, IMutableEntityType entityType, IMutableForeignKey foreignKey)
-        {
-            if (foreignKey.Properties.Count < 2)
-            {
-                return;
-            }
-
-            // Navigation-level [ForeignKey("A,B")] lists carry an explicit order
-            // that EF Core already honours; only property-level declarations
-            // are order-ambiguous.
-            var propertyInfos = foreignKey.Properties.Select(p => p.PropertyInfo).ToList();
-            if (propertyInfos.Any(p => p == null || p.GetCustomAttribute<ForeignKeyAttribute>() == null))
-            {
-                return;
-            }
-
-            var ordered = propertyInfos
-                .OrderBy(ColumnOrder)
-                .ThenBy(p => p.MetadataToken)
-                .Select(p => p.Name)
-                .ToArray();
-
-            if (ordered.SequenceEqual(foreignKey.Properties.Select(p => p.Name)))
-            {
-                return;
-            }
-
-            var navigation = foreignKey.DependentToPrincipal;
-            if (navigation == null)
-            {
-                return;
-            }
-
-            var principalClr = foreignKey.PrincipalEntityType.ClrType;
-            var principalKeyNames = foreignKey.PrincipalKey.Properties.Select(p => p.Name).ToArray();
-            var inverseName = foreignKey.PrincipalToDependent?.Name;
-
-            var reference = modelBuilder.Entity(entityType.ClrType).HasOne(principalClr, navigation.Name);
-            if (foreignKey.IsUnique)
-            {
-                reference.WithOne(inverseName)
-                    .HasForeignKey(entityType.ClrType, ordered)
-                    .HasPrincipalKey(principalClr, principalKeyNames);
-            }
-            else
-            {
-                reference.WithMany(inverseName)
-                    .HasForeignKey(ordered)
-                    .HasPrincipalKey(principalKeyNames);
-            }
         }
     }
 }

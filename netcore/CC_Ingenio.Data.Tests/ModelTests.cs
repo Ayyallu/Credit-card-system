@@ -104,33 +104,51 @@ namespace CC_Ingenio.Data.Tests
             }
         }
 
+        // The five entities that used EF5's property-level composite
+        // [ForeignKey("Nav")] were rewritten to navigation-level lists; the
+        // order must match the legacy Column(Order) pairing exactly, because a
+        // swapped pair of same-typed columns would silently join wrongly.
         [TestMethod]
-        public void Property_Level_Composite_Foreign_Keys_Follow_Column_Order()
+        public void Converted_Composite_Foreign_Keys_Keep_Legacy_Column_Order()
+        {
+            AssertForeignKey(typeof(BillingParameter), "Product", "OrganizationCode", "ProductCode");
+            AssertForeignKey(typeof(BlockCodeForCommissionExclusion), "Block", "BlockCode", "OrganizationCode");
+            AssertForeignKey(typeof(CreditSubSegment), "objCreditSegment", "CreditSegmentCode", "OrganizationCode");
+            AssertForeignKey(typeof(MerchantDiscount), "ObjMerchant", "MerchantCode", "OrganizationCode");
+            AssertForeignKey(typeof(Product), "Currency", "OrganizationCode", "CurrencyCode");
+        }
+
+        // EF Core rejects property-level composite [ForeignKey("Nav")] outright;
+        // this guards against one being reintroduced.
+        [TestMethod]
+        public void No_Entity_Uses_Property_Level_Composite_ForeignKey()
         {
             using (var context = CreateContext())
             {
                 foreach (var entityType in context.Model.GetEntityTypes())
                 {
-                    foreach (var foreignKey in entityType.GetDeclaredForeignKeys())
-                    {
-                        if (foreignKey.Properties.Count < 2)
-                        {
-                            continue;
-                        }
-
-                        var infos = foreignKey.Properties.Select(p => p.PropertyInfo).ToList();
-                        if (infos.Any(p => p == null || p.GetCustomAttribute<ForeignKeyAttribute>() == null))
-                        {
-                            continue;
-                        }
-
-                        var expected = infos.OrderBy(ColumnOrder).ThenBy(p => p.MetadataToken).Select(p => p.Name).ToArray();
-                        CollectionAssert.AreEqual(
-                            expected,
-                            foreignKey.Properties.Select(p => p.Name).ToArray(),
-                            "Composite FK order mismatch on " + entityType.ClrType.Name);
-                    }
+                    var groups = entityType.ClrType
+                        .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                        .Select(p => p.GetCustomAttribute<ForeignKeyAttribute>())
+                        .Where(a => a != null && !a.Name.Contains(","))
+                        .GroupBy(a => a.Name)
+                        .Where(g => g.Count() > 1);
+                    Assert.IsFalse(groups.Any(), "Property-level composite FK on " + entityType.ClrType.Name);
                 }
+            }
+        }
+
+        private static void AssertForeignKey(Type dependent, string navigation, params string[] expectedProperties)
+        {
+            using (var context = CreateContext())
+            {
+                var foreignKey = context.Model.FindEntityType(dependent)
+                    .GetDeclaredForeignKeys()
+                    .Single(fk => fk.DependentToPrincipal != null && fk.DependentToPrincipal.Name == navigation);
+                CollectionAssert.AreEqual(
+                    expectedProperties,
+                    foreignKey.Properties.Select(p => p.Name).ToArray(),
+                    "FK order on " + dependent.Name + "." + navigation);
             }
         }
 
