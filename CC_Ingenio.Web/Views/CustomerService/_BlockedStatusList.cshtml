@@ -1,0 +1,30 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@using CC_Ingenio_Resources;
+@model List<BlockedCardDetailsDTO>  
+
+@{
+    var blockcodeStatusGrid = new WebGrid(Model, canPage: true, rowsPerPage: 5, ajaxUpdateContainerId: "container-body");
+    blockcodeStatusGrid.Pager(WebGridPagerModes.All);
+}
+
+<div class="row">
+    <div class=" BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.BlockCodeStatusDetails</div>
+        <div style="width: 100%;" class="VerticalScrollBar">
+            <div class="standard-table">
+                @blockcodeStatusGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+             alternatingRowStyle: "alt",
+             columns: blockcodeStatusGrid.Columns(
+                    blockcodeStatusGrid.Column("Code", Resources.CardBlock),
+                    blockcodeStatusGrid.Column("Segment", Resources.CardBlockSegment),
+                    blockcodeStatusGrid.Column("Description", Resources.Description),
+                    blockcodeStatusGrid.Column("CreatedOn", Resources.StatusChangeDate, format: @<text>@item.CreatedOn.ToShortDateString()</text>),
+                                 blockcodeStatusGrid.Column("FinancialHierarchy", Resources.AccountBlockFinancial),
+                                 blockcodeStatusGrid.Column("NonFinancialHierarchy", Resources.AccountBlockNonFinancial),
+                                 blockcodeStatusGrid.Column("ShortDescription", Resources.CardBlockStatus)
+                             ))
+            </div>
+        </div>
+    </div>
+
+</div>

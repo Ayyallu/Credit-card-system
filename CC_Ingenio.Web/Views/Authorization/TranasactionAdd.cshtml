@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "TransactionAdd";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.DataTranfer.MasterInfo;
+
+
+@section featured {
+}
+<section class="featured">
+     <div class="PageTitle">Transaction Entry</div>
+     <div class="row">
+
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm())
+                {
+                <div class="tab-content" id="tab1">
+
+                    <div class="row">
+                        <fieldset class="double">
+                            <legend></legend>
+                            <div class="row">
+                                <span>
+                                    <label>Card No</label>
+                                    <input type="text" id="CardNo" />
+                                </span> 
+                            </div>
+                            <div class="row">
+                                <span>
+                                    <label>Txn Date</label>
+                                    <input type="text" id="TxnDate" />
+                                </span> 
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="double">
+                            <legend></legend>
+                            <div class="row">
+                                <span>
+                                    <label>Amount</label>
+                                    <input type="text" id="Amount" />
+                                </span> 
+                            </div>    
+                            <div class="row">
+                                <span>
+                                    <label>Auth Code</label>
+                                    <input type="text" id="AuthCode"  />
+                                </span> 
+                            </div>      
+                        </fieldset>
+
+     
+                        <div class="rowbtn">
+                            <span>
+                                <input id="Add" name="Command" value="Add"   type="submit" class = "Greenbutton"  /></span>
+                            <span>
+                                <input id="Save" name="Command" value="Save" type="submit" class = "Greenbutton" /></span>
+                            <span>
+                                <input id="Delete" name ="Command" value="Delete" type="Submit" class = "Greenbutton" /></span>
+                            <span>
+                                <input id="Authorize" type="button" class = "Greenbutton" value="Authorize" /></span>
+                            <span>
+                                <input id="Cancel" class="Greenbutton" type="reset" value="Cancel" /></span>
+                        </div>
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>

@@ -1,0 +1,125 @@
+﻿@using CC_Ingenio.Web.ViewModel.Master
+@model SystemMaintenanceConfigurationSearch
+@{
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "BaseCurrency", ajaxUpdateContainerId: "standard-table");
+    grid.Pager(WebGridPagerModes.All);
+    
+    
+    List<SelectListItem> CurrencyList = new List<SelectListItem>();
+    foreach(var item in ViewBag.CurrencyList) 
+    {
+        CurrencyList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    CurrencyList.RemoveAt(0);
+    CurrencyList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+
+   }
+
+
+@{
+    ViewBag.Title = "SystemMaintenanceConfiguration Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="featured">
+
+    <div class="PageTitle">SystemMaintenanceConfiguration Search</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active"> @Html.ActionLink("Search","SystemMaintenanceConfigurationList","Master" )</li>
+            <li> @Html.ActionLink("Details","SystemMaintenanceConfigurationAdd","Master" )</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("SystemMaintenanceConfigurationList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">Currency</div>
+                                        <div class="Field">
+                                             @Html.DropDownListFor(x=>x.BaseCurrency,CurrencyList)
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                                
+                                                                                                    
+                                <div class="SearchColumnbtn">
+                                    <span>
+                                        <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="Search" />
+                                    </span>
+                                    <span>
+                                        <input id="ClearButton" class="Greenbutton" type="reset" value="Clear" />
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    }
+
+                </div>
+                <div class="row">
+                   
+                    <div class="standard-table">
+
+                        @grid.GetHtml(alternatingRowStyle:"alt", columns:grid.Columns(
+                        grid.Column("BaseCurrency","Base Currency"),
+                                    grid.Column("WeeklyGlobalCount","Weekly Global Count"),
+                                    grid.Column("WeeklySetUp", "Weekly SetUp"),
+                                    grid.Column("CashLimit","Cash Limit"),
+                                    grid.Column("CreditLimit", "Credit Limit"),   
+                                    grid.Column("ApprovalStatusDesc","Status"),
+                                      grid.Column("Edit", format: 
+                                        (item) =>
+                                            {
+                                                if(item.ApprovalStatus.Equals("A"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink("Edit", "SystemMaintenanceConfigurationAdd", "Master", new { id = item.BaseCurrency }, null));
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink("View", "SystemMaintenanceConfigurationView", "Master", new { id = item.BaseCurrency }, null)));
+                                                }
+                                            }),
+                                    grid.Column("Delete",   format: 
+                                        (item) =>
+                                            {
+                                                if(item.ApprovalStatus.Equals("A"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink("Delete", "SystemMaintenanceConfigurationDelete", "Master", new { id = item.BaseCurrency }, new { @class = "delete-link" }));
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw("");
+                                                }
+                                            })
+                                    //grid.Column("Edit", format: item => item.ApprovalStatus == "Approved" ? @Html.ActionLink("Edit", "PlanMasterAdd","Master", new { Id = Convert.ToString( item.PlanID )},null) : Html.Raw("Edit")),
+                                    //grid.Column("Delete", format: item => item.ApprovalStatus == "Approved" ? @Html.ActionLink("Delete", "PlanMasterDelete","Master", new {Id = item.PlanID },new { @class= "delete-link" }) : Html.Raw("Delete")))
+                               ))        
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>

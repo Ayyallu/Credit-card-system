@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "ValidateMod10";
+}
+
+<h2>ValidateMod10</h2>
+@using (Html.BeginForm("DoValidateMod10", "Home", FormMethod.Post))
+{
+    <text>
+    Message : @ViewBag.Message
+    @Html.Label("Input")
+    @Html.TextBox("Input")
+    <input type="submit" id="btnSubmit" value="Submit" />
+    </text>
+}

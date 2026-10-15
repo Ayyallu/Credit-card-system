@@ -1,0 +1,37 @@
+﻿@using CC_Ingenio_Resources;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model CC_Ingenio.Web.ViewModel.User.Login
+@Html.AntiForgeryToken()
+@section featured {
+
+
+}
+
+<aside class="landing">
+    <ul>
+
+        <li><a href="/User/ChangePassword">@Resources.ChangePassword</a></li>
+                
+    </ul>
+
+</aside>
+<article class="landing">
+    <div class="WelcomeBox">   
+      <div class="WelcomeBoxTitle">@String.Concat(new object[] { Resources.MsgInfoLoggedInSuccess , " ", Resources.ApplicationName })
+    </div>
+        
+         </div> 
+
+     @if (ViewBag.Message != null)
+            {                    
+             <p style="color:#a10e5f;"> @ViewBag.Message </p>    
+            } 
+</article>  
+
+            <div > 
+           
+        </div>
+ 
+ 

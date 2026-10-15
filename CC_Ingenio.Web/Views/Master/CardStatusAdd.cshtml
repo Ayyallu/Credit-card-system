@@ -1,0 +1,131 @@
+﻿@using CC_Ingenio_Resources;
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.CardStatusCode });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+
+@model CardStatusDTO
+@{
+    
+    List<SelectListItem> DecisionItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.DecisionList)
+    {
+        DecisionItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    }
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        
+        $("#frmCardStatusSave").submit(function (e) {
+
+            if (parseFloat($('#CardStatusCode').val().trim()) <= parseFloat(0)) {
+                $('#CardStatusCode_Validate').text("@Html.Raw(String.Format(Resources.MsgErrValueGreaterThanZero, Resources.CardStatusCode))");
+                e.preventDefault();
+            }
+        })
+
+        $('#CardStatusCode').focusin(function () {
+            $('#CardStatusCode_Validate').text("");
+        });
+
+    });
+</script>
+
+
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"CardStatusList","Master" )</li>
+            }
+            <li class="active">@Html.ActionLink(Resources.DetailsPageHeading,"CardStatusAdd","Master" )</li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("CardStatusSave", "Master", new { Id = Model.CardStatusCode, }, FormMethod.Post, new { id = "frmCardStatusSave", name = "frmCardStatusSave" }))
+                {
+                <div class="tab-content" id="tab1">
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+                        <div class="row">
+                        <div class="TwoColumn">
+                                <div class="label">@Resources.CardStatusCode</div>
+                                <div class="Field">
+                                    @if (!string.IsNullOrWhiteSpace(Model.CardStatusCode))
+                                    {
+                                        @Html.TextBoxFor(x => x.CardStatusCode, new { id = "CardStatusCode", name="CardStatusCode", maxlength = 5, @readonly = "readonly" })
+                                    }
+                                    else
+                                    { 
+                                        @Html.TextBoxFor(x => x.CardStatusCode, new { id = "CardStatusCode", name="CardStatusCode", maxlength = 5 })
+                                    }
+                                    @Html.ValidationMessageFor(x => x.CardStatusCode)
+                                    <label id="CardStatusCode_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                        <div class="TwoColumn">
+                                <div class="label ">@Resources.Decision</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.DecisionCode, DecisionItems.AsEnumerable() )
+                                    @Html.ValidationMessageFor(x => x.DecisionCode)
+                                </div>
+                            </div>
+                   </div>  
+                            <div class="row">
+                        <div class="TwoColumn">
+                            <div>
+                                <div class="label fontmandatory">@Resources.Narration</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Narration, new { maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.Narration)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+                        
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>

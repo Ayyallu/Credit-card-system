@@ -1,0 +1,73 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@model CC_Ingenio.Web.ViewModel.CardBooking.ReportCriteria 
+@{
+    List<SelectListItem> ReportTypesItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.ReportTypes)
+    {
+        ReportTypesItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+    }
+
+
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row" >
+
+                        @using (Html.BeginForm("ShowDailyCollectionReport", "ReportViewer", FormMethod.Post, new { id = "frmDailyCollectionReportList", Name = "frmDailyCollectionReportList", @style = "height: 117px;"}))
+                        {
+                                                        
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.Type</div>
+                                    <div class="Field">
+                                        @Html.DropDownListFor(x => x.ReportType, ReportTypesItems.AsEnumerable(), new { @id = "ReportType", @name = "ReasonCode" })
+                                        @Html.ValidationMessageFor(x => x.ReportType)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.FromDate</div>
+                                    <div class="Field">
+                                        <span>
+                                            @Html.TextBoxFor(x => x.FromDate, new {id = "FromDate", @class ="datepicker", style="width:24%", @readonly="true", Value = Model.FromDate.ToShortDateString() })
+                                        </span>
+                                        <span><label class="inline" style="font-size:100%; padding:6px 20px 0px 20%">@Resources.ToDate  </label></span>
+                                        <span>
+                                            @Html.TextBoxFor(x => x.ToDate, new {id = "ToDate", @class ="datepicker", style="width:24%; float:right", @readonly="true", Value = Model.ToDate.ToShortDateString() })
+                                        </span>
+                                    </div>
+                                </div>
+                                                                        
+                                    @Html.ActionLink("Purchases", "OpenExcel", "ReportViewer", new { AType = "PR"}, new { @class = "ReportLink", @style ="color:blue" })
+                                    @Html.ActionLink("Credit Notes", "OpenExcel", "ReportViewer", new { AType = "CN"}, new { @class = "ReportLink", @style ="color:blue" })
+                                    @Html.ActionLink("Payments", "OpenExcel", "ReportViewer", new { AType = "PY"}, new { @class = "ReportLink", @style ="color:blue" })
+
+
+                                    </div>
+                                <div class="row">
+
+
+                                <div class="SearchColumnbtn">
+                                    <span>
+                                        <input style="width:auto" id="ShowReportButton" name="ShowReportButton" class="Greenbutton" type="submit" value="@Resources.ShowReport"/>
+                                    </span>
+                                </div>
+
+                                </div>
+                            </div>
+                        }
+                </div>
+            </div>
+        </div>
+   </div>
+</section>
+
+

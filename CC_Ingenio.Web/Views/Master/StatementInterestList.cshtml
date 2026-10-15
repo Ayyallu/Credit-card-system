@@ -1,0 +1,152 @@
+﻿@using CC_Ingenio.Web.ViewModel.Master;
+@using CC_Ingenio_Resources;
+
+@{
+    
+    ViewBag.Title = String.Concat(new object[] { Resources.MT_INTERESTRATE, " ", Resources.Search });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    //ViewBag.Title = "StatementInterestList";
+}
+
+@model StatementInterestSearch
+@{
+    
+    List<SelectListItem> MonthItems = new List<SelectListItem>();
+
+    foreach (var itm in ViewBag.Month)
+    {
+        MonthItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> YearItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Year)
+    {
+        YearItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+    
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+        
+ }
+
+<section class="feature">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+                <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active">@Html.ActionLink(Resources.SearchPageHeading, "StatementInterestList", "Master" )</li>
+            <li> @Html.ActionLink(Resources.DetailsPageHeading,"StatementInterestAdd","Master" )</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("StatementInterestList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.BillMonth</div>
+                                        <div class="Field" style="padding-left:10px">
+                                             @Html.DropDownListFor(x=>x.BillingMonth,MonthItems)
+                                           
+                                        </div>                                       
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.BillYear</div>
+                                        <div class="Field" style="padding-left:10px">
+                                             @Html.DropDownListFor(x=>x.BillingYear,YearItems)
+
+                                        </div>
+                                    </div>
+                                </div>                                                          
+                                <div class="SearchColumnbtn">
+                                    <span>
+                                        <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                    </span>
+                                    <span>
+                                        <input id="Button2" type="submit" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    }
+
+                </div>
+                <div class="row">
+                   
+                    <div class="standard-table">
+
+                        @grid.GetHtml(alternatingRowStyle:"alt",columns:grid.Columns(
+                                    grid.Column("BillMonthDesc",Resources.BillMonth),
+                                    grid.Column("BillingYear", Resources.BillYear),
+                                     grid.Column("InstallmentInterest", Resources.InstallmentInterest),
+                                      grid.Column("RevolvingInterest", Resources.RevolvingInterest),
+                                       grid.Column("RevolvingCAE", Resources.RevolvingCAE),
+                                        grid.Column("InstallmentCAE", Resources.InstallmentCAE),  
+                                    grid.Column("ApprovalStatusDesc", Resources.Status),
+                                    grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink(Resources.Edit, "StatementInterestAdd", "Master", new { ABillingMonth = item.BillingMonth, ABillingYear = item.BillingYear, AOrganizationCode = item.OrganizationCode }, null));
+                                                    
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "StatementInterestView", "Master", new { ABillingMonth = item.BillingMonth, ABillingYear = item.BillingYear, AOrganizationCode = item.OrganizationCode }, null))); 
+                                                }
+                                            }),
+                                    grid.Column(Resources.Delete,   format: 
+                                        (item) =>
+                                                 {
+                                                     if (lstPriv.Contains("Delete"))
+                                                     {
+                                                         if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                                         {
+                                                             return Html.Raw(Html.ActionLink(Resources.Delete, "StatementInterestDelete", "Master", new { ABillingMonth = item.BillingMonth, ABillingYear = item.BillingYear, AOrganizationCode = item.OrganizationCode }, new { @class = "delete-link" }));
+                                                         }
+                                                         else
+                                                         {
+                                                             return Html.Raw("");
+                                                         }
+                                                     }
+                                                     else
+                                                     {
+                                                         return Html.Raw("");
+                                                     }
+                                            })
+                    ))                
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>

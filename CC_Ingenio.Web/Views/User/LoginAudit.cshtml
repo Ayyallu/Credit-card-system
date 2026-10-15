@@ -1,0 +1,122 @@
+﻿@using CC_Ingenio_Resources;
+
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.Username });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio.Web.ViewModel.User
+
+
+@model LoginAudit
+
+@{                  
+    var RowsPerPage = 10;
+    var grid = new WebGrid(Model.SearchResults, canSort: false, canPage: true, rowsPerPage: 10, selectionFieldName: "", ajaxUpdateContainerId: "container-body");
+
+    grid.Pager(WebGridPagerModes.All);
+
+    List<SelectListItem> LoginStatusList = new List<SelectListItem>();
+    
+    foreach (var item in ViewBag.LoginStatus)
+    {
+        LoginStatusList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }        
+}
+
+<section class="feature">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <div class="PageRow">
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("LoginAuditList", "User", FormMethod.Get))
+                    {                              
+                        <div class="SearchBox">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.Username</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.UserName)
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.LoginStatus</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x => x.LoginStatus, LoginStatusList)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="TwoColumn">   
+                                        <div class="label">@Resources.LoginFrom</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.LoginFrom, new { @class ="datepicker", @readonly="true", Value = Model.LoginFrom.ToShortDateString() })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.LoginTo</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.LoginTo, new { @class ="datepicker", @readonly="true", Value = Model.LoginTo.ToShortDateString() })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.NodeNameIP</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.NodeName)
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label"></div>
+                                        <div class="Field">                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="SearchColumnbtn">
+                                        <span>
+                                            <input id="SearchButton" name="AuditButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                        </span>
+                                        <span>
+                                            <input id="ClearButton"name="AuditButton" class="Greenbutton"  type="submit" value="@Resources.Clear" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                                                     
+                    }
+                </div>
+                <div class="row">
+                    <div class="standard-table">
+                        @grid.GetHtml(alternatingRowStyle: "alt", columns: grid.Columns(
+
+                            grid.Column("UserName", Resources.Username, format: 
+                                @<text><label id="UserName" style="font-size: .95em; font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.UserName</label></text>),
+                            grid.Column("LoginDate",Resources.LoginDate),
+                            grid.Column("LogoutDate",Resources.LogoutDate),
+                            grid.Column("NodeName", Resources.NodeNameIP),
+                            grid.Column("LoginStatus", Resources.Status)
+                         ))
+
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+

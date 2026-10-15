@@ -1,0 +1,30 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <link href="~/Content/Styles.css" rel="stylesheet" />
+    <script type="text/javascript">function ShowAuthorizationDiv(s) { if (s > 0) { document.getElementById('ceng').style.display = 'block'; document.getElementById('close').style.display = 'block'; } else { document.getElementById('ceng').style.display = 'none'; document.getElementById('close').style.display = 'none'; } }</script>
+    <style>
+    
+    </style>
+</head>
+<body>
+    <div>
+        <a href="#" onclick="ShowAuthorizationDiv(1)">popup</a>
+        <div id="ceng" class="bglayer"></div>
+        <div id="close" style="position: absolute !important; left: 30%; top: 0px; z-index: 3; border: 1px solid #598923; background-color: #fff; margin: 20% auto; padding: 0px; display: none; width: 40%; height: 40%; text-align: right">
+            <a href="#" onclick="ShowAuthorizationDiv(0)">
+                <img src="~/Images/delete.gif" /></a>
+            <div style="text-align: center;">
+                Popup 123
+            </div>
+        </div>
+    </div>
+</body>
+</html>

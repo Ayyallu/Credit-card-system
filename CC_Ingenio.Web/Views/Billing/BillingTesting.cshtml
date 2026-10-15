@@ -1,0 +1,327 @@
+﻿@using CC_Ingenio_Resources;
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.PROC_EOD });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/spin.js/1.2.7/spin.min.js"></script>
+
+@model CC_Ingenio.DataTranfer.BillingInfo.BillingTestingDTO
+@{
+    
+    List<SelectListItem> ProcItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Procs)
+    {
+        ProcItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+}
+
+<script>
+    $(document).ready(function () {
+
+      
+        $('#ExecuteButton').click(function (e) {
+            if (!Validate()) {
+                return false;
+            }
+     
+
+
+
+
+            $("#dialog").dialog({
+                resizable: false,
+                width: 400,
+                height: 160,
+                modal: true,
+                title: resourceProvider.ApplicationName,
+                buttons: [{
+                    class: "LeftButton",
+                    text: resourceProvider.Yes,
+                    click: function () {
+
+                        $("#loading").fadeIn(0500);
+                        var opts = {
+                            lines: 12, // The number of lines to draw
+                            length: 7, // The length of each line
+                            width: 4, // The line thickness
+                            radius: 10, // The radius of the inner circle
+                            color: '#FFFFFF', // #rgb or #rrggbb
+                            speed: 1, // Rounds per second
+                            trail: 60, // Afterglow percentage
+                            shadow: false, // Whether to render a shadow
+                            hwaccel: false // Whether to use hardware acceleration
+                        };
+                        var target = document.getElementById('loading');
+                        var spinner = new Spinner(opts).spin(target);
+
+                        $.ajax({
+                            url: '/Billing/ExecuteProcedureForBillingTesting/',
+                            type: 'POST',
+                            data: $('#frmtest').serialize(),
+                            cache: false,
+                            success: function (data) {
+                                $("#loading").fadeOut(0500);
+                                ShowSimpleModalDialog(data.Message, data.RedirectUrl);
+                            }
+                        });
+
+                        $(this).dialog("close");
+                    }
+                },
+                {
+                    text: resourceProvider.No,
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+
+            $("#dialog").text(resourceProvider.MsgConfProcessEOD);
+
+            $("#dialog").dialog("open");
+
+
+
+
+
+
+
+            //$.ajax({
+            //    url: '/Billing/ExecuteProcedureForBillingTesting/',
+            //    type: 'POST',
+            //    data: $('#frmtest').serialize(),
+            //    cache: false,
+            //    success: function (data) {
+            //        ShowSimpleModalDialog(data.Message, data.RedirectUrl);
+            //    }
+            //});
+
+
+
+        });
+        
+        function Validate() {
+
+            //else if ($('#BillDate').val() == '' && document.getElementById("ProcName").value == 'BL') {
+            //    $('#BillDate_Validate').text("Please select Billing Date");
+            //    return false;
+            //}
+            if ($('#BillDate').val() == '' ) {
+                $('#BillDate_Validate').text('@Html.Raw(String.Format(Resources.MsgErrPleaseSelect, Resources.BillDate))');
+                return false;
+            }
+            else if ($('#ProcName').val() == '') {
+                $('#ProcName_Validate').text('@Html.Raw(String.Format(Resources.MsgErrPleaseSelect, Resources.Procedure))');
+                return false;
+            }
+
+            return true;
+        };
+        
+
+
+        $(function () {
+            $("ExecuteButton").click(function (e) {
+                var url = $(this).attr("href");
+                e.preventDefault();
+                $("#dialog").dialog({
+                    resizable: false,
+                    height: 160,
+                    modal: true,
+                    title: "@Resources.ApplicationName",
+                    buttons: [{
+                        class: "LeftButton",
+                        text: resourceProvider.Yes,
+                        click: function () {
+
+                            $.post(url, function (data) {
+                                // got the result in data variable. do whatever you want now
+                                //may be reload the page
+                                $("#dialog").dialog("close");
+                                $("#frmList").submit();
+
+                            });
+                        }},
+                        {
+                            text: resourceProvider.No,
+                            click: function () {
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+
+                $("#dialog").text('@Html.Raw(String.Format(Resources.MsgConfDelete))'); 
+
+                $("#dialog").dialog("open");
+
+
+            });
+        });
+
+        //$('#ImportButton').click(function (e) {
+        //    alert(document.getElementById("filepath").value);
+        //    e.preventDefault();
+        //});
+
+        //document.getElementById("filepath").addEventListener("change", function () { alert("hai") });
+
+        $('#ClearButton').click(function (e) {
+            $('#BillDate_Validate').text('');
+            $('#ProcName_Validate').text('');
+        });
+
+
+    });
+
+</script>
+
+
+
+<style type="text/css">
+    #loading
+    {
+        z-index: 9998;
+        position: fixed;
+        display: none;
+        height: 100%;
+        width: 100%;
+        background: #000000;
+        background-color: rgba(0,0,0,0.9);
+        color: white;
+        opacity : 0.9;
+        top: 0px;
+        left: 0px;
+    }
+  
+    #loadingcontent
+    {
+        display:table;
+        position:fixed;
+        left:0;
+        top:0;
+        width:100%;
+        height:100%;
+    }
+  
+    #loadingspinner
+    {
+        display: table-cell;
+        vertical-align:middle;
+        width: 50%;
+        text-align: center;
+        font-size:larger;
+        padding-top:80px;
+        opacity : 10;
+    }
+</style>
+
+
+
+<section class="featured">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+        
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @{Html.EnableClientValidation(true);}
+                    @using (Html.BeginForm("ImportIntoPullingTable", "Billing", FormMethod.Post, new {id="frmtest", enctype = "multipart/form-data" }))
+                    {
+                        <div class="SearchBox">
+  
+                            <div class="row">
+                                                                            
+                                                                
+                            <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.ProcessDate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.BillDate, "{0:dd/MM/yyyy}", new { @class = "datepicker", id = "BillDate", @readonly = "true", onchange="$('#BillDate_Validate').text('')" })
+                                    <label id="BillDate_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+@*                                <div class="TwoColumn">
+                                    <div class="label">Bill Month</div>
+                                     <div class="Field">
+                                         <span>@Html.DropDownListFor(x => x.BillMonth, MonthItems.AsEnumerable(), new { @class = "inline", style="width:35%", onchange="$('#Month_Validate').text('')"})</span>
+                                         <span><label class="inline" style="font-size:100%; padding:6px 20px 0px 38px"> Bill Year </label></span>
+                                         <span>@Html.DropDownListFor(x => x.BillYear, YearItems.AsEnumerable(), new { @class = "inline", style="width:35.5%", onchange="$('#Year_Validate').text('')"})</span>
+                                        <span class="Field">
+                                            <label id="Month_Validate" class="validationMessage"></label>
+                                            <label id="Year_Validate" class="validationMessage" style="width:60%; padding-left:13.2em"></label>
+                                        </span>
+                                    </div>
+                                </div>*@
+                            
+                            </div>
+                                
+
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.ProcedureToRun </div>
+                                     <div class="Field">
+                                         <span>@Html.DropDownListFor(x => x.ProcName, ProcItems.AsEnumerable(), new {id="ProcName", @class = "inline", onchange="$('#ProcName_Validate').text('') " })</span>
+                                         <label id="ProcName_Validate" class="validationMessage"></label>
+                                    </div>
+                                </div>
+                            </div>
+                                
+                                                                                                                                                                                                                      
+                            <div class="rowbtn">
+                                <span>
+                                    <input id="ExecuteButton" name="ExecuteButton" class="Greenbutton" type="button" value="@Resources.Execute" />
+                                </span>
+                                <span>
+                                    <input id="ClearButton" type="reset" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                </span>
+                            </div>
+
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div class="row">
+
+                        </div>
+                        
+                        
+                        <div id="loading">
+                            <div id="loadingcontent">
+                            <p id="loadingspinner">
+                                @Resources.MsgWaitEOD
+                            </p>
+                        </div>
+                        </div>
+                    }
+
+                </div>
+                
+            </div>
+            
+        </div>
+
+    </div>
+
+</section>
+
+@*
+@using (Html.BeginForm("ImportIntoPullingTable", "Billing", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div>
+    <b><u>File Upload in MVC3 By Using Razor</u></b>
+        Select Image
+        <input type="file" name="file" />&nbsp;&nbsp;&nbsp;
+        <input type="submit" value="Upload Image" name="Command" /><br />
+    </div>
+    <div>
+    @ViewBag.Message
+    </div>
+}*@

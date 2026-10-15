@@ -1,0 +1,177 @@
+﻿@using CC_Ingenio_Resources;
+@using CC_Ingenio.Web.ViewModel.Authorization;
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.TransactionAdjustment + " " + Resources.Search });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model TransactionAdjustmentSearch
+@{
+    var resultGrid = new WebGrid(Model.SearchResult, canSort: false, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "", ajaxUpdateContainerId: "container-body");
+    resultGrid.Pager(WebGridPagerModes.All);
+    
+    List<SelectListItem> objMonthList = new List<SelectListItem>();
+    List<SelectListItem> objYearList = new List<SelectListItem>();
+    
+    foreach(SelectListItem item in ViewBag.MonthsList)
+    {
+        objMonthList.Add(new SelectListItem() { Text = item.Text, Value = item.Value });
+    }
+    foreach (SelectListItem item in ViewBag.YearsList)
+    {
+        objYearList.Add(new SelectListItem() { Text = item.Text, Value = item.Value });
+    }
+
+    List<SelectListItem> TransCodeSubCodeItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.TransCodeSubCodes)
+    {
+        TransCodeSubCodeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+}
+
+<script type="text/javascript">
+
+
+    
+    $(document).ready(function () {
+        $('.details').click(function() {
+            var row = $(this).closest('tr'); // get the table row
+            //var links = row.find('a'); // get the 3 hyperlinks
+
+            var AuthorizationCode = row.find("#AuthorizationCode").text();
+                 
+            GetAdjustmentDetails(AuthorizationCode);
+
+        });
+
+
+    });
+
+    function GetAdjustmentDetails(AAuthCode) {
+        
+        $.ajax({
+            url: "/Authorization/ViewAdjustmentDetails",
+            type: "GET",
+            data: { AAuthorizationCode: AAuthCode },
+            cache: false,
+            contenttype: "application/json ; charset = utf-8",
+            success: function (data) {
+                $("#AdjustedDetailsDiv").html(data);
+            },
+            error: function (ts) { alert(ts.responseText) }
+        });
+
+        loading(); // loading
+        setTimeout(function () { // then show popup, deley in .5 second
+            loadPopup(); // function show popup
+        }, 500); // .5 second
+    }
+    function loading() {
+        $("div.loader").show();
+    }
+   
+</script>
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+        <div id="AdjustedDetailsDiv"></div>
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("TransactionAdjustmentSearch", "Authorization", FormMethod.Get, new { id = "frmSearch" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">                                   
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.RUT</div>
+                                        <div class="Field">                                                                                     
+                                            @Html.TextBoxFor(x => x.RUT, new { id = "RUT", @class = "NumberHyphen", maxlength = 11 })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CardNumber</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.CardNumber, new { id = "CardNumber", @class = "NumericOnly", maxlength = 16 })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CustomerName</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.CustomerName, new { id = "CustomerName", maxlength = 50 })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.TransactionPostDate</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.PostedDate, new { id = "PostedDate", @class ="datepicker", @readonly="true", Value=Model.PostedDate })
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.BillMonth</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x => x.BillMonth,objMonthList,new { id = "BillMonth" })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.BillYear</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x => x.BillYear, objYearList, new { id = "BillYear" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.TransactionType</div>
+                                <div class="Field">
+                                      @Html.DropDownListFor(x => x.TransactionCodeSubCode, TransCodeSubCodeItems.AsEnumerable())
+                                    @Html.ValidationMessageFor(x => x.TransactionCodeSubCode)
+                                </div>
+                            </div>
+                                </div>
+                                <div class="SearchColumnbtn">
+                                        <div>
+                                            <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                            <input id="ClearButton" name="ClearButton" class="Greenbutton" type="submit" value="@Resources.Clear" />
+                                        </div>
+                                    </div>                                
+                            </div>
+                             <div class="clear"></div>
+                        </div>   
+                    }
+                </div>
+                <div class="row">
+                    <div class="standard-table">
+                       
+                        @resultGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+                                alternatingRowStyle: "alt",
+                                columns: resultGrid.Columns(
+                                    @*resultGrid.Column("AuthorizationCode",format: @<a href="#" class="details" data-id="@item.AuthorizationCode" data-dialogmodalbind=".dialog_content3">@item.AuthorizationCode</a>),*@
+                                    resultGrid.Column("CardNumber", Resources.CardNumber),
+                                    resultGrid.Column("RUT", Resources.RUT),
+                                    resultGrid.Column("AuthorizationCode", Resources.AuthorizationCode, format: @<text><label id="AuthorizationCode" ; class = 'select'>@item.AuthorizationCode</label> </text>),
+                                    resultGrid.Column("TransactionDescription", Resources.TransactionSubCodeDescription),
+                                    resultGrid.Column("TransactionAmount", Resources.TransactionAmount, format:@<text> @String.Format("{0:N0}",item.TransactionAmount)</text>, style: "gridAmountRightAlign"),                                     
+                                    resultGrid.Column("AdjustedAmount", header:Resources.AdjustedAmount, format: @<a href="#" class="details" data-id="@item.AuthorizationCode" id="lnkAdjustedAmount"@* onclick="GetAdjustmentDetails(@item.AuthorizationCode)"*@>@String.Format("{0:N0}",item.AdjustedAmount)</a>, style: "gridAmountRightAlign"),
+                                    resultGrid.Column("", format: (item) =>
+                                    {
+                                        return Html.Raw(Html.Raw(Html.ActionLink(Resources.Adjust, "TransactionAdjustmentAdd", "Authorization", new { AAuthorizationCode = item.AuthorizationCode, ATransactionCode = item.TransactionCode, ATransactionSubCode = item.TransactionSubcode, ATxnDate = item.TxnDate.ToString("dd-MM-yyyy") }, null)));
+                                    })
+                                ))
+                    </div>                  
+                    @if (Model.SearchResult.Count == 0 && !(string.IsNullOrEmpty(Model.SearchButton)))
+                    {
+                         @Html.Label(Resources.MsgErrNoRecordsFound,new { @class = "validationMessage"})
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+

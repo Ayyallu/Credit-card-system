@@ -1,0 +1,170 @@
+﻿@using CC_Ingenio_Resources;
+ @{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.CustomerSegment});
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+
+@model CustomerSegmentDTO
+@{
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    }
+
+
+@section featured{}
+
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        
+        $('#New').click(function () {
+            document.location.href = "CustomerSegmentAdd";
+        });
+
+        $("#frmCustomerSegmentSave").submit(function (e) {
+            var self = this;
+            if (parseFloat($('#SegmentCode').val().trim()) <= parseFloat(0)) {
+                $('#SegmentCode_Validate').text("@Html.Raw(string.Format(Resources.MsgErrValueNotZero,Resources.SegmentCode))");
+                e.preventDefault();
+            }
+@*            else {
+                if ($('#frmCustomerSegmentSave').valid()) {
+                    if ($('#IsDefault').attr('checked')) {
+                        e.preventDefault();
+                        $.ajax({
+                            url: '/Master/CheckIfDefaultCustomerSegmentExists/',
+                            type: 'POST',
+                            data: { ACustomerSegmentCode: '@Model.SegmentCode' },
+                            cache: false,
+                            success: function (returnData) {
+                                if (returnData.Message) {
+                                    ShowSimpleModalDialog(returnData.Message);
+                                }
+                                else {
+                                    //$("#frmCustomerSegmentSave").submit();
+                                    $(self).unbind();
+                                }
+                            }
+                        });
+                    }
+                }
+            }*@
+        })
+
+        $('#SegmentCode').focusin(function () {
+            $('#SegmentCode_Validate').text("");
+        });
+
+        $('#IsDefault').focusin(function () {
+            $('#IsDefault_Validate').text("");
+        });
+
+    });
+</script>
+
+
+<section class ="featured">
+     <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"CustomerSegmentList","Master" )</li>
+            }
+            <li class="active">@Html.ActionLink(Resources.DetailsPageHeading,"CustomerSegmentAdd","Master" )</li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("CustomerSegmentSave", "Master", new { ASegmentCode = Model.SegmentCode, AOrganizationCode = Model.OrganizationCode }, FormMethod.Post, new { id = "frmCustomerSegmentSave", name = "frmCustomerSegmentSave" }))
+                 {
+                <div class="tab-content" id="tab1">
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+                        
+                        <div class="row">
+                            <div  class="TwoColumn">
+                                <div class="label">@Resources.SegmentCode</div>
+                                <div class="Field">
+                                    @if (!string.IsNullOrWhiteSpace(Model.SegmentCode) && !string.IsNullOrWhiteSpace(Model.ApprovalStatusDesc))
+                                    {
+                                        @Html.TextBoxFor(x => x.SegmentCode, new { id = "SegmentCode", name = "SegmentCode", maxlength = 5, @readonly = "readonly" })
+                                    }
+                                    else
+                                    { 
+                                        @Html.TextBoxFor(x => x.SegmentCode, new { id = "SegmentCode", name = "SegmentCode", maxlength = 5 })
+                                    }
+                                    @Html.ValidationMessageFor(x => x.SegmentCode)
+                                    <label id="SegmentCode_Validate" class="validationMessage"></label>
+
+                                </div>
+                            </div>
+                            <div  class="TwoColumn">
+                                <div class="label">@Resources.SegmentName</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.SegmentName, new { id = "SegmentName", name = "SegmentName", maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.SegmentName)
+                                </div>
+                            </div>
+                        </div>
+
+                       
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.SegmentDescription</div>
+                                <div class="Field">
+                                    @Html.TextAreaFor(x => x.SegementDescription, new { id = "SegmentDescription", name = "SegmentDescription", maxlength = 100, onKeyPress = "return ( this.value.length < 100)" })
+                                    @Html.ValidationMessageFor(x => x.SegementDescription)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.DefaultFlag</div>
+                                <div>
+                                    @Html.CheckBoxFor(x => x.IsDefault)
+                                    <div class="row">@Html.ValidationMessageFor(x => x.IsDefault, "", new { id = "IsDefault_Validate", @class = "validationMessage", @style="padding-left:11.5em;"})</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>
+

@@ -1,0 +1,176 @@
+﻿@using CC_Ingenio.Web.ViewModel.Authorization
+@model ManualTransactionSearch
+@{
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: 5, selectionFieldName: "CardNumber", ajaxUpdateContainerId: "standard-table");
+    grid.Pager(WebGridPagerModes.All);
+
+   
+ }
+
+
+@{
+    ViewBag.Title = "Authorization LogList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="featured">
+
+    <div class="PageTitle">AuthorizationLog List</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+          
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("AuthorizationLogList", "Authorization", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+
+                                <div class="TwoColumn">
+                                    <div class="row">
+                                <div class="label ">Card Number</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CardNumber, new {@class="number", id = "CardNumber", name="CardNumber" , maxlength = 16 })
+                               @*     @Html.ValidationMessageFor(x => x.CardNumber)*@
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">AccountNo</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.AccountNo, new {@class="number",id = "AccountNo", name="AccountNo", maxlength = 16 })
+                              @*     // @Html.ValidationMessageFor(x => x.AccountNo)*@
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label ">Authorization Code</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.AuthCode,new { id = "AuthCode", name="AuthCode", maxlength = 25  })
+                              @*    //  @Html.ValidationMessageFor(x => x.TransactionNo)*@
+                                </div>
+                            </div>
+                                
+                        </div>
+                                 
+                                <div class="TwoColumn">
+                                    <div class="row">
+                                <div class="label">Amount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Amount, new {@class="number", id = "Amount", name="Amount" , maxlength = 16 })
+                               @*     @Html.ValidationMessageFor(x => x.CardNumber)*@
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">Time</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Time,new{ id = "Time", name="Time" ,placeholder="{hh:mm:ss}"  })
+                              @*     // @Html.ValidationMessageFor(x => x.Time)*@
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label ">Transaction Date</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TxnDate,"{0:dd/MM/yyyy}", new { @class ="datepicker", @readonly="true" })
+                              @*    //  @Html.ValidationMessageFor(x => x.TransactionNo)*@
+                                </div>
+                            </div>
+                                
+                        </div>                            
+                          
+                                <div class="SearchColumnbtn">
+                                    <span>
+                                        <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="Search" />
+                                    </span>
+                                    <span>
+                                        <input id="ClearButton" class="Greenbutton" type="reset" value="Clear" />
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    }
+
+                </div>
+                <div class="row">
+                   
+                   <div class="standard-table">
+
+                        @grid.GetHtml(alternatingRowStyle:"alt", columns:grid.Columns(
+                        grid.Column("CardNumber","Card Number"),
+                                    grid.Column("AccountNo", "Account No"),   
+                                    grid.Column("AuthCode","Authorization Code"),
+                                    grid.Column("TxnDate","Transaction Date"),
+                                    grid.Column("Amount","Amount"),
+                                    grid.Column("Time","Time"),
+                                    grid.Column("ApprovalStatusDesc","Status Description")
+                                            // grid.Column("Edit", format: 
+                                       // (item) =>{
+                                            //return Html.Raw(Html.Raw(Html.ActionLink("View", "AuthorizationLogView", "Authorization", new { id = item.AuthCode }, null)));
+                                                
+                                           // })
+                                    
+                                            
+                                    //grid.Column("Edit", format: item => item.ApprovalStatusDesc == "Approved" ? @Html.ActionLink("Edit", "TransactionAdd","Authorization", new { Id = item.TransactionNo },null) : Html.Raw("Edit")),
+                                    //grid.Column("Delete", format: item => item.ApprovalStatusDesc == "Approved" ? @Html.ActionLink("Delete", "TransactionDelete","Authorization", new {Id = item.TransactionNo },new { @class= "delete-link" }) : Html.Raw("Delete")))
+                               ))             
+
+                    </div>
+
+                     @*  <div class="standard-table">
+
+                        @grid.GetHtml(columns:grid.Columns(
+                                    grid.Column("TransactionNo","Transaction No"),                                   
+                                    grid.Column("ApprovalStatusDesc", "Status"),
+                                    grid.Column("Edit", format: 
+                                        (item) =>
+                                            {
+                                                if(item.ApprovalStatus.Equals("A"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink("Edit", "ManualTransactionAdd", "Authorization", new { Id = item.TransactionNo }, null));
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink("View", "ManualTransactionView", "Authorization", new { id = item.TransactionNo }, null)));
+                                                }
+                                            }),
+                                    grid.Column("Delete",   format: 
+                                        (item) =>
+                                            {
+                                                if(item.ApprovalStatus.Equals("A"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink("Delete", "ManualTransactionDelete", "Authorization", new { id = item.TransactionNo }, new { @class = "delete-link" }));
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw("");
+                                                }
+                                            })
+                                   ))
+                    </div>*@
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>

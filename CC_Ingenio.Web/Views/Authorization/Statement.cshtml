@@ -1,0 +1,358 @@
+﻿@{
+    ViewBag.Title = "Statement";
+    Layout = "";
+}
+ @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/datatables")
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+
+    <script src="/Scripts/jquery-ui.min.js"></script>
+
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/common")
+    @Scripts.Render("~/bundles/moment")
+
+
+<style type ="text/css">
+    .BoxColumn {
+
+    border: 1px solid #487401;
+    padding: .25em;
+    float: left;
+    width:100%;
+    margin-left:0;
+    margin-right:0;
+    font-size: 1.25em;
+    background-color : #fff;
+}
+
+.BoxColumnTitle {
+    font-size: 1.25em;
+    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+    text-transform: uppercase;
+    
+    padding-bottom : 5px;
+    border-bottom: 1px solid #487401;
+    text-align:center;
+}
+    .RightBox 
+    {
+        margin-top : 1.5em;
+
+        padding-right : 2em;
+        /*border: 1px solid #487401;*/
+        float:right;
+    }
+    .CenterAlign {
+        text-align:center;
+    }
+    .TableAmount1 {
+        margin-top : .5em;
+        float:left;
+        width:30%;
+        padding-bottom : 1px;
+    }
+    .TableAmount3 {
+        margin-top : .5em;
+        float:right;
+        width:40%;
+        padding-bottom : 1px;
+        padding-top : 2em;
+        padding-left : 3em;
+    }
+    .TableAmount4 {
+        margin-top : -.85em;
+        float:left;
+        width:60%;
+        /*padding-bottom : 1px;*/
+    }
+    .TableAmount5 {
+        margin-top : .5em;
+        width:50%;
+        padding-bottom : 1px;
+    }
+    table {
+    border-collapse: collapse;
+    fill:none;
+}
+
+td, th {
+    border: 1px solid black;
+    padding: 3px;
+    fill:none;
+}
+    .td 
+    {
+        border:0px;
+        column-width:0px;
+        background-color:inherit;
+    }
+    .td4
+    {
+        column-width:300px;
+    }
+
+</style>
+
+@using System.Web.Script.Serialization;
+@using CC_Ingenio.Common.Utils;
+@model Transaction
+@{
+    List<SelectListItem> AuthCodeItems = new List<SelectListItem>();
+    AuthCodeItems.Add(new SelectListItem { Text = "Select", Value = String.Empty });
+    foreach (var itm in ViewBag.AuthCodeList)
+    {
+        AuthCodeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> ResponseCodeItems = new List<SelectListItem>();
+    ResponseCodeItems.Add(new SelectListItem { Text = "Select", Value = String.Empty });
+    foreach (var itm in ViewBag.ResponseCodeList)
+    {
+        ResponseCodeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+}
+
+
+<section class="featured">
+    <div class="LogoTitle"></div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+
+            @using (Html.BeginForm("Statement", "Authorization", FormMethod.Post, new { id = "frmAdd", name = "frmAdd" }))
+            {
+                    <div class="BoxColumn">
+                        <div class="BoxColumnTitle">estado de cuenta nacional de tarjeta de credito N 520104</div>
+                        <div class="row">
+                            <div class="label">Nombre del Titular</div>
+                            <div class="Field">GREGORIO ALFONSO MONTALVAN MOLINA</div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="label">N Tarjeta de Credito</div>
+                            <div class="Field">@Html.TextBoxFor(x => x.CardNo)</div>
+                        </div>
+                        <div class="row">
+                            <div class="label">Fecha Estado de Cuenta</div>
+                            <div class="Field">@Html.TextBoxFor(x => x.TxnDate, new { @class = "datepicker", @readonly = "true" })</div>
+                        </div>
+                    </div>
+                
+                <div class="BoxColumn">
+                    <div class="label">1. INFORMACION GENERAL</div>
+                </div>
+                
+                <div class ="TableAmount1">
+                    <table>
+                        <tr>
+                            <td  class="td"></td>
+                            <td>Cupo Total</td>
+                            <td>Cupo Utilizado</td>
+                            <td>Cupo Disponible</td>
+                        </tr>
+                        <tr>
+                            <td>Cupo Total</td>
+                            <td>1500.000</td>
+                            <td>347.872</td>
+                            <td>1.152.128</td>
+                        </tr>
+                    </table> 
+                </div>
+                
+                <div class ="RightBox">
+                    <div class="BoxColumn">
+                        <div class="BoxColumnTitle">cae prepago</div>
+                    <div class="CenterAlign">0.00%</div>
+                        </div>
+                </div>
+                
+                <div class="row">
+                    <div class ="TableAmount1">
+                        <table>
+                            <tr>
+                                <td  class="td"></td>
+                                <td>Rotativo</td>
+                                <td>Cuotas</td>
+                            </tr>
+                            <tr>
+                                <td>TISA INTERES VIGENTE</td>
+                                <td>1.90%</td>
+                                <td>0%</td>
+                            </tr>
+                            <tr>
+                                <td>CAE</td>
+                                <td>26.76%</td>
+                                <td>4.04%</td>
+                            </tr>
+                        </table> 
+                    </div>
+                </div>
+                
+                @*<div class="row">
+                    CAE se calcula sobre un supuesto de gasto mensual de 20 UF
+                </div>*@
+                
+                <div class ="TableAmount3">
+                        <table>
+                            <tr>
+                                <td class="td"></td>
+                                <td>Desde</td>
+                                <td>Hasta</td>
+                            </tr>
+                            <tr>
+                                <td>Periodo Facturado</td>
+                                <td>01/01/2014</td>
+                                <td>31/01/2014</td>
+                            </tr>
+                            <tr>
+                                <td>Pagar Hasta</td>
+                                <td colspan ="2">20/02/2014</td>
+                            </tr>
+                        </table> 
+                </div>
+                
+                <div class="BoxColumn">
+                    <div class="label">2. DETALLE</div>
+                </div>
+                
+                <div class ="TableAmount4">
+                        <table>
+                            <tr>
+                                <td>1. PERIODO ANTERIOR</td>
+                                <td class ="td4">Desde</td>
+                                <td>Hasta</td>
+                            </tr>
+                            <tr>
+                                <td>Periodo de Facturacion Anterior</td>
+                                <td>01/01/2014</td>
+                                <td>31/01/2014</td>
+                            </tr>
+                            <tr>
+                                <td>Saido Adeudado Inicio Periodo Anterior</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>Monto Facturado a Pagar(Periodo Anteior)</td>
+                                <td>78.038</td>
+                            </tr>
+                            <tr>
+                                <td>Monto Pagado Periodo Anteior</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>Saido adeudado Final Periodo Anteior</td>
+                                <td>78.038</td>
+                            </tr>
+                        </table> 
+                </div>
+                
+                <div class="row">
+                    <div class ="TableAmount5" style ="float:left">
+                        <table>
+                            <tr>
+                                <td colspan ="2">COMPROBANTE DE PAGO</td>
+                            </tr>
+                            <tr>
+                                <td>Nombre  GREGORGIO ALFONSO MONTALVAN MOLINA</td>
+                                <td>Numero  de Cuenta 50-701-000001-1</td>
+                            </tr>
+                            <tr>
+                                <td>Pagar Hasta 20/02/2014</td>
+                                <td>Monto Total Facturado a Pagar 3.735</td>
+                            </tr>
+                            <tr>
+                                <td>Monto Minimo a Pager  2.075</td>
+                                <td>Monto Cancelado</td>
+                            </tr>
+                        </table> 
+                    </div>
+
+                    <div class ="TableAmount5" style ="float:right">
+                        <table style ="margin-left:5em">
+                            <tr>
+                                <td colspan ="2">COMPROBANTE DE PAGO</td>
+                            </tr>
+                            <tr>
+                                <td>Nombre  GREGORGIO ALFONSO MONTALVAN MOLINA</td>
+                                <td>Numero  de Cuenta 50-701-000001-1</td>
+                            </tr>
+                            <tr>
+                                <td>Pagar Hasta 20/02/2014</td>
+                                <td>Monto Total Facturado a Pagar 3.735</td>
+                            </tr>
+                            <tr>
+                                <td>Monto Minimo a Pager  2.075</td>
+                                <td>Monto Cancelado</td>
+                            </tr>
+                        </table> 
+                    </div>
+
+                </div>
+                
+                <div class="tab-content" id="tab1">
+
+
+                    <div class="row">
+
+
+@*                        <fieldset class="double">
+                            <legend></legend>
+                            <div class="row">
+                                <div class="label">Card No</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CardNo)
+                                </div>
+                                <div class="label">Date</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TxnDate)
+                                </div>
+                                <div class="label">Amount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Amount)
+                                </div>
+                            </div>
+                        </fieldset>*@
+
+@*                        <fieldset class="double">
+                            <legend></legend>
+                            <div class="row">
+                                <div class="label">Account No</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.AccountNo)
+                                </div>
+                                <div class="label">Auth Code</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.AuthCode, AuthCodeItems.AsEnumerable(), new { id = "AuthCode", name = "AuthCode" })
+                                </div>
+                                <div class="label">Response Code</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.ResponseCode, ResponseCodeItems.AsEnumerable(), new { id = "ResponseCode", name = "ResponseCode" })
+                                </div>
+                            </div>
+                        </fieldset>*@
+                        <div class="rowbtn">
+                            <span>
+                                <input id="Reset" type="reset" class="Greenbutton" value="Cancel" /></span>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+
+    </div>
+</section>

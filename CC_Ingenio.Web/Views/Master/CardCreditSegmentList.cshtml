@@ -1,0 +1,205 @@
+﻿@using CC_Ingenio.Web.ViewModel.Master;
+@using CC_Ingenio_Resources;
+
+@model CardCreditSegmentSearch
+@{
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "CardNumber", ajaxUpdateContainerId: "standard-table");
+    grid.Pager(WebGridPagerModes.All);
+
+    //List<SelectListItem> OrganizationCodeList = new List<SelectListItem>();
+    //foreach (var item in ViewBag.OrganizationCodeList)
+    //{
+    //    OrganizationCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    //}
+    //OrganizationCodeList.RemoveAt(0);
+    //OrganizationCodeList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    
+    List<SelectListItem> CreditSegmentList = new List<SelectListItem>();
+    foreach (var item in ViewBag.CreditSegmentList)
+    {
+        CreditSegmentList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    CreditSegmentList.RemoveAt(0);
+    CreditSegmentList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    
+    //List<SelectListItem> ProductCodeList = new List<SelectListItem>();
+    //foreach(var item in ViewBag.ProductCodeList) 
+    //{
+    //    ProductCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    //}
+    //ProductCodeList.RemoveAt(0);
+    //ProductCodeList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    
+
+    List<SelectListItem>CustomerSegmentCodeList = new List<SelectListItem>();
+    foreach (var item in ViewBag.CustomerSegmentCodeList)
+    {
+        CustomerSegmentCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    CustomerSegmentCodeList.RemoveAt(0);
+    CustomerSegmentCodeList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+
+    List<SelectListItem> CustomerSubSegmentCodeList = new List<SelectListItem>();
+    foreach (var item in ViewBag.CustomerSubSegmentCodeList)
+    {
+        CustomerSubSegmentCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    CustomerSubSegmentCodeList.RemoveAt(0);
+    CustomerSubSegmentCodeList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+ }
+
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.CardCreditSegment, " ", Resources.Search });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="featured">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active"> @Html.ActionLink(Resources.SearchPageHeading,"CardCreditSegmentList","Master" )</li>
+            <li> @Html.ActionLink(Resources.DetailsPageHeading,"CardCreditSegmentAdd","Master" )</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("CardCreditSegmentList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.RUT</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.RUT, new { maxlength = 9,@class="AlphaNumericOnly" })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CardNumber</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.CardNumber, new { maxlength = 16, @class="NumericOnly"  })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CustomerSegment</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x => x.CustomerSegmentCode, CustomerSegmentCodeList)
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CustomerSubSegment</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x => x.CustomerSubSegmentCode, CustomerSubSegmentCodeList)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CreditSegment</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x => x.CreditSegmentCode, CreditSegmentList)
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">&nbsp</div>
+                                        <div class="Field">&nbsp</div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="SearchColumnbtn">
+                                        <span>
+                                            <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                        </span>
+                                        <span>
+                                            <input id="ClearButton" name="ClearButton" class="Greenbutton" type="submit" value="@Resources.Clear" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    }
+
+                </div>
+                <div class="row">
+                   
+                    <div class="standard-table">
+
+                        @grid.GetHtml(alternatingRowStyle:"alt", columns:grid.Columns(
+                         grid.Column("RUT",Resources.RUT),
+                         grid.Column("CardNumber",Resources.CardNumber),
+                        grid.Column("CustomerSegmentName",Resources.CustomerSegment),
+                        grid.Column("CustomerSubSegmentName", Resources.CustomerSubSegment),   
+                        grid.Column("CreditSegmentName",Resources.CreditSegment),  
+                        grid.Column("ApprovalStatusDesc",Resources.Status),
+                            grid.Column(Resources.Edit, format: 
+                            (item) =>
+                                {
+                                    if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                    {
+                                        return Html.Raw(Html.ActionLink(Resources.Edit, "CardCreditSegmentAdd", "Master", 
+                                            new { ACardNumber = item.CardNumber, ACreditSegmentCode = item.CreditSegmentCode }, null));
+                                    }   
+                                    else
+                                    {
+                                        return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "CardCreditSegmentView", "Master", 
+                                            new { ACardNumber = item.CardNumber, ACreditSegmentCode = item.CreditSegmentCode }, null)));
+                                    }
+                                }),
+                        grid.Column(Resources.Delete,   format: 
+                            (item) =>
+                                     {
+                                         if (lstPriv.Contains("Delete"))
+                                         {
+                                             if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                             {
+                                                 return Html.Raw(Html.ActionLink(Resources.Delete, "CardCreditSegmentDelete", "Master", new { ACardNumber = item.CardNumber, ACreditSegmentCode = item.CreditSegmentCode }, new { @class = "delete-link" }));
+                                             }
+                                             else
+                                             {
+                                                 return Html.Raw("");
+                                             }
+                                         }
+                                         else
+                                         {
+                                             return Html.Raw("");
+                                         }
+                                })
+                        //grid.Column("Edit", format: item => item.ApprovalStatus == "Approved" ? @Html.ActionLink("Edit", "PlanMasterAdd","Master", new { Id = Convert.ToString( item.PlanID )},null) : Html.Raw("Edit")),
+                        //grid.Column("Delete", format: item => item.ApprovalStatus == "Approved" ? @Html.ActionLink("Delete", "PlanMasterDelete","Master", new {Id = item.PlanID },new { @class= "delete-link" }) : Html.Raw("Delete")))
+                    ))        
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>

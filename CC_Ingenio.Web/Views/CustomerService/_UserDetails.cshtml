@@ -1,0 +1,28 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@using CC_Ingenio_Resources;
+@model List<UserActivationBlockedDetails>  
+
+@{
+    var blockcodeStatusGrid = new WebGrid(Model, canPage: true, rowsPerPage: 5, ajaxUpdateContainerId: "container-body");
+    blockcodeStatusGrid.Pager(WebGridPagerModes.All);
+}
+
+<div class="row">
+    <div class=" BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.UserStatus</div>
+        <div style="width: 100%;" class="VerticalScrollBar">
+            <div class="standard-table">
+                @blockcodeStatusGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+             alternatingRowStyle: "alt",
+             columns: blockcodeStatusGrid.Columns(
+                    blockcodeStatusGrid.Column("BlockStatus", Resources.Status  ),                 
+                    blockcodeStatusGrid.Column("Description", Resources.Description),
+                     blockcodeStatusGrid.Column("CreatedBy", Resources.Maker ),
+                    blockcodeStatusGrid.Column("CreatedOn", Resources.Date , format: @<text>@item.CreatedOn.ToShortDateString()</text>)
+                        
+                             ))
+            </div>
+        </div>
+    </div>
+
+</div>

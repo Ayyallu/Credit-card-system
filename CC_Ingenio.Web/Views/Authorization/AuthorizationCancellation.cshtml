@@ -1,0 +1,263 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using CC_Ingenio.DataTranfer.AuthorizationInfo
+@using CC_Ingenio.Web.ViewModel.Authorization
+@model AuthorizationCancellationDTO
+@{
+}
+<style>
+   input[type="text"][readonly],
+    textarea[readonly]
+    {
+        background:#e9e7e7;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#btnCancelAuthorization").click(function (e) {
+
+            e.preventDefault();
+
+            if ($('input:radio[name=IsCancel]:checked').val() == 'True') {
+                var amount = $('#CancellationAmount').val();
+                var remark = $('#CancellationRemarks').val();
+
+                if (amount != 0 && remark != "") {
+
+                    var param = $('#frmAuthCancel').serialize();
+                    $.ajax({
+                        url: "/Authorization/CancelAuthorization/",
+                        type: "POST",
+                        data: param,
+                        success: function (returnData) {
+                            $("#dialog").text("");
+                            $('#dialog').dialog({
+                                resizable: false,
+                                modal: true,
+                                title: '@Resources.ApplicationName',
+                                buttons: [{
+                                    text: "OK",
+                                    style: "font-size: .85em;font-family: 'Segoe UI', Verdana, Helvetica, Sans-Serif;",
+                                    width: 50,
+                                    click: function () {
+                                        $(this).dialog("close");
+                                        if (returnData.RedirectUrl.length != 0) {
+                                            window.location.href = returnData.RedirectUrl;
+                                        }
+                                    }
+                                }]
+                            });
+                            $('#dialog').text(returnData.Message);
+                        }
+                    });
+                }
+                else {
+                    if (amount == 0) {
+                        $('#lblValidateAmount').text('Please enter Cancellation Amount');
+                    }
+                    if (remark == "") {
+                        $('#lblValidateRemark').text('Please enter Cancellation Remarks');
+                    }
+                }
+            }
+        });
+
+        $("input[name=IsCancel]:radio").change(function () {            
+            if ($('input:radio[name=IsCancel]:checked').val()=='False') {
+                $('#CancellationAmount').attr('readonly', 'readonly');
+                $('#CancellationRemarks').attr('readonly', 'readonly');
+                $('#CancellationAmount').val(0);
+                $('#CancellationRemarks').val('');
+                $('#lblValidateAmount').text('');
+                $('#lblValidateRemark').text('');
+            }
+            else {
+                $('#CancellationAmount').removeAttr('readonly');
+                $('#CancellationRemarks').removeAttr('readonly');
+                $('#CancellationAmount').focus();
+            }
+        });
+
+        $('#CancellationAmount').focusin(function () {
+            $('#lblValidateAmount').text('');
+        });
+        $('#CancellationRemarks').focusin(function () {
+            $('#lblValidateRemark').text('');
+        });
+
+        $('#CancellationAmount').focus();
+    });
+</script>
+<section class="featured">
+    <div class="PageTitle">Authorization Cancellation</div>
+    <div class="PageRow">
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            @using (Html.BeginForm("", "", FormMethod.Post, new { id="frmAuthCancel"}))
+            {
+                <div class="tab-content" id="tab1">
+             <div class="row">
+                <h3 class="green">Merchant Details</h3>
+                <div class="row">
+                <div class="TwoColumn">
+                            <div class="label">Merchant Code</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.MerchantCode, new { @readonly = "readonly" })                             
+                            </div>
+                    </div>
+                <div class="TwoColumn">
+                            <div class="label">Merchant Name</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.MerchantName, new { @readonly = "readonly" })                             
+                            </div>
+                    </div>
+                </div>
+                <h3 class="green">Customer Details</h3>
+                <div class="row">
+                <div class="TwoColumn">
+                        <div class="label">Card Number</div>
+                        <div class="Field">
+                            @Html.TextBoxFor(x => x.CardNumber, new { @readonly = "readonly" })                             
+                        </div>
+                </div>
+                <div class="TwoColumn">
+                    <div class="label">Card Expiry Date</div>
+                    <div class="Field">
+                        @Html.TextBoxFor(x => x.CardExpiryDate, new { @readonly = "readonly", @class = "datepicker" })                             
+                    </div>
+                </div>
+                <div class="TwoColumn">
+                      <div class="label">RUT</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.RUT, new { @readonly = "readonly" })                             
+                      </div>
+                 </div>
+                <div class="TwoColumn">
+                      <div class="label">Customer Name</div>
+                      <div class="Field">
+                                @Html.TextBoxFor(x => x.CustomerName, new { @readonly = "readonly" })                             
+                      </div>
+                 </div>
+                <div class="TwoColumn">
+                       <div class="label">Address</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.Address, new { @readonly = "readonly" })                             
+                       </div>
+                 </div>
+                <div class="TwoColumn">
+                    
+                            <div class="label">City</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.City, new { @readonly = "readonly" })                             
+                            </div>
+                       
+                 </div>
+                <div class="TwoColumn">
+                        
+                            <div class="label">Postal Code</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.PostalCode, new { @readonly = "readonly" })                             
+                            </div>
+                       
+                </div>
+                <div class="TwoColumn">
+                     
+                            <div class="label">Phone</div>
+                            <div class="Field">
+                                    @Html.TextBoxFor(x => x.Phone, new { @readonly = "readonly" })                            
+                            </div>
+                     
+                 </div>
+                </div>
+                <h3 class="green">Transaction Details</h3>
+                <div class="row">
+                <div class="TwoColumn">
+                       
+                            <div class="label">Authorization Code</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.AuthCode, new { @readonly = "readonly" })                             
+                            </div>
+                      
+                </div>
+                <div class="TwoColumn">
+                    
+                            <div class="label">Amount</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.Amount, new { @readonly = "readonly" })                             
+                            </div>
+                       
+                 </div>
+                <div class="TwoColumn">
+                       
+                            <div class="label">Transaction Code</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.TransactionCode, new { @readonly = "readonly" })                             
+                            </div>
+                       
+                </div>
+                <div class="TwoColumn">
+                    <div class="label">Transaction Date</div>
+                    <div class="Field">
+                        @Html.TextBoxFor(x => x.TransactionDate, new { @readonly = "readonly", @class = "datepicker" })                             
+                    </div>
+                </div>
+                <div class="TwoColumn">
+                     
+                            <div class="label">Transaction Type</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.TransactionType, new { @readonly = "readonly" })                             
+                            </div>
+                       
+                 </div>
+                <div class="TwoColumn">
+                        
+                            <div class="label">Credit Segment</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.SegmentName, new { @readonly = "readonly" })                             
+                            </div>
+                       
+                 </div>                
+                <div class="TwoColumn">
+                    <div class="label">Cancel Authorization</div>                            
+                    <span><label style="float:left;font-size:.85em">Yes</label></span>
+                    <span>@Html.RadioButtonFor(x => x.IsCancel, true, new { id = "rbtnYes", name = "IsCancel", style = "float:left;" })</span>
+                    <span><label style="float:left;font-size:.85em;text-align:right; width:17%">No</label></span>
+                    <span>@Html.RadioButtonFor(x => x.IsCancel, false, new { id = "rbtnNo", name = "IsCancel", style = "float:left" })</span>
+                    @Html.ValidationMessageFor(x => x.IsCancel)
+                </div>
+                <div class="TwoColumn">
+                    <div class="label">&nbsp;</div>
+                    <div class="Field">&nbsp;</div>
+                </div>
+               </div> 
+                <div class="row" />       
+                <h3 class="green">Cancel Authorization</h3>
+                <div class="row">
+                <div class="TwoColumn">                        
+                    <div class="label">Cancellation Amount</div>
+                    <div class="Field">
+                        @Html.TextBoxFor(x => x.CancellationAmount, new { id = "CancellationAmount", @class = "Number", onkeypress = "return OnlyNumeric(event)", maxlength = 9 })                             
+                        <label id="lblValidateAmount" class="validation" style="color: red ;font-size: .95em;"></label>
+                    </div>
+                </div>
+                <div class="TwoColumn">
+                    <div class="label">Cancellation Remarks</div>
+                    <div class="Field">
+                        @Html.TextAreaFor(x => x.CancellationRemarks, new { id = "CancellationRemarks" }) 
+                        <label id="lblValidateRemark" class="validation" style="color: red ;font-size: .95em;"></label>
+                    </div>
+                </div>
+                </div>
+
+                <div class="rowbtn" style="width:160em">
+                    <button  id="btnCancelAuthorization" class="Greenbutton">Cancel Authorization</button>
+                </div>
+            </div>  
+          </div> 
+            }
+       </div>
+     </div>                       
+       
+</section>

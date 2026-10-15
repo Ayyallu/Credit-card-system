@@ -1,0 +1,166 @@
+﻿@using CC_Ingenio_Resources;
+@using CC_Ingenio.Web.ViewModel.Master;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.City, " ", Resources.Search });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model CitySearch
+@{
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+
+    List<SelectListItem> CountryItems = new List<SelectListItem>();
+    
+    foreach (var itm in ViewBag.Countries)
+    {
+        CountryItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    CountryItems.RemoveAt(0);
+    CountryItems.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    
+    List<SelectListItem> CityCategoryItems = new List<SelectListItem>();
+    
+    foreach (var itm in ViewBag.CityCategories)
+    {
+        CityCategoryItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    CityCategoryItems.RemoveAt(0);
+    CityCategoryItems.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+
+<section class="feature">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active">@Html.ActionLink(Resources.SearchPageHeading,"CityList","Master" )</li>
+            <li> @Html.ActionLink(Resources.DetailsPageHeading,"CityAdd","Master" )</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("CityList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CityCode</div>
+                                        <div class="Field">
+                                                @Html.TextBoxFor(x => x.CityCode, new { maxlength = 5 })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CityName</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x=>x.CityName, new { maxlength = 50 })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CityCategory</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x=>x.CityCategoryCode,CityCategoryItems)
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.Country</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x=>x.CountryCode,CountryItems)
+                                        </div>
+                                    </div>
+                                </div>
+                               
+                               <div class="SearchColumnbtn">
+                                    <span>
+                                        <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                    </span>
+
+                                    <span>
+                                        <input id="Button2" type="submit" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+
+                        </div>
+                    }
+
+                </div>
+                <div class="row">
+                   
+                    <div class="standard-table">
+                        @grid.GetHtml(columns:grid.Columns(
+                                    grid.Column("CityCode",Resources.CityCode),
+                                    grid.Column("CityName",Resources.CityName),
+                                    grid.Column("CityCategoryDesc", Resources.CityCategory),
+                                    grid.Column("CountryDesc",Resources.Country),
+                                    grid.Column("RegionDesc", Resources.Region),
+                                    grid.Column("HubDesc", Resources.Hub),
+                                    grid.Column("SpokeDesc",Resources.Spoke),
+                                    grid.Column("CommunaDesc",Resources.Communa),
+                                    grid.Column("ApprovalStatusDesc", Resources.Status),
+                                    grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink(Resources.Edit, "CityAdd", "Master", new { ACityCode = item.CityCode, AOrganizationCode = item.OrganizationCode }, null)); 
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "CityView", "Master", new { ACityCode = item.CityCode, AOrganizationCode = item.OrganizationCode }, null)));
+                                                }
+                                            }),
+                                    grid.Column(Resources.Delete, format: 
+                                        (item) =>
+                                                 {
+                                                     if (lstPriv.Contains("Delete"))
+                                                     {
+                                                         if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                                         {
+                                                             return Html.Raw(Html.ActionLink(Resources.Delete, "CityDelete", "Master", new { ACityCode = item.CityCode, AOrganizationCode = item.OrganizationCode }, new { @class = "delete-link" }));
+                                                         }
+                                                         else
+                                                         {
+                                                             return Html.Raw("");
+                                                         }
+                                                     }
+                                                     else
+                                                     {
+                                                         return Html.Raw("");
+                                                     }
+                                            })
+                                   ))
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+
+    </div>
+
+</section>
+

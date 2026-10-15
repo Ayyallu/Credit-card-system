@@ -1,0 +1,32 @@
+﻿@using CC_Ingenio_Resources;
+
+@using CC_Ingenio.DataTranfer.CardBookingInfo;
+@model CardMasterDTO
+
+
+<div class="row">
+    <div class="BorderColumn" style="width: 98.6%; height:150px">
+        <div class="CustomerColumnTitle">@Resources.RefinanceDetails</div>      
+        <div class="row">
+            <div class="row">
+                <div class="TwoColumn" style="width: 45%">
+                    <div class="label" style="width: 70%">@Resources.MaximumPermittedRefinanceCount</div>
+                    <div class="Field" style="width: 10%">
+                        @Html.TextBoxFor(x => x.MaxPermitRefinanceCount, new { id = "MaxPermitRefinanceCount", name = "MaxPermitRefinanceCount", maxlength = 16, @readonly = "readonly" })
+                        @Html.ValidationMessageFor(x => x.MaxPermitRefinanceCount)
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="TwoColumn" style="width: 45%">
+                    <div class="label" style="width: 70%">@Resources.CustomerRefinanceCount</div>
+                    <div class="Field" style="width: 10%">
+                        @Html.TextBoxFor(x => x.CustomerRefinanceCount, new { id = "CustomerRefinanceCount", name = "CustomerRefinanceCount", maxlength = 16, @readonly = "readonly" })
+                        @Html.ValidationMessageFor(x => x.CustomerRefinanceCount)
+                    </div>
+                </div>
+            </div>
+        </div>          
+    </div>
+</div>
+

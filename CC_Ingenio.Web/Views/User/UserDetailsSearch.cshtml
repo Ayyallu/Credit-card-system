@@ -1,0 +1,82 @@
+﻿@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.UserDetails, " ", Resources.Search });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.Web.ViewModel.User
+@using CC_Ingenio.Web.Helpers;
+@model UserDetails
+@{                  
+    var RowsPerPage = 10;
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "", ajaxUpdateContainerId: "standard-table");
+    grid.Pager(WebGridPagerModes.All);
+}
+
+
+
+<section class="feature">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active">@Html.ActionLink(Resources.SearchPageHeading,"UserDetailsSearch","User" )</li>
+            <li> @Html.ActionLink(Resources.DetailsPageHeading,"UserDetails","User" )</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("UserDetailsSearch", "User", FormMethod.Get, new { id = "frmUserList", name = "frmUserList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">                               
+                                   <div class="TwoColumn">
+                                <div class="label">@Resources.Username</div>
+                                <div class="Field">
+                                      @Html.TextBoxFor(x => x.UserName, new { id = "UserName", name = "UserName" })
+                                </div>
+                                </div>                                                         
+                                </div>                               
+                               <div class="SearchColumnbtn">
+                                    <span>
+                                        <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                    </span>
+
+                                    <span>
+                                        <input id="ClearButton" name ="ClearButton"  class="Greenbutton"  type="submit" value="@Resources.Clear" />
+                                    </span>
+                                </div>
+                            </div> 
+                   }
+
+                </div>
+                <div class="row"> 
+                    <div class="standard-table">                     
+                         @grid.GetHtml(alternatingRowStyle:"alt", columns:grid.Columns(
+                         grid.Column("UserName",Resources.Username),
+                         grid.Column("FullName", Resources.FullName),
+                         grid.Column("Active",Resources.Active),      
+                         grid.Column(Resources.View, format: 
+                         (item) =>
+                           {
+                               return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "ViewUserDetails", "User", new { AUserName = item.UserName }, null))); 
+                           })                     
+                                                       
+                    ))                
+                    </div>               
+                </div>
+            </div>
+        
+        </div>
+
+    </div>
+
+</section>

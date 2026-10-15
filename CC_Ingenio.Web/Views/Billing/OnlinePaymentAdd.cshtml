@@ -1,0 +1,304 @@
+﻿@using CC_Ingenio.DataTranfer.BillingInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.OnlinePayment });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model OnlinePaymentDTO
+@{
+    List<SelectListItem> PaymentModeList = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+
+    foreach (var item in ViewBag.PaymentModes)
+    {
+        PaymentModeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    List<SelectListItem> CurrencyCodeList = new List<SelectListItem>();
+    foreach (var item in ViewBag.CurrencyCodes)
+    {
+        CurrencyCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    List<SelectListItem> CollectorCodeList = new List<SelectListItem>();
+    {
+      CollectorCodeList.Add(new SelectListItem { Text = "UNIRED", Value = "97023000", Selected = true });
+      CollectorCodeList.Add(new SelectListItem { Text = "CCU_CAJERO_BAE", Value = "5" });
+      CollectorCodeList.Add(new SelectListItem { Text = "Cia. De Seguros Continental", Value = "96573590" });
+      CollectorCodeList.Add(new SelectListItem { Text = "CCU_CAJERO", Value = "90413000" });
+      CollectorCodeList.Add(new SelectListItem { Text = "BAE_MULTICANAL", Value = "4" });
+      CollectorCodeList.Add(new SelectListItem { Text = "CAJA_SERVIPAG", Value = "78053790" });
+      CollectorCodeList.Add(new SelectListItem { Text = "BAE_CAJATRAD", Value = "96836390" });
+      CollectorCodeList.Add(new SelectListItem { Text = "BCH_BOTONPAGO", Value = "97004000" });
+      CollectorCodeList.Add(new SelectListItem { Text = "BAE_BOTONPAGO", Value = "2" });
+      CollectorCodeList.Add(new SelectListItem { Text = "SERVIPAG_BOTONPAGO", Value = "3" });
+      CollectorCodeList.Add(new SelectListItem { Text = "SANTANDER_BOTONPAGO", Value = "97036000" });
+      CollectorCodeList.Add(new SelectListItem { Text = "CCU_CAJREC", Value = "7" }); 
+    }
+
+    if (ViewBag.Privileges != null)
+    {
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+
+
+@section featured
+    {
+    
+    }
+
+
+<style>
+    input[type="text"][disabled],
+    select[disabled]
+    {
+         background:#e9e7e7;    
+    }
+</style>
+
+
+<script type ="text/javascript">
+
+
+
+    $(document).ready(function () {
+     
+        $("#Time").blur(function () {
+            var txnTime = $(this).val();
+            if (txnTime == '__:__:__') {
+                $(this).val('');
+            }
+            else {
+                var array = txnTime.split(':');
+                var newTxnTime;
+                if (array[0] == '__' || array[0] == '') {
+                    newTxnTime = '00';
+                }
+                else {
+                    newTxnTime = array[0];
+                }
+                if (array[1] == '__' || array[1] == '') {
+                    newTxnTime = newTxnTime + ':00';
+                }
+                else {
+                    newTxnTime = newTxnTime + array[1];
+                }
+                if (array[2] == '__' || array[2] == '') {
+                    newTxnTime = newTxnTime + ':00';
+                }
+                else {
+                    newTxnTime = newTxnTime + array[2];
+                }
+                $(this).val(newTxnTime);
+            }
+        });
+
+
+        $('#Time').mask('99:99:99');
+
+
+        $('#frmOnlinePaymentSave').on('submit', function (e) {
+            if ($('[id*=PaymentModeCode] option:selected').text() == "Cheque") {
+                if ($('#ChequeNo').val() == "") {
+                    $('#ChequeNo_Validate').text("@Html.Raw(string.Format(Resources.MsgErrPleaseEnter2,Resources.ChequeNo))");
+                    e.preventDefault();
+                }
+            }
+        });
+
+        function loading() {
+            $("div.loader").show();
+        }
+         
+        $("#btnSearch").click(function () {
+            $.ajax({
+                url: "/Billing/GetParentCustomersForTransaction",
+                type: "GET",
+                data: { ARUT: "", ACardnumber: "", ACustomername: "" , IsLoading: false},
+                cache: false,
+                contenttype: "application/json ; charset = utf-8",
+                success: function (data) {
+                    $("#RUTCardNumberSearchDiv").html(data);
+                },
+                error: function (ts) { alert(ts.responseText) }
+            });
+
+            loading(); // loading
+            setTimeout(function () { // then show popup, deley in .5 second
+                loadPopup(); // function show popup
+            }, 500); // .5 second
+        })
+
+        $('#Save').hide();
+        $('#Delete').hide();
+        $('#Authorize').hide();
+         
+
+        $('#ChequeNo').focusin(function () {
+            $('#ChequeNo_Validate').text("");
+        });
+
+
+        function EnableDisableChequeNo() {
+                
+            $('#ChequeNo_Validate').text("");
+            if ($('[id*=PaymentModeCode] option:selected').text() != "Cheque") {
+                $("#ChequeNo").attr('disabled', true);
+                $("#ChequeNo").val("");
+            }   
+            else {
+                $("#ChequeNo").attr('disabled', false);
+            };
+        }
+
+        $("#PaymentModeCode").change(function () {
+            EnableDisableChequeNo();
+        })
+
+        EnableDisableChequeNo();
+
+
+    })
+</script>
+
+
+
+
+<section class="featured">
+     <div class="PageTitle">@ViewBag.Title</div>
+     <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li> @Html.ActionLink(Resources.SearchPageHeading, "OnlinePaymentList", "Billing")</li>
+            <li class="active"><a href="#tab1">@Resources.DetailsPageHeading</a></li>
+        </ul>
+       
+            <div id="RUTCardNumberSearchDiv">
+       
+            </div>
+
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("OnlinePaymentSave", "Billing", FormMethod.Post, new { id = "frmOnlinePaymentSave", name = "frmOnlinePaymentSave" }))
+                 {
+                <div class="tab-content" id="tab1">
+
+                    <div class="row">
+
+                        <div class="row">
+                            <div class="TwoColumn" >
+                                <div class="label">@Resources.RUT</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.RUT, new { id = "RUT", name = "SCN", maxlength = 12, style = "width:85%", disabled = "@disabled" })
+                                    <input id="btnSearch" name="Command" value="" class="searchbutton" type="button" style="width:30px;border:none"/>
+                                    @Html.ValidationMessageFor(x => x.RUT)
+                                </div>
+                            </div>
+                            <div class="TwoColumn" >
+                                <div class="label">@Resources.CardNumber</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CardNumber, new { id = "CardNumber", name = "CardNumber", maxlength = 16, disabled = "@disabled" })
+                                    @Html.ValidationMessageFor(x => x.CardNumber)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.PaymentMode</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.PaymentModeCode, PaymentModeList, new { id = "PaymentModeCode", name = "PaymentModeCode" })      
+                                    @Html.ValidationMessageFor(x => x.PaymentModeCode)
+                                </div>
+                            </div>
+                             <div class="TwoColumn">
+                                <div class="label">@Resources.TransactionDate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ChequeDate, new { @class = "datepicker", id = "ChequeDate", @readonly = "true",Value = Model.ChequeDate.ToShortDateString() })
+                                    @Html.ValidationMessageFor(x => x.ChequeDate)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                              <div class="TwoColumn">
+                                <div class="label ">@Resources.PaymentCurrency</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.PaymentCurrency, CurrencyCodeList)
+                                    @Html.HiddenFor(x => x.PaymentCurrency)                                   
+                                    @Html.ValidationMessageFor(x => x.PaymentCurrency)
+                                </div>
+                            </div>
+
+                            <div class="TwoColumn">
+                                <div class="label ">@Resources.Collector</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.TxnTime, CollectorCodeList)
+                                    @Html.HiddenFor(x => x.TxnTime)                                   
+                                    @Html.ValidationMessageFor(x => x.TxnTime)
+                                </div>
+                            </div>
+
+                            @*<div class="TwoColumn">
+                                <div class="label">Transaction Time</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TxnTime, new { id = "Time", name = "Time", maxlength = 8, placeholder = "hh:mm:ss" })
+                                    @Html.ValidationMessageFor(x => x.TxnTime)
+                                </div>
+                            </div>*@
+                           @* <div class="TwoColumn">
+                                <div class="label">@Resources.InstrumentNo.</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ChequeNo, new { id = "ChequeNo", maxlength = 15 })
+                                   <label id="ChequeNo_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>*@
+                        </div>
+
+                        <div class="row">
+                          
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.PaymentAmount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.PaymentAmount, @String.Format("{0:N0}", Model.PaymentAmount), new { @class = "NumberCommaDot", id = "PaymentAmount", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                    @Html.ValidationMessageFor(x => x.PaymentAmount)
+                                </div>
+                            </div>
+                             <div class="TwoColumn">
+                                <div class="label">@Resources.InstrumentNo.</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ChequeNo, new { id = "ChequeNo", maxlength = 15 })
+                                   <label id="ChequeNo_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        @Html.HiddenFor(x => x.CardNumber)
+                        @Html.HiddenFor(x => x.RUT)
+                        @Html.HiddenFor(x => x.ChequeNo)
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+                 
+            </div>
+         </div>
+</section>
+<script>
+
+</script>
+
+
+
+
+

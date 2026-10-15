@@ -1,0 +1,700 @@
+﻿
+.row {
+	width: 100%;
+	clear: both;
+	padding: 5px 0;
+}
+
+.pink {
+	color: #e80c4d;
+}
+
+.blue {
+	color: #107dd9;
+}
+
+.purple {
+	color: #b069ad;
+}
+
+.green {
+	color: #4c9650;
+}
+
+.ErrorMsg {
+	padding: 1em 0em 1em 5em;
+	color: #a10e5f;
+}
+
+.BorderColumn {
+	border: 1px solid #87ad89;
+}
+
+.BorderBottomColumn {
+	border-bottom: 1px dotted #87ad89;
+}
+
+.PageRow {
+	width: 100%;
+	clear: both;
+	padding: 10px 20px;
+}
+
+.PageRowPopup {
+	width: 95%;
+	padding: 10px 20px;
+}
+
+.PageRowPopupBtn {
+	width: 95%;
+	clear: both;
+	text-align: right;
+}
+
+.Logo {
+	display: inline-block;
+	width: 186px;
+	height: 81px;
+	vertical-align: middle;
+	background: url(../Images/logo.png);
+}
+
+.PageTitle {
+	font-size: 1.2em;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+	text-align: left;
+	padding: 0px;
+	color: #3e6019;
+	border-bottom: 1px dotted #3e6019;
+	width: 95%;
+	font-weight: bold;
+	margin-left: 2%;
+	margin-bottom: 1%;
+}
+
+.Organization {
+	font-size: .85em;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+	text-align: right;
+    
+	padding: 20px 0px 0px 0px;
+	color: #909090;
+	/*border-bottom: 1px dotted #3e6019;*/
+	width: 97%;
+	font-weight: bold;
+	margin-left: 2%;
+	margin-bottom: 1%;
+}
+.LogoTitle {
+	width: 95%;
+	margin-bottom: 1%;
+	background-image: url(../Images/logo.png);
+	background-position: right;
+	background-repeat: no-repeat;
+	height: 83px;
+}
+
+.no-close .ui-dialog-titlebar-close {
+	display: none;
+}
+
+fieldset.double {
+	width: 50%;
+	float: left;
+	border: 0;
+}
+
+
+.label {
+	width: 25%;
+	float: left;
+	text-align: left;
+	font-size: .85em;
+	padding: .5em 0 0 0;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+}
+
+.Field {
+	width: 70%;
+	float: left;
+	text-align: left;
+	font-size: .85em;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+ 
+}
+
+.Field1 {
+	width: 70%;
+	float: left;
+	text-align: left;
+	font-size: .85em;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+    text-transform: uppercase;
+}
+
+
+
+.Field2 {
+	width: 2%;
+	float: left;
+	text-align: left;
+	font-size: .85em;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+}
+
+
+
+.Field input, textarea {
+	border: 1px solid #455f28;
+	font-size: .95em;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+	padding: 5px;
+	text-align: left;
+	width: 97%;
+}
+.Field input.zoombtn {
+	border: 1px solid #455f28;
+	font-size: .95em;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+	padding: 5px;
+	text-align: left;
+	width: 85%;
+}
+.Field select {
+	border: 1px solid #455f28;
+	font-size: .95em;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+	padding: 5px;
+	text-align: left;
+	width: 100%;
+}
+
+.ListBoxField {
+	float: left;
+}
+
+.ListBoxButton {
+	float: left;
+	padding-left: 5px;
+	padding-top: 30px;
+	padding-bottom: 30px;
+}
+
+.ListBoxButtonRow {
+	/*width: 100%;
+    clear: both;
+    padding: 5px 0;*/
+}
+
+.validationMessage {
+	/*color: #db2a2a;*/
+	color: #e80c4d;
+	font-family: 'Segoe UI', Arial, sans-serif;
+	font-weight: bold;
+	font-size: 11.5px;
+	display: block;
+}
+
+.gridfield {
+	border: 1px solid #455f28;
+	font-size: .85em;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+	padding: 5px;
+	text-align: left;
+	width: 10em;
+}
+
+.searchbutton {
+	background-image: url('../Images/btnSearch.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 26px;
+	height: 26px;
+	cursor: pointer;
+	display: block;
+	float: right;
+}
+
+.searchbuttondisabled {
+	background-image: url('../Images/btnSearchDis.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 30px;
+	height: 26px;
+	cursor: pointer;
+	display: inline;
+	float: right;
+}
+
+.warningMessage {
+	color: #1a60dd;
+	width: auto;
+	float: left;
+	text-align: left;
+	font-size: 1.1em;
+	padding: .5em 0 0 0;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+}
+
+.SearchPopupButton {
+	background-image: url('../Images/btnSearch.png'); /*'../Images/btnDown.png'*/
+	background-repeat: no-repeat;
+	background-position: center;
+	background: #6a9d02;
+	height: 26px;
+	cursor: pointer;
+}
+
+.cs_label {
+	width: 35%;
+	float: left;
+	text-align: left;
+	font-size: .85em;
+	font-weight: bold;
+	padding: .5em 0 0 0;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+}
+
+.CustomerColumnScroll
+{
+    height: 200px; 
+    overflow-y: scroll; 
+    overflow-x: hidden;
+}
+
+.VerticalScrollBar
+{
+    overflow-y: scroll; 
+    overflow-x: hidden;
+}
+
+.HorizontalScrollBar
+{
+    overflow-y: hidden; 
+    overflow-x: scroll;
+}
+
+.ScrollBars
+{
+    overflow-y: scroll; 
+    overflow-x: scroll;
+}
+
+.gridcolumnhead {	
+	font-size: .95em;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+	padding: 5px;
+	text-align: left;	
+}
+
+.rowbtn {
+	width: 100%;
+	float: right;
+	clear: both;
+	text-align: right;
+	padding: 10px 0px;
+}
+
+.Greenbutton {
+	background: #6a9d02;
+	background-image: -webkit-linear-gradient(top, #6a9d02, #497502);
+	background-image: -moz-linear-gradient(top, #6a9d02, #497502);
+	background-image: -ms-linear-gradient(top, #6a9d02, #497502);
+	background-image: -o-linear-gradient(top, #6a9d02, #497502);
+	background-image: linear-gradient(to bottom, #6a9d02, #497502);
+	-webkit-border-radius: 2;
+	-moz-border-radius: 2;
+	border-radius: 2px;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+	color: #ffffff;
+	text-decoration: none;
+	font-size: .9em;
+}
+
+	.Greenbutton:hover {
+		background: #487401;
+		background-image: -webkit-linear-gradient(top, #487401, #5a8a07);
+		background-image: -moz-linear-gradient(top, #487401, #5a8a07);
+		background-image: -ms-linear-gradient(top, #487401, #5a8a07);
+		background-image: -o-linear-gradient(top, #487401, #5a8a07);
+		background-image: linear-gradient(to bottom, #487401, #5a8a07);
+		text-decoration: none;
+	}
+
+.BtnDisabled {
+	background: #8c9780;
+	background-image: -webkit-linear-gradient(top, #8c9780, #8c9780);
+	background-image: -moz-linear-gradient(top, #8c9780, #8c9780);
+	background-image: -ms-linear-gradient(top, #8c9780, #8c9780);
+	background-image: -o-linear-gradient(top, #8c9780, #8c9780);
+	background-image: linear-gradient(to bottom, #8c9780, #8c9780);
+	-webkit-border-radius: 2;
+	-moz-border-radius: 2;
+	border-radius: 2px;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+	color: #ffffff;
+	text-decoration: none;
+	font-size: .9em;
+}
+
+.ControlDisabled {
+	background: #d0cbcb;
+	background-image: -webkit-linear-gradient(top, #d0cbcb, #d0cbcb);
+	background-image: -moz-linear-gradient(top, #d0cbcb, #d0cbcb);
+	background-image: -ms-linear-gradient(top, #d0cbcb, #d0cbcb);
+	background-image: -o-linear-gradient(top, #d0cbcb, #d0cbcb);
+	background-image: linear-gradient(to bottom, #d0cbcb, #d0cbcb);
+	color: #000000;
+	text-decoration: none;
+}
+
+
+/*List operations*/
+.moveleft {
+	background-image: url('../Images/btnRemove.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 26px;
+	height: 26px;
+	cursor: pointer;
+	padding: 1em;
+}
+
+.moveright {
+	background-image: url('../Images/btnAdd.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+	width: 26px;
+	height: 26px;
+	padding: 1em;
+	border: none;
+}
+
+.moveup {
+	background-image: url('../Images/btnUp.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+	width: 26px;
+	height: 26px;
+	padding: 1em;
+}
+
+.movedown {
+	background-image: url('../Images/btnDown.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 26px;
+	height: 26px;
+	cursor: pointer;
+	padding: 1em;
+}
+
+/*input[type="text"][readonly],
+textarea[readonly]
+{
+    background:#e9e7e7;
+}*/
+
+#loginBg {
+	background: url(../Images/bg_login.jpg);
+	background-position: center;
+	min-width: 100%;
+	height: auto;
+	float: right;
+	background-repeat: no-repeat;
+}
+
+.SearchBox {
+	width: 98%;
+	background: #e6f0e8; /* Old browsers */
+	background: -moz-linear-gradient(top, #e6f0e8 0%, #e6f0e8 40%, #f4faf8 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e6f0e8), color-stop(40%,#e6f0e8), color-stop(100%,#f4faf8)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #e6f0e8 0%,#e6f0e8 40%,#f4faf8 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #e6f0e8 0%,#e6f0e8 40%,#f4faf8 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #e6f0e8 0%,#e6f0e8 40%,#f4faf8 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #e6f0e8 0%,#e6f0e8 40%,#f4faf8 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6f0e8', endColorstr='#f4faf8',GradientType=0 ); /* IE6-9 */
+	border: 1px solid #8fac9a;
+	height: auto;
+	margin-left: auto;
+	margin-right: auto;
+	margin: auto;
+	float: left;
+	padding: 10px;
+}
+
+.SearchColumn {
+	width: 40%;
+	float: left;
+}
+
+.SearchColumnBtn {
+	width: 20%;
+	float: left;
+}
+
+.bglayer {
+	position: absolute;
+	z-index: 2;
+	left: 0;
+	top: 0;
+	right: 0;
+	background-color: #7c8c6a;
+	filter: alpha(opacity=50);
+	opacity: 0.5;
+	-moz-opacity: 0.5;
+	margin: 1px 1px;
+	display: none;
+	width: 100%;
+	min-height: 100%;
+	padding: 15px;
+}
+
+/* Tabs
+====================================*/
+.tabs-nav {
+	list-style: none;
+	margin: 0;
+	overflow: hidden;
+	padding: 0;
+	width: 100%;
+}
+
+	.tabs-nav li {
+		float: left;
+		line-height: 38px;
+		overflow: hidden;
+		padding: 0;
+		position: relative;
+	}
+
+		.tabs-nav li a {
+			background-color: #f8f8f8;
+			border: 1px solid #e0e0e0;
+			border-bottom: 1px solid #169fe6;
+			border-right: none;
+			color: #888;
+			font-weight: 500;
+			display: block;
+			letter-spacing: 0;
+			outline: none;
+			padding: 0 20px;
+			text-decoration: none;
+			-webkit-transition: all 200ms ease-in-out;
+			-moz-transition: all 200ms ease-in-out;
+			-o-transition: all 200ms ease-in-out;
+			-ms-transition: all 200ms ease-in-out;
+			transition: all 200ms ease-in-out;
+		}
+
+		.tabs-nav li:first-child a {
+			border-left: 1px solid #e0e0e0;
+		}
+
+		.tabs-nav li:last-child a {
+			border-right: 1px solid #e0e0e0;
+		}
+
+		.tabs-nav li.active a {
+			color: #333;
+			font-weight: 500;
+		}
+
+		.tabs-nav li.active i:before {
+			color: #555;
+		}
+
+		.tabs-nav li i:before {
+			color: #909090;
+		}
+
+		.tabs-nav li span {
+			margin-left: -7px;
+		}
+
+		.tabs-nav li.active a i {
+			opacity: 1;
+			filter: alpha(opacity=100);
+		}
+
+		.tabs-nav li i {
+			opacity: 0.64;
+			filter: alpha(opacity=64);
+			margin: 10px 0 0 0;
+		}
+
+		.tabs-nav li a:hover {
+			background: #fff;
+		}
+
+		.tabs-nav li.active a {
+			background: #fff;
+			border-bottom: 1px solid #fff;
+			border-top: 1px solid #169fe6;
+			color: #5c9c93;
+			font-weight: 700;
+			border-left: 1px solid #5c9c93;
+			border-right: 1px solid #5c9c93;
+		}
+
+.tab-content {
+	padding: 20px;
+}
+
+.tabs-container {
+	border: 1px solid #5c9c93;
+	margin: -1px 0 20px;
+	overflow: hidden;
+	width: 96%;
+	line-height: 21px;
+	-webkit-box-shadow: 0px 2px 0px 0px rgba(0, 0, 0, 0.03);
+	box-shadow: 0px 2px 0px 0px rgba(0, 0, 0, 0.03);
+	background: #000;
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #ffffff 40%, #d0efe7 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(40%,#ffffff), color-stop(100%,#d0efe7)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #ffffff 0%,#ffffff 40%,#d0efe7 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #ffffff 0%,#ffffff 40%,#d0efe7 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #ffffff 0%,#ffffff 40%,#d0efe7 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #ffffff 0%,#ffffff 40%,#d0efe7 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d0efe7',GradientType=0 ); /* IE6-9 */
+}
+
+.fontmandatory {
+	color: #1a60dd;
+}
+
+.TwoColumn {
+	/*-webkit-column-count: 2; /* Chrome, Safari, Opera */
+	/*-moz-column-count: 2;*/ /* Firefox */
+	/*column-count: 2;*/
+	width: 44%;
+	float: left;
+	padding-left: 2.5%;
+	padding-right: 2.5%;
+   
+}
+
+.TwoColumn1 {
+	/*-webkit-column-count: 2; /* Chrome, Safari, Opera */
+	/*-moz-column-count: 2;*/ /* Firefox */
+	/*column-count: 2;*/
+	width: 44%;
+	float: left;
+	padding-left: 2.5%;
+	padding-right: 2.5%;
+    text-transform: uppercase;
+}
+/*CustmerService Details*/
+.CustomerColumnTitle {
+	width: 99.4%;
+	background: #87ad89;
+	padding: .1em 0em .1em .5em;
+	text-align: left;
+	font-weight: bold;
+	font-size: 1em;
+	color: #ffffff;
+}
+
+.CustomerTwoColumn {
+	/*-webkit-column-count: 2; /* Chrome, Safari, Opera */
+	/*-moz-column-count: 2;*/ /* Firefox */
+	/*column-count: 2;*/
+	width: 47%;
+	float: left;
+	padding: 1%;
+	margin-right: 5px;
+}
+
+/* Mobile
+====================================*/
+@media only screen and (max-width: 767px) {
+	fieldset.double {
+		width: 100%;
+		float: none;
+		border: 0;
+	}
+
+	.SearchColumn {
+		width: 100%;
+		float: none;
+	}
+
+	.SearchColumnBtn {
+		width: 100%;
+		float: none;
+	}
+
+	.PageRow {
+		width: 100%;
+		clear: both;
+		padding: 5px 0;
+	}
+
+	.clear {
+		clear: both;
+	}
+
+	.tabs-container {
+		border: 1px solid #5c9c93;
+		margin: -1px 0 20px;
+		overflow: hidden;
+		width: 100%;
+		line-height: 21px;
+		-webkit-box-shadow: 0px 2px 0px 0px rgba(0, 0, 0, 0.03);
+		box-shadow: 0px 2px 0px 0px rgba(0, 0, 0, 0.03);
+		background: #000;
+		background: #ffffff; /* Old browsers */
+		background: -moz-linear-gradient(top, #ffffff 0%, #ffffff 40%, #d0efe7 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(40%,#ffffff), color-stop(100%,#d0efe7)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, #ffffff 0%,#ffffff 40%,#d0efe7 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, #ffffff 0%,#ffffff 40%,#d0efe7 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, #ffffff 0%,#ffffff 40%,#d0efe7 100%); /* IE10+ */
+		background: linear-gradient(to bottom, #ffffff 0%,#ffffff 40%,#d0efe7 100%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d0efe7',GradientType=0 ); /* IE6-9 */
+	}
+
+	.TwoColumn {
+		-webkit-column-count: auto; /* Chrome, Safari, Opera */
+		-moz-column-count: auto; /* Firefox */
+		column-count: auto;
+	}
+}
+
+.Number {
+	text-align: right !important;
+}
+
+.NumericWithDecimalPlace {
+	text-align: right !important;
+}
+
+.NumericWithFiveDecimalPlace
+{
+	text-align: right !important;
+}
+
+.LeftButton
+{
+     margin-right: auto !important;
+}
+
+.ButtonStyle
+{
+     font-size: .85em;
+     font-family: 'Segoe UI', Verdana, Helvetica, Sans-Serif;
+}
+
+.LeftButtonStyle
+{
+    margin-right: auto !important; 
+    font-size: .85em;
+    font-family: 'Segoe UI', Verdana, Helvetica, Sans-Serif;
+}
+
+.gridAmountRightAlign {
+    text-align:right
+}
+

@@ -1,0 +1,45 @@
+﻿@using CC_Ingenio_Resources;
+@using CC_Ingenio.Web.ViewModel.CustomerService;
+@model PendingAdjustmentSearch
+@{
+    var adjustSummaryGrid = new WebGrid(Model.objPendingAdjustmentSummary, canPage: true, canSort: false, rowsPerPage: 5, ajaxUpdateContainerId: "container-body1");
+    adjustSummaryGrid.Pager(WebGridPagerModes.All);
+    
+    var adjustGrid = new WebGrid(Model.objAdjustmentDTOList,canPage:true,rowsPerPage:5, ajaxUpdateContainerId: "container-body2");
+    adjustGrid.Pager(WebGridPagerModes.All);
+}
+<div class="row">
+        <div class=" BorderColumn" style="width: 98.6%">
+            <div class="CustomerColumnTitle">@Resources.PendingAdjustmentsSummary</div>
+            <div style="width: 100%;" class="VerticalScrollBar">
+                <div class="standard-table">
+
+                    @adjustSummaryGrid.GetHtml(htmlAttributes: new { id = "container-body1" },
+                alternatingRowStyle: "alt",
+                columns: adjustSummaryGrid.Columns(
+                    adjustSummaryGrid.Column("CardNumber", Resources.CardNumber),
+                    adjustSummaryGrid.Column("TotDebitAmount", Resources.TotalDebitAmount, format: (item) => string.Format("{0:N2}", item.TotDebitAmount)),
+                    adjustSummaryGrid.Column("TotCreditAmount", Resources.TotalCreditAmount, format: (item) => string.Format("{0:N2}", item.TotCreditAmount)),
+                    adjustSummaryGrid.Column("NetTotal", Resources.NetTotal, format: (item) => string.Format("{0:N0}", item.NetTotal))
+                ))
+                </div>
+            </div>
+            <div class="CustomerColumnTitle">@Resources.PendingAdjustmentsIndividualEntries</div>
+            <div style="width: 100%;" class="VerticalScrollBar">
+                <div class="standard-table">
+
+                    @adjustGrid.GetHtml(htmlAttributes: new { id = "container-body2" },
+                 alternatingRowStyle: "alt",
+                 columns: adjustGrid.Columns(
+                    adjustGrid.Column("CreatedOn", Resources.EffectiveDate, format: (item) => item.CreatedOn.ToShortDateString()),
+                    adjustGrid.Column("AdjustmentCode", Resources.AdjustmentCode),
+                    adjustGrid.Column("AdjustedAmount", Resources.Amount, format: (item) => string.Format("{0:N0}", item.AdjustedAmount)),
+                    adjustGrid.Column("AdjustmentNarration", Resources.AdjustmentNarration),
+                            //adjustGrid.Column("","Credit/Debit"),
+                    adjustGrid.Column("CreatedBy", Resources.CreatedBy),
+                    adjustGrid.Column("ApprovedBy", Resources.ApprovedBy)
+                ))
+                </div>
+            </div>
+        </div>
+</div>

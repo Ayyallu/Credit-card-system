@@ -1,0 +1,24 @@
+﻿@using CC_Ingenio_Resources;
+@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@model List<NotepadEntryDTO>
+@{
+    var notepadGrid = new WebGrid(Model, canPage:true, rowsPerPage:5,selectionFieldName: "CustomerId", ajaxUpdateContainerId: "container-body");
+    notepadGrid.Pager(WebGridPagerModes.All);
+}
+<div class="row">
+    <div class=" BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@ViewBag.Title</div>
+        <div style="width: 100%;" class="VerticalScrollBar">
+            <div class="standard-table">
+                @notepadGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+                alternatingRowStyle: "alt",
+                columns: notepadGrid.Columns(
+                    notepadGrid.Column("MessageType", Resources.MessageType),
+                    notepadGrid.Column("MessageDescription", Resources.Message),
+                    notepadGrid.Column("CreatedBy", Resources.CreatedBy),
+                    notepadGrid.Column("CreatedOn", Resources.CreatedOn, format: (item) => item.CreatedOn.ToShortDateString())
+                ))
+            </div>
+        </div>
+    </div>
+</div>

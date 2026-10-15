@@ -1,0 +1,56 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@using CC_Ingenio_Resources;
+@model List<InstallmentScheduleDTO>  
+
+@{
+    var installmentScheduleGrid = new WebGrid(Model, canPage: true, rowsPerPage: 5, ajaxUpdateContainerId: "container-body");
+    installmentScheduleGrid.Pager(WebGridPagerModes.All);
+}
+<script type="text/javascript">
+
+
+    $('.ImgAddition').on('click', function (e) {
+
+        var AuthNo = $(this).text();
+        e.preventDefault();
+        $.ajax({
+            url: '/CustomerService/InstallmentScheduleDetails/',
+            type: 'POST',
+            data: { ACardNumber: JSON.stringify(@ViewData["CardNumber"]), AAuthNo: AuthNo },
+                    cache: false,
+                    success: function (data) {
+                        $('#partialViewDiv').html(data);
+
+                    }
+         });
+});
+    </script>
+
+<div class="row">
+    <div class=" BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.InstallmentSchedule</div>
+        <div style="width: 100%;" class="VerticalScrollBar">
+            <div class="standard-table">
+                @installmentScheduleGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+                 alternatingRowStyle: "alt",
+                 columns: installmentScheduleGrid.Columns(
+                        //installmentScheduleGrid.Column("CardNumber", "Card Number"),
+                        installmentScheduleGrid.Column(Resources.AuthorizationCode, style: "col1", 
+                            format: @<text>@Html.ActionLink((string)item.AuthNo.ToString(), "Index", null, new { @class = "ImgAddition", @id = item.AuthNo })</text>),
+                        installmentScheduleGrid.Column("BookDate",Resources.BookDate,format:@<text>@item.BookDate.ToShortDateString()</text>),
+                        installmentScheduleGrid.Column("Tenure",Resources.Tenure),
+                        installmentScheduleGrid.Column("RateOfInterest",Resources.RateOfInterest, format:@<text>@string.Format("{0:N2}", item.RateOfInterest)</text>),
+                                     installmentScheduleGrid.Column("Status", Resources.Status),
+                                     installmentScheduleGrid.Column("TransactionCode", Resources.TransactionCode),
+                      installmentScheduleGrid.Column("CreditSegment", Resources.CreditSegment)
+                                 ))
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@* installmentScheduleGrid.Column("Installment Number", style: "col1", format: @<text>
+                    @Html.ActionLink((string)item.InstallmentNumber.ToString(), "Index", null, new { @class = "ImgAddition", @id = item.AuthNo })
+                    </text>),*@

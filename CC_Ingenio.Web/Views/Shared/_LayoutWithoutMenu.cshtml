@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title - FINCARD</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/datatables")
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script src="/Scripts/jquery-ui.min.js"></script>
+
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/common")
+    @Scripts.Render("~/bundles/moment")
+
+    @using CC_Ingenio.Web.Helpers;
+
+    <script>
+        $(function () {
+            $("#dialog").hide();
+            $(".datepicker").datepicker({
+                changeYear: true,
+                changeMonth: true,
+                dateFormat: '@Html.Raw(@DatePickerHelper.ConvertDateFormat(this.Html))',
+                yearRange: '@Html.Raw(@DatePickerHelper.GetYearRange())'
+            });
+        });
+    </script>
+
+</head>
+<body>
+    <header>
+        <div class="content-wrapper">
+            <div class="row">
+                <div class="float-left">
+
+                    <p class="site-title"><a class="Logo" href="/home/welcome">&nbsp;</a></p>
+                </div>
+                <div class="row">
+                    <nav>
+                        <!-- Container / Start -->
+                        <div class="container">
+                            <!-- Mega Menu / Start
+================================================== -->
+                            <div class="menu style-1">
+                                <ul class="menu">
+
+                                    <li class="right">
+
+                                        @Html.Partial("_LoginPartial")
+
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- Mega Menu / End
+================================================== -->
+                        </div>
+                        <!-- Container / End -->
+
+                    </nav>
+                </div>
+            </div>
+            <div class="row">
+                <nav>
+                </nav>
+            </div>
+
+
+        </div>
+    </header>
+
+    <div id="body">
+
+
+
+        @if (TempData["Message"] != null)
+        {
+            <div class="ErrorMsg" id="message">
+
+                <span>@TempData["Message"]</span>
+
+            </div>
+        }
+        @RenderSection("featured", required: false)
+        <section class="content-wrapper  clear-fix">
+            @RenderBody()
+        </section>
+    </div>
+    <footer>
+        <div class="content-wrapper">
+            <div class="float-left">
+                <p>&copy; @DateTime.Now.Year - All rights reserved-Fincard Technologies</p>
+            </div>
+        </div>
+    </footer>
+
+
+    @RenderSection("scripts", required: false)
+
+
+</body>
+</html>

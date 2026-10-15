@@ -1,0 +1,139 @@
+﻿@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.MT_BILLING_PARAMETER, " ", Resources.Search });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.Web.ViewModel.Master
+@model BillingParameterSearch
+@{
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "CardTypeCode", ajaxUpdateContainerId: "standard-table");
+    grid.Pager(WebGridPagerModes.All);
+
+    List<SelectListItem> productCodeList = new List<SelectListItem>();
+    foreach (var item in ViewBag.ProductList) 
+    {
+        productCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    productCodeList.RemoveAt(0);
+    productCodeList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+ }
+
+
+<section class="featured">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active"> @Html.ActionLink(Resources.SearchPageHeading,"BillingParameterList","Master" )</li>
+            <li> @Html.ActionLink(Resources.DetailsPageHeading,"BillingParameterAdd","Master" )</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("BillingParameterList", "Master", FormMethod.Post, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+
+                                <div class="TwoColumn">
+                                    <div>
+                                        <div class="label">@Resources.Product</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x=>x.ProductCode, productCodeList)
+                                        </div>
+                                    </div>
+                                </div>                                                                   
+                                <div class="SearchColumnbtn">
+                                    <div class="row">
+                                        <span>
+                                            <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                        </span>
+                                        <span>
+                                            <input id="Button2" type="submit" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    }
+
+                </div>
+                <div class="row">
+                   
+                    <div class="standard-table">
+
+                        @grid.GetHtml(alternatingRowStyle:"alt", columns:grid.Columns(
+                            grid.Column("ProductName",Resources.Product),
+                                    grid.Column("MinTotalAmount",Resources.MinTotalAmount, format:@<text>@string.Format("{0:N0}",item.MinTotalAmount)</text>, style: "gridAmountRightAlign"),
+                                    grid.Column("MinTotalDebt", Resources.MinTotalDebt, format:@<text>@string.Format("{0:N0}",item.MinTotalDebt)</text>, style: "gridAmountRightAlign"),   
+                                    grid.Column("ThresholdRevolvingBalance",Resources.ThresholdRevolvingBalance, format:@<text>@string.Format("{0:N0}",item.ThresholdRevolvingBalance)</text>, style: "gridAmountRightAlign"),
+                                    grid.Column("OCLChargePercentage", Resources.OCLChargePercentage),   
+                                    grid.Column("ApprovalStatusDesc", Resources.Status),
+                                    grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink(Resources.Edit, "BillingParameterAdd", "Master", new { Id = item.ProductCode }, null));
+                                                    
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "BillingParameterView", "Master", new { Id = item.ProductCode }, null))); 
+                                                }
+                                            }),
+                                    grid.Column("Delete",   format: 
+                                        (item) =>
+                                                             {
+                                                                 if (lstPriv.Contains("Delete"))
+                                                                 {
+                                                                     if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                                                     {
+                                                                         return Html.Raw(Html.ActionLink(Resources.Delete, "BillingParameterDelete", "Master", new { Id = item.ProductCode }, new { @class = "delete-link" }));
+                                                                     }
+                                                                     else
+                                                                     {
+                                                                         return Html.Raw("");
+                                                                     }
+                                                                 }
+                                                                 else
+                                                                 {
+                                                                     return Html.Raw("");
+                                                                 }
+                                            })
+                    ))                
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>

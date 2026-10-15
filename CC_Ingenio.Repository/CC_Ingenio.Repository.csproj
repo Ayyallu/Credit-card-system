@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{66EC81B1-1C87-4194-BCEB-C49BA39757E6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CC_Ingenio.Repository</RootNamespace>
+    <AssemblyName>CC_Ingenio.Repository</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppovalRepo\ApprovalQueueRepository.cs" />
+    <Compile Include="AuthorizationRepo\AdjustmentRepository.cs" />
+    <Compile Include="AuthorizationRepo\AuthorizationCancellationRepository.cs" />
+    <Compile Include="AuthorizationRepo\AuthorizationRepository.cs" />
+    <Compile Include="AuthorizationRepo\BillingCycleViewRepository.cs" />
+    <Compile Include="AuthorizationRepo\EMIAuthorizationRepository.cs" />
+    <Compile Include="AuthorizationRepo\EMITransactionInstallmentRepository.cs" />
+    <Compile Include="AuthorizationRepo\EMITransactionRepository.cs" />
+    <Compile Include="AuthorizationRepo\ManualTransactionRepository.cs" />
+    <Compile Include="BillingRepo\OnlinePaymentRepository.cs" />
+    <Compile Include="BillingRepo\RefinancingRepository.cs" />
+    <Compile Include="BillingRepo\RenegotiationRepository.cs" />
+    <Compile Include="BillingRepo\StatementGenerationRepository.cs" />
+    <Compile Include="CardBookingRepo\CardEmbossingRepository.cs" />
+    <Compile Include="CardBookingRepo\CardMasterRepository.cs" />
+    <Compile Include="CardBookingRepo\PaymentHolidayRepository.cs" />
+    <Compile Include="ContactRepo\AddressRepository.cs" />
+    <Compile Include="ContactRepo\ContactRepository.cs" />
+    <Compile Include="ContactRepo\ContactAddressRepository.cs" />
+    <Compile Include="CustomerServiceRepo\AlertMessageRepository.cs" />
+    <Compile Include="CustomerServiceRepo\BlockSegmentCardRepository.cs" />
+    <Compile Include="CustomerServiceRepo\CardClosureHistoryRepository.cs" />
+    <Compile Include="CustomerServiceRepo\CardClosureRepository.cs" />
+    <Compile Include="CustomerServiceRepo\CardReactivationRepository.cs" />
+    <Compile Include="CustomerServiceRepo\ChangeCreditLimitRepository.cs" />
+    <Compile Include="CustomerServiceRepo\CustomerServiceDetailsRepository.cs" />
+    <Compile Include="CustomerServiceRepo\LostStolenCardBlockRepository.cs" />
+    <Compile Include="CustomerServiceRepo\LostStolenReissueRequestRepository.cs" />
+    <Compile Include="CustomerServiceRepo\NotepadEntryRepository.cs" />
+    <Compile Include="CustomerServiceRepo\SwapProductRepository.cs" />
+    <Compile Include="LookUpRepo\AlertTypeRepository.cs" />
+    <Compile Include="LookUpRepo\ApprovalContextRepository.cs" />
+    <Compile Include="LookUpRepo\BankRepository.cs" />
+    <Compile Include="LookUpRepo\CardReactivationReasonRepository.cs" />
+    <Compile Include="LookUpRepo\CardTypeRepository.cs" />
+    <Compile Include="LookUpRepo\CityCategoryRepository.cs" />
+    <Compile Include="LookUpRepo\ClosureReasonRepository.cs" />
+    <Compile Include="LookUpRepo\ContractTypeRepository.cs" />
+    <Compile Include="LookUpRepo\ApprovalQueueContextRepository.cs" />
+    <Compile Include="LookUpRepo\EducationRepository.cs" />
+    <Compile Include="LookUpRepo\FeeTypesRepository.cs" />
+    <Compile Include="LookUpRepo\InterestCalculationRepository.cs" />
+    <Compile Include="LookUpRepo\FirstBillingRepository.cs" />
+    <Compile Include="LookUpRepo\MaritialStatusRepository.cs" />
+    <Compile Include="LookUpRepo\PositionRepository.cs" />
+    <Compile Include="LookUpRepo\MCCRepository.cs" />
+    <Compile Include="LookUpRepo\MerchantRepository.cs" />
+    <Compile Include="LookUpRepo\DecisionReasonRepository.cs" />
+    <Compile Include="LookUpRepo\CommunaRepository.cs" />
+    <Compile Include="LookUpRepo\CompanyCategoryRepository.cs" />
+    <Compile Include="LookUpRepo\BillingCycleRepository.cs" />
+    <Compile Include="LookUpRepo\DecisionRepository.cs" />
+    <Compile Include="LookUpRepo\NetworkRepository.cs" />
+    <Compile Include="LookUpRepo\ProductSubCategoryRepository.cs" />
+    <Compile Include="LookUpRepo\ProductClassRepository.cs" />
+    <Compile Include="LookUpRepo\ProductMemberTypeRepository.cs" />
+    <Compile Include="LookUpRepo\ProductStatusRepository.cs" />
+    <Compile Include="LookUpRepo\ProfessionRepository.cs" />
+    <Compile Include="LookUpRepo\ServiceRepository.cs" />
+    <Compile Include="LookUpRepo\InterestMethodRepository.cs" />
+    <Compile Include="LookUpRepo\DefaultAffinityRepository.cs" />
+    <Compile Include="LookUpRepo\HubRepository.cs" />
+    <Compile Include="LookUpRepo\LegalEntityRepository.cs" />
+    <Compile Include="LookUpRepo\LookUpRepository.cs" />
+    <Compile Include="LookUpRepo\MemberTypeRepository.cs" />
+    <Compile Include="LookUpRepo\ProductCategoryRepository.cs" />
+    <Compile Include="LookUpRepo\SpokeRepository.cs" />
+    <Compile Include="LookUpRepo\TransactionCheckFrequencyRepository.cs" />
+    <Compile Include="LookUpRepo\UserCultureRepository.cs" />
+    <Compile Include="MasterRepo\AdjustmentFinancialAccountRepository.cs" />
+    <Compile Include="MasterRepo\BillingCycleParameterRepository.cs" />
+    <Compile Include="MasterRepo\BillingParameterRepository.cs" />
+    <Compile Include="MasterRepo\BlockCodeForCommissionExclusionRepository.cs" />
+    <Compile Include="MasterRepo\BlockCodeRepository.cs" />
+    <Compile Include="MasterRepo\BoostMaintenanceRepository.cs" />
+    <Compile Include="MasterRepo\BranchRepository.cs" />
+    <Compile Include="MasterRepo\CalendarDateRepository.cs" />
+    <Compile Include="MasterRepo\CardCreditSegmentRepository.cs" />
+    <Compile Include="MasterRepo\CardStatusRepository.cs" />
+    <Compile Include="MasterRepo\ChangeBusinessDateRepository.cs" />
+    <Compile Include="MasterRepo\CityRepository.cs" />
+    <Compile Include="MasterRepo\CollectionChargeDetailsRepository.cs" />
+    <Compile Include="MasterRepo\CollectionChargeRepository.cs" />
+    <Compile Include="MasterRepo\CommissionChargeDetailsRepository.cs" />
+    <Compile Include="MasterRepo\CommissionChargeRepository.cs" />
+    <Compile Include="MasterRepo\CommissionRepository.cs" />
+    <Compile Include="MasterRepo\ContractRepository.cs" />
+    <Compile Include="MasterRepo\ContractTemplateRepository.cs" />
+    <Compile Include="MasterRepo\MerchantDiscountRepository.cs" />
+    <Compile Include="MasterRepo\SalesIdRepository.cs" />
+    <Compile Include="MasterRepo\CreditSubSegmentRepository.cs" />
+    <Compile Include="MasterRepo\DirectSalesAgentRepository.cs" />
+    <Compile Include="MasterRepo\DiscountOnMgmtCollectionDetailsRepository.cs" />
+    <Compile Include="MasterRepo\DiscountPercentageDetailsRepository.cs" />
+    <Compile Include="MasterRepo\DiscountPercentageRepository.cs" />
+    <Compile Include="MasterRepo\InterestMasterDetailsRepository.cs" />
+    <Compile Include="MasterRepo\MerchantsRepository.cs" />
+    <Compile Include="MasterRepo\SBIFInterestDetailsRepository.cs" />
+    <Compile Include="MasterRepo\StatementInterestRepository.cs" />
+    <Compile Include="MasterRepo\SystemMaintenanceConfigurationRepository.cs" />
+    <Compile Include="MasterRepo\CustomerAddressRepository.cs" />
+    <Compile Include="MasterRepo\CustomerBillingDetailRepository.cs" />
+    <Compile Include="MasterRepo\CustomerCommericalHouseConsumptionRepository.cs" />
+    <Compile Include="MasterRepo\CustomerCreditCardDetailRepository.cs" />
+    <Compile Include="MasterRepo\CustomerCurrentAccountDetailRepository.cs" />
+    <Compile Include="MasterRepo\CustomerDecisionRepository.cs" />
+    <Compile Include="MasterRepo\CustomerDependentRepository.cs" />
+    <Compile Include="MasterRepo\CustomerOccupationRepository.cs" />
+    <Compile Include="MasterRepo\CustomerRepository.cs" />
+    <Compile Include="MasterRepo\CustomerSegmentRepository.cs" />
+    <Compile Include="MasterRepo\CustomerSubSegmentRepository.cs" />
+    <Compile Include="MasterRepo\DesignationRepository.cs" />
+    <Compile Include="MasterRepo\CompanyRepository.cs" />
+    <Compile Include="MasterRepo\CurrencyRepository.cs" />
+    <Compile Include="MasterRepo\CreditSegmentRepository.cs" />
+    <Compile Include="MasterRepo\DiscountOnMgmtCollectionRepository.cs" />
+    <Compile Include="MasterRepo\FeeRepository.cs" />
+    <Compile Include="MasterRepo\FeeTypeRepository.cs" />
+    <Compile Include="MasterRepo\FinancialAccountRepository.cs" />
+    <Compile Include="MasterRepo\FinancialActivityRepository.cs" />
+    <Compile Include="MasterRepo\FranchiseRepository.cs" />
+    <Compile Include="MasterRepo\GeneralRepository.cs" />
+    <Compile Include="MasterRepo\InsuranceChargeRepository.cs" />
+    <Compile Include="MasterRepo\InterestMasterRepository.cs" />
+    <Compile Include="MasterRepo\OrganizationRepository.cs" />
+    <Compile Include="MasterRepo\PaymentAllocationTypeRepository.cs" />
+    <Compile Include="MasterRepo\PlanMasterRepository.cs" />
+    <Compile Include="MasterRepo\ProductRepository.cs" />
+    <Compile Include="MasterRepo\ProductTypeRepository.cs" />
+    <Compile Include="MasterRepo\RegionRepository.cs" />
+    <Compile Include="MasterRepo\SBIFInterestRepository.cs" />
+    <Compile Include="MasterRepo\SourcingRepository.cs" />
+    <Compile Include="MasterRepo\StatementGroupingRepository.cs" />
+    <Compile Include="MasterRepo\SystemParameterRepository.cs" />
+    <Compile Include="MasterRepo\TransactionRepository.cs" />
+    <Compile Include="MasterRepo\TransactionSubCodeRepository.cs" />
+    <Compile Include="MasterRepo\UFRateSettingsRepository.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CustomerServiceRepo\UpdatedCustomerAddressRepository.cs" />
+    <Compile Include="UserRepo\UserAllowedBranchRepository.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UserRepo\UserEntityRepository.cs" />
+    <Compile Include="UserRepo\UserGroupMembersRepository.cs" />
+    <Compile Include="UserRepo\UserGroupPrivilegeRepository.cs" />
+    <Compile Include="UserRepo\UsergroupRepository.cs" />
+    <Compile Include="UserRepo\UserRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CC_Ingenio.Core\CC_Ingenio.Core.csproj">
+      <Project>{262b0f31-0326-48b5-9946-1cefc19e0ff3}</Project>
+      <Name>CC_Ingenio.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CC_Ingenio.Data\CC_Ingenio.Data.csproj">
+      <Project>{9a92527f-a096-4ac3-8593-9dc6cdbefbc3}</Project>
+      <Name>CC_Ingenio.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

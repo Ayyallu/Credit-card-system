@@ -1,0 +1,1239 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo;
+@using System.Web.Script.Serialization;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+@model CustomerDTO
+@{
+    List<SelectListItem> organizationList = new List<SelectListItem>();
+    List<SelectListItem> productTypeList = new List<SelectListItem>();
+    List<SelectListItem> productCategoryList = new List<SelectListItem>();
+    List<SelectListItem> campaignSourceList = new List<SelectListItem>();
+    List<SelectListItem> productList = new List<SelectListItem>();
+    List<SelectListItem> customerTypeList = new List<SelectListItem>();
+    List<SelectListItem> maritalStatusList = new List<SelectListItem>();
+    List<SelectListItem> genderList = new List<SelectListItem>();
+    List<SelectListItem> educationList = new List<SelectListItem>();
+    List<SelectListItem> professionList = new List<SelectListItem>();
+    List<SelectListItem> housingList = new List<SelectListItem>();
+    List<SelectListItem> nationalityList = new List<SelectListItem>();
+    List<SelectListItem> workTypeList = new List<SelectListItem>();
+    List<SelectListItem> decisionList = new List<SelectListItem>();
+    List<SelectListItem> contractList = new List<SelectListItem>();
+    List<SelectListItem> accountStatusList = new List<SelectListItem>();
+    List<SelectListItem> decisionReasonList = new List<SelectListItem>();
+    List<SelectListItem> accountBankList = new List<SelectListItem>();
+    List<SelectListItem> branchList = new List<SelectListItem>();
+    List<SelectListItem> designationList = new List<SelectListItem>();
+    List<SelectListItem> cityList = new List<SelectListItem>();
+    List<SelectListItem> cardBankInstitutionList = new List<SelectListItem>();
+    List<SelectListItem> addressTypeList = new List<SelectListItem>();
+    List<SelectListItem> residenceClearanceList = new List<SelectListItem>();
+    List<SelectListItem> unemploymentList = new List<SelectListItem>();
+    List<SelectListItem> typeList = new List<SelectListItem>();
+    List<SelectListItem> bankTypeList = new List<SelectListItem>();
+    List<SelectListItem> cardTypeList = new List<SelectListItem>();
+    List<SelectListItem> cardBrandList = new List<SelectListItem>();
+    List<SelectListItem> incomeTypeList = new List<SelectListItem>();
+    List<SelectListItem> customerDependentAgeGroupList = new List<SelectListItem>();
+    List<string> lstPrivilege = new List<string>();
+
+    foreach (var item in ViewBag.OrganizationList)
+    {
+        organizationList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.ProductTypeList)
+    {
+        productTypeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.ProductCategoryList)
+    {
+        productCategoryList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.CampaignSourceList)
+    {
+        campaignSourceList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.ProductList)
+    {
+        productList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.CustomerTypeList)
+    {
+        customerTypeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.MaritalStatusList)
+    {
+        maritalStatusList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.GenderList)
+    {
+        genderList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.EducationListList)
+    {
+        educationList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.ProfessionList)
+    {
+        professionList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.HousingList)
+    {
+        housingList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.NationalityList)
+    {
+        nationalityList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.WorkTypeList)
+    {
+        workTypeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.DecisionList)
+    {
+        decisionList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.ContractList)
+    {
+        contractList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.AccountStatus)
+    {
+        accountStatusList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.DecisionReasonList)
+    {
+        decisionReasonList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.AccountBankList)
+    {
+        accountBankList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.BranchList)
+    {
+        branchList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.DesignationList)
+    {
+        designationList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.CityList)
+    {
+        cityList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.CardBankInstitutionList)
+    {
+        cardBankInstitutionList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.AddressTypeList)
+    {
+        addressTypeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.ResidenceClearanceList)
+    {
+        residenceClearanceList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.UnemploymentList)
+    {
+        unemploymentList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.TypeList)
+    {
+        typeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.BankTypeList)
+    {
+        bankTypeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.CardTypeList)
+    {
+        cardTypeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.CardBrandList)
+    {
+        cardBrandList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.IncomeTypeList)
+    {
+        incomeTypeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    foreach (var item in ViewBag.CustomerDependentAgeGroup)
+    {
+        customerDependentAgeGroupList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    if (ViewBag.Privileges != null)
+    {
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPrivilege.Add(item);
+        }
+    }
+}
+@{
+    ViewBag.Title = "CustomerAdd";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section featured
+{
+}
+@*<script src="/Scripts/jquery.maskedinput.js" type="text/javascript"></script>*@
+
+<script type="text/javascript">
+
+    //var branchDDL = @Html.Raw(new JavaScriptSerializer().Serialize(branchList));
+    var organizationDDL = @Html.Raw(new JavaScriptSerializer().Serialize(organizationList));
+    var productTypeDDL = @Html.Raw(new JavaScriptSerializer().Serialize(productTypeList));
+    var productCategoryDDL = @Html.Raw(new JavaScriptSerializer().Serialize(productCategoryList));
+    // var productDDL = @Html.Raw(new JavaScriptSerializer().Serialize(productList));
+    var campaignSourceDDL = @Html.Raw(new JavaScriptSerializer().Serialize(campaignSourceList));
+
+    var customerTypeDDL = @Html.Raw(new JavaScriptSerializer().Serialize(customerTypeList));
+    var maritalStatusDDL = @Html.Raw(new JavaScriptSerializer().Serialize(maritalStatusList));
+    var genderDDL = @Html.Raw(new JavaScriptSerializer().Serialize(genderList));
+    var educationDDL = @Html.Raw(new JavaScriptSerializer().Serialize(educationList));
+    var professionDDL = @Html.Raw(new JavaScriptSerializer().Serialize(professionList));
+    var housingDDL = @Html.Raw(new JavaScriptSerializer().Serialize(housingList));
+    var nationalityDDL = @Html.Raw(new JavaScriptSerializer().Serialize(nationalityList));
+
+    var workTypeDDL = @Html.Raw(new JavaScriptSerializer().Serialize(workTypeList));
+    var decisionDDL = @Html.Raw(new JavaScriptSerializer().Serialize(decisionList));
+    //var contractDDL = @Html.Raw(new JavaScriptSerializer().Serialize(contractList));
+    var accountStatusDDL = @Html.Raw(new JavaScriptSerializer().Serialize(accountStatusList));
+    var decisionReasonDDL = @Html.Raw(new JavaScriptSerializer().Serialize(decisionReasonList));
+    var accountBankDDL = @Html.Raw(new JavaScriptSerializer().Serialize(accountBankList));
+    var branchDDL = @Html.Raw(new JavaScriptSerializer().Serialize(branchList));
+    var designationDDL = @Html.Raw(new JavaScriptSerializer().Serialize(designationList));
+    var cityDDL = @Html.Raw(new JavaScriptSerializer().Serialize(cityList));
+
+    var addressTypeDDL = @Html.Raw(new JavaScriptSerializer().Serialize(addressTypeList));
+    var residenceClearanceDDL = @Html.Raw(new JavaScriptSerializer().Serialize(residenceClearanceList));
+    var unemploymentDDL = @Html.Raw(new JavaScriptSerializer().Serialize(unemploymentList));
+    var typeDDL = @Html.Raw(new JavaScriptSerializer().Serialize(typeList));
+    var bankTypeDDL = @Html.Raw(new JavaScriptSerializer().Serialize(bankTypeList));
+    var cardBankInstitutionDDL = @Html.Raw(new JavaScriptSerializer().Serialize(cardBankInstitutionList));
+    var cardTypeDDL = @Html.Raw(new JavaScriptSerializer().Serialize(cardTypeList));
+    var cardBrandDDL = @Html.Raw(new JavaScriptSerializer().Serialize(cardBrandList));
+    var incomeTypeDDL = @Html.Raw(new JavaScriptSerializer().Serialize(incomeTypeList));
+    var customerDependentAgeGroupDDL = @Html.Raw(new JavaScriptSerializer().Serialize(customerDependentAgeGroupList));
+
+    var CustomerValue = @Html.Raw(ViewBag.CustomerValue);
+    
+    var communaDDL = @Html.Raw(new JavaScriptSerializer().Serialize(""));
+    var regionDDL = @Html.Raw(new JavaScriptSerializer().Serialize(""));
+    var productDDL = @Html.Raw(new JavaScriptSerializer().Serialize(""));
+    var contractDDL = @Html.Raw(new JavaScriptSerializer().Serialize(""));
+    
+</script>
+<script src="/Scripts/Master/Customer.js"></script>
+
+<script type="text/javascript">   
+
+function ValidateRUT(){
+    var objRUT = $(this); 
+        
+    if((objRUT[0]['CompanyRUT'] != "" && 
+        objRUT[0]['CompanyRUT'] != "________-_"/*For IE*/) && (objRUT[0]['CompanyRUT']._latestValue != "" && 
+        objRUT[0]['CompanyRUT']._latestValue != "________-_"/*For IE*/))
+    {
+        $.ajax({
+            type: 'POST',
+            url:'/CardBooking/CheckIfValidCard',
+            data: { Id: objRUT[0]['CompanyRUT'] },
+            success: function(returnData){
+                if(!returnData.Isvalid){                       
+                    alert('Invalid RUT');
+                    $('#CompanyRUT').focus();
+                }
+            }
+        })
+    }
+};
+
+    function ValidateCustomerDesignation () {
+        var objOccupation = $(this);
+        var designationCode = objOccupation[0]['Post']._latestValue;
+        if(designationCode!="")
+        {
+            $.ajax({
+                type: 'POST',
+                url: '/Master/ValidateCustomerDesignationForHRP',
+                data: { ADesignationCode: designationCode },
+                success: function (returnData) {
+                    ShowSimpleModalDialog(returnData.Message, "");
+                }
+            });
+        }
+    };
+
+    function ConctractOnChange (){
+        if('@Model.CustomerId' != 0)
+         {
+             if ($('#Contract').val() == '') {
+                 $('#lblValidateContract').text('Please select Contract');
+             }
+             else {
+                 $('#lblValidateContract').text('');
+             }
+         }
+    };
+
+    function CommunaOnChange (){
+        if('@Model.CustomerId' != 0){
+            var objCommunaList = $('[id = Communa]');
+            var objValidationList = $('[id = lblValidateCommuna]');
+            $.each(objCommunaList,function(index){
+                if(CustomerValue.CustomerAddressDTO[index]){
+                    if ($(this).val() == '') {
+                        $(objValidationList[index]).text('Please select Communa');                    
+                    }
+                    else {
+                        if($(objValidationList[index]).text().length > 0)
+                        {
+                            $(objValidationList[index]).text('');                        
+                        }
+                    }
+                }
+            });
+        }
+    };
+
+    function RegionOnChange (){
+        if('@Model.CustomerId' != 0)
+        {
+            var objRegionList = $('[id = Region]');
+            var objValidationList = $('[id = lblValidateRegion]');
+            $.each(objRegionList,function(index){
+                if(CustomerValue.CustomerAddressDTO[index]){
+                    if ($(this).val() == '') {
+                        $(objValidationList[index]).text('Please select Region');                    
+                    }
+                    else {
+                        if($(objValidationList[index]).text().length > 0)
+                        {
+                            $(objValidationList[index]).text('');                        
+                        }
+                    }
+                }
+            });
+         }
+     };
+   
+    $(document).ready(function(){
+
+        $('.RUTNumber').blur(function(){
+            var objRUT = $(this);
+            if(objRUT.val() != "")
+            {
+                $.ajax({
+                    type: 'POST',
+                    url:'/CardBooking/CheckIfValidCard',
+                    data: { Id: objRUT.val() },
+                    success: function(returnData){
+                        if(!returnData.Isvalid){
+                            //ShowSimpleModalDialog("Invalid RUT","");
+                            alert('Invalid RUT');
+                            objRUT.focus();
+                        }
+                    }
+                })
+            }
+        });
+
+        $('#Product').change(function(){
+            if('@Model.CustomerId' != 0)
+            {
+                var productCode = $('#Product').val();
+                if(productCode == ''){
+                    $('#lblValidateProduct').text('Please select Product');
+                    $('#Contract').empty();
+                    $('#Contract').append($('<option/>',
+                       {
+                           value: 0,
+                           text: "@Resources.SelectOne"
+                       }));
+                }
+                else{
+                    $('#lblValidateProduct').text('');
+                    PopulateDropDownViaAjax("#Contract", "/Master/GetContractByProductCode?AProductCode=" + productCode);
+                    if($('#Contract').length == 0){
+                        $('#Contract').append($('<option/>',
+                        {
+                            value: 0,
+                            text: "@Resources.SelectOne"
+                        }));
+                    }
+                }
+            }
+
+        });
+       
+        /*To restrict cut/copy/paste*/
+        $('.restrictCutCopyPaste').bind('copy paste cut', function (e) {
+            e.preventDefault();
+        });
+    }); 
+</script>
+
+<section class="featured">
+    <div class="PageTitle">Add Customer</div>
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                if (ViewBag.FromSearchPage == true)
+                {
+                    <li>@Html.ActionLink("Search", "CustomerList", "Master")</li>
+                }
+            }
+            <li class="active"><a href="#tab1">Details</a></li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            @using (Html.BeginForm())
+            {
+                @Html.ValidationSummary(true);  
+                <div class="tab-content" id="tab1">                 
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                               
+                                @*<label style="float:right" class="validationMessage"> @(ViewData["HRPViolated"].ToString() == "True" ? (ViewData["CreditScoreViolated"].ToString() == "True" ? " and" : "") + "  HRP Violated" : "") </label>*@
+                                if (ViewData["CreditScoreViolated"] != null && ViewData["HRPViolated"] != null)
+                                {
+                                    <label style="float:right" class="validationMessage"> @( (ViewData["CreditScoreViolated"].ToString() == "True" ? "Credit Score"  : "") + ((ViewData["HRPViolated"].ToString() == "True" && ViewData["CreditScoreViolated"].ToString() == "True") ? " and" : "") + (ViewData["HRPViolated"].ToString() == "True" ? " HRP" : "") + ((ViewData["HRPViolated"].ToString() == "True" || ViewData["CreditScoreViolated"].ToString() == "True") ? " Violated" : "") )</label>
+                                }
+                            }
+                        </span>
+                    </div>
+                    <div id="accordion">
+                        <!--Accordion Starts-->
+                        <h3>Sales and Policy Details</h3>
+                        <div class="row">
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">Branch</div>
+                                    <div class="Field">
+                                        <select data-bind="options: branchDDL,
+    optionsText: 'Text',
+    optionsValue: 'Value',
+    value: Customer.BranchCode">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">Channel</div>
+                                    <div class="Field">
+                                        <select data-bind="options: campaignSourceDDL,optionsText: 'Text',optionsValue: 'Value',value: Customer.CampaignSource"></select>
+                                    </div>
+                                </div>
+                            </div>                        
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">Organization</div>
+                                    <div class="Field">
+                                        <select data-bind="options: organizationDDL,optionsText: 'Text',optionsValue: 'Value',value: Customer.OrganizationCode" disabled ="disabled"></select>
+                                         <input type="hidden" id="OrganizationCode" name="OrganizationCode" data-bind="value: Customer.OrganizationCode" />
+                                    </div>
+                                </div>                                                                
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">Application Ref. No</div>
+                                    <div class="Field">
+                                        <input type="text" id="ApplicationReferenceNo" disabled="disabled" data-bind="value: Customer.ApplicationReferenceNo" maxlength="50" placeholder="Auto Generated" />
+                                    </div>
+                                </div>                            
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">Product Category</div>
+                                    <div class="Field">
+                                        <select id="ProductCategory"
+                                            data-bind="options: productCategoryDDL,optionsText: 'Text',optionsValue: 'Value',value: Customer.ProductCategoryCode"></select>
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">Product</div>
+                                    <div class="Field">
+                                        <select id="Product"
+                                            data-bind="options: productDDL,
+                                            optionsText: 'Text',
+                                            optionsValue: 'Value',
+                                            value: Customer.ProductCode">                                   
+                                        </select>
+                                        <label id="lblValidateProduct" class="validationMessage" ></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">RUT</div>
+                                    <div class="Field">
+                                        <input type="text" id="RUT" data-bind="value: Customer.RUT" maxlength="13" disabled="disabled" />
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">RUT Serial No</div>
+                                    <div class="Field">
+                                        <input type="text" id="SerialNo" data-bind="value: Customer.SerialNo" maxlength="10" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">Expiry Date</div>
+                                    <div class="Field">
+                                        <input type="text" id="ExpiryDate" class="datepicker" readonly="true" data-bind="value: Customer.ExpiryDate" />
+                                    </div>
+                                </div>
+
+                                 <div class="TwoColumn">
+                                    <div class="label">Sales Id</div>
+                                    <div class="Field">
+                                        <input type="text" class="NumberComma" id="SalesId" data-bind="value: Customer.SalesId" maxlength="100" />
+                                    </div>
+                                </div>
+
+                           @*     <div class="TwoColumn">
+                                    <div class="label fontmandatory">Corporate RUT</div>
+                                    <div class="Field">
+                                        <input type="text" class="RUTNumber restrict" id="CorporateRUT" data-bind="value: Customer.CorporateRUT" maxlength="13" />
+                                    </div>
+                                </div>*@
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">Physical Application Ref.No</div>
+                                    <div class="Field">
+                                        <input type="text" id="PhysicalApplicationRefNo" data-bind="value: Customer.PhysicalApplicationRefNo" maxlength="10" />
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">Physical Application Ref.Date</div>
+                                    <div class="Field">
+                                        <input type="text" id="PhysicalApplicationRefDate" class="datepicker" readonly="true" data-bind="value: Customer.PhysicalApplicationRefDate" />
+                                    </div>
+                                </div>
+                            </div>                           
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">External Civil Registry Result</div>
+                                    <div class="Field">
+                                        <input type="text" id="ExternalCivilRegistryResult" data-bind="value: Customer.ExternalCivilRegistryResult" maxlength="50" />
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">Combined Score</div>
+                                    <div class="Field">
+                                        <input type="text" id="CreditScore" class ="restrictCutCopyPaste" onkeypress="return OnlyNumeric(event);" data-bind="value: Customer.CreditScore" maxlength="3" />
+                                    </div>
+                                </div>
+                            </div>                             
+                        </div>
+                        <h3>Personal Details</h3>
+                        <div class="row">
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">Customer Type</div>
+                                    <div class="Field">
+                                        <select data-bind="options: customerTypeDDL,optionsText: 'Text',optionsValue: 'Value',value: Customer.CustomerType"></select>
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">Name</div>
+                                    <div class="Field">
+                                        <input type="text" id="Name" data-bind="value: Customer.Name" maxlength="50" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">Paternal Surname</div>
+                                    <div class="Field">
+                                        <input type="text" id="PaternalSurname" data-bind="value: Customer.PaternalSurname" maxlength="50" />
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">Maternal Surname</div>
+                                    <div class="Field">
+                                        <input type="text" id="MaternalSurname" data-bind="value: Customer.MaternalSurname" maxlength="50" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">Nationality</div>
+                                    <div class="Field">
+                                        <select id="Nationality" data-bind="options: nationalityDDL,optionsText: 'Text',optionsValue: 'Value',value: Customer.Nationality"></select>
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">Date Of Birth</div>
+                                    <div class="Field">
+                                        <input type="text" id="DateOfBirth" class="datepicker" readonly="true" data-bind="value: Customer.DateOfBirth" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">Gender</div>
+                                    <div class="Field">
+                                        <select data-bind="options: genderDDL,optionsText: 'Text',optionsValue: 'Value',value: Customer.Gender"></select>
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">Marital Status</div>
+                                    <div class="Field">
+                                        <select data-bind="options: maritalStatusDDL,optionsText: 'Text',optionsValue: 'Value',value: Customer.MaritalStatus"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">Number of Dependents</div>
+                                    <div class="Field">
+                                        <input type="text" id="NumberofDependents" onkeypress="return OnlyNumeric(event);" data-bind="value: Customer.NumberofDependents" maxlength="2" />
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">Education</div>
+                                    <div class="Field">
+                                        <select data-bind="options: educationDDL,optionsText: 'Text',optionsValue: 'Value',value: Customer.Education">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">Profession</div>
+                                    <div class="Field">
+                                        <select data-bind="options: professionDDL,optionsText: 'Text',optionsValue: 'Value',value: Customer.Profession"></select>
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">Housing</div>
+                                    <div class="Field">
+                                        <select data-bind="options: housingDDL,optionsText: 'Text',optionsValue: 'Value',value: Customer.Housing"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">Email</div>
+                                    <div class="Field">
+                                        <input type="text" id="EmailID" data-bind="value: Customer.EmailID" maxlength="50" />
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">Legacy Card Number</div>
+                                    <div class="Field">
+                                        <input type="text" id="LegacyCardNumber" class="restrictCutCopyPaste" onkeypress="return OnlyNumeric(event);" data-bind="value: Customer.LegacyCardNumber" maxlength="16" />
+                                    </div>
+                                </div>
+                            </div>                            
+                             @*  <div class="TwoColumn" style="width: 6%; float: left">
+                                    <div class="label fontmandatory">Active</div>
+                                    <div style="width: auto; float: right">
+                                        <input type="checkbox" id="IsActive" data-bind="checked: Customer.IsActive" />
+                                    </div>
+                                </div>
+                                <div class="TwoColumn" style="width: 8%; float: left">
+                                    <div class="label fontmandatory" style="width: 40%;">Blacklisted</div>
+                                    <div style="width: auto; float: right">
+                                        <input type="checkbox" id="IsBlackListed" data-bind="checked: Customer.IsBlackListed" />
+                                    </div>
+                                </div>*@
+                        </div>
+                        <h3>Address Details</h3>
+                        <div class="row">
+                            <script id="AddressTemplate" type="text/html">
+                            
+                                 <div class="row" >
+                                     <div class="row">
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label" style="width: 40%">Address Type</div>
+                                             <div class="Field" style="width: 52.5%">
+                                                 <select data-bind="options: addressTypeDDL,optionsText:'Text',optionsValue:'Value',value:AddressTypeCode"></select>
+                                             </div>
+                                         </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label" style="width: 40%">Type Of Residence Clearance</div>
+                                             <div class="Field" style="width: 52.5%">
+                                                 <select data-bind="options: residenceClearanceDDL,optionsText:'Text',optionsValue:'Value',value:TypeOfResidenceClearance"></select>
+                                             </div>
+                                         </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label" style="width: 40%">Region</div>
+                                             <div class="Field" style="width: 52.5%">
+                                                 <select id="Region" data-bind="options: regionDDL,optionsText:'Text',optionsValue:'Value',value:RegionCode,event: { change: RegionOnChange }"></select>
+                                                  <label id="lblValidateRegion" class="validationMessage" ></label>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="row">
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label" style="width: 40%">Communa</div>
+                                             <div class="Field" style="width: 52.5%">
+                                                 <select id="Communa" data-bind="options: communaDDL,optionsText:'Text',optionsValue:'Value',value:CommunaCode,event: { change: CommunaOnChange }"></select>
+                                                  <label id="lblValidateCommuna" class="validationMessage" ></label>
+                                             </div>
+                                         </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label" style="width: 40%">City</div>
+                                             <div class="Field" style="width: 52.5%">
+                                                 <select data-bind="options: cityDDL,optionsText:'Text',optionsValue:'Value',value:CityCode"></select>
+                                             </div>
+                                         </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label" style="width: 40%">Street</div>
+                                             <div class="Field" style="width: 50%">
+                                                 <input maxlength="50" data-bind='value: Street' />
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="row">
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label" style="width: 40%">Number</div>
+                                             <div class="Field" style="width: 50%">
+                                                 <input maxlength="10" data-bind='value: Number' />
+                                             </div>
+                                         </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label fontmandatory" style="width: 40%">Block</div>
+                                             <div class="Field" style="width: 50%">
+                                                 <input maxlength="50" data-bind='value: Block' />
+                                             </div>
+                                         </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label fontmandatory" style="width: 40%">Complement Of Address</div>
+                                             <div class="Field" style="width: 50%">
+                                                 <input maxlength="50" data-bind='value: ComplementOfAddress' />
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="row">
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label fontmandatory" style="width: 40%">Town</div>
+                                             <div class="Field" style="width: 50%">
+                                                 <input maxlength="50" data-bind='value: Town' />
+                                             </div>
+                                         </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label fontmandatory" style="width: 40%">Landmark</div>
+                                             <div class="Field" style="width: 50%">
+                                                 <input maxlength="50" data-bind='value: Landmark' />
+                                             </div>
+                                         </div>
+
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label fontmandatory" style="width: 40%">Postal Code</div>
+                                             <div class="Field" style="width: 50%">
+                                                 <input maxlength="15" data-bind='value: PostalCode' />
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="row">
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label fontmandatory" style="width: 40%">PO Box</div>
+                                             <div class="Field" style="width: 50%">
+                                                 <input maxlength="15" class="restrictCutCopyPaste" onkeypress="return OnlyNumeric(event)" data-bind='value: POBox' />
+                                             </div>
+                                         </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label" style="width: 40%">Phone</div>
+                                             <div class="Field" style="width: 50%">
+                                                 <input maxlength="15" class="restrictCutCopyPaste" onkeypress="return OnlyNumeric(event)" data-bind='value: Phone' />
+                                             </div>
+                                         </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label fontmandatory" style="width: 40%">Mobile</div>
+                                             <div class="Field" style="width: 50%">
+                                                 <input maxlength="15" class="restrictCutCopyPaste" onkeypress="return OnlyNumeric(event)" data-bind='value: Mobile' />
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="row">
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label fontmandatory" style="width: 40%">Fax</div>
+                                             <div class="Field" style="width: 50%">
+                                                 <input maxlength="15" class="restrictCutCopyPaste" onkeypress="return OnlyNumeric(event)" data-bind='value: Fax' />
+                                             </div>
+                                         </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label fontmandatory" style="width: 40%">&nbsp;</div>
+                                             <div class="Field" style="width: 50%">&nbsp;</div>
+                                         </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                             <div class="label fontmandatory" style="width: 40%">&nbsp;</div>
+                                             <div class="Field" style="width: 50%">&nbsp;</div>
+                                         </div>
+                                     </div>
+                                </div>
+                                <div class="row" style="height: 2em">
+                                    <div style="width: 8%; float: right; padding: 0 2.2em 0 2em">
+                                        <button class="Greenbutton" style="width: 100%; font-size: .8em" data-bind='click: $root.RemoveAddress'>Remove</button>
+                                    </div>
+                                </div>
+                            </script>
+                            <div>
+                                <div data-bind="template:{ name:'AddressTemplate', foreach:Customer.CustomerAddressDet }"></div>
+                                <div class="row">
+                                    <button class="Greenbutton" style="width: 8%; font-size: .8em" data-bind='click: AddNewAddress'>Add New</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Occupation Details</h3>
+                        <div class="row">
+                            <script id="OccupationTemplate" type="text/html">
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label">Work Type</div>
+                                            <div class="Field">
+                                                <select data-bind="options: workTypeDDL,optionsText: 'Text',optionsValue: 'Value',value: WorkType"></select>
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">Total Monthly Income</div>
+                                            <div class="Field">
+                                                <input type="text" id="TotalMonthlyIncome" maxlength="9" class="restrictCutCopyPaste" onkeypress="return OnlyNumeric(event);" data-bind="value: TotalMonthlyIncome" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">Company RUT</div>
+                                            <div class="Field">
+                                             <input type="text" id="CompanyRUT" data-bind="value: CompanyRUT, maskedInput: ko.observable(CompanyRUT) , mask: '999999999-*',event: { blur: ValidateRUT }" maxlength="13" />
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">Company Name</div>
+                                            <div class="Field">
+                                                <input type="text" id="CompanyName" data-bind="value: CompanyName" maxlength="50" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label">Date Of Joining</div>
+                                            <div class="Field">
+                                                <input type="text" class="datepicker" id="DateOfJoining" readonly="true" data-bind="datepicker:{},datepickerOptions: {  'changeYear': 'true','changeMonth': 'true','yearRange': '2000:2020',  'dateFormat': 'dd/mm/yy' },  value:DateOfJoining" />
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label">Designation</div>
+                                            <div class="Field">
+                                                <select id="designation" data-bind="options: designationDDL,optionsText: 'Text',optionsValue: 'Value',value: Post,event: { change: ValidateCustomerDesignation }"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label">Income Type</div>
+                                            <div class="Field">
+                                                <select data-bind="options: incomeTypeDDL,optionsText: 'Text',optionsValue: 'Value',value: IncomeType"></select>
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">Income Proof Available</div>
+                                            <div>
+                                                <input type="checkbox" id="IsIncomeProofAvailable" data-bind="checked: IsIncomeProofAvailable" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </script>
+                            <div>
+                                <div data-bind="template:{ name:'OccupationTemplate', foreach:Customer.CustomerOccupationDet }"></div>
+                            </div>
+                        </div>
+
+                        <h3>Current Account Details</h3>
+                        <div class="row">
+                            <script id="CurrentAccountTemplate" type="text/html">
+                                <tr>
+                                    <td>
+                                        <select class="gridfield" style="width: 100%" data-bind="options: accountBankDDL,optionsText:'Text',optionsValue:'Value',value:BankCode"></select>
+                                    </td>
+                                    <td>
+                                        <select class="gridfield" style="width: 100%" data-bind="options: bankTypeDDL,optionsText:'Text',optionsValue:'Value',value:BankType"></select>
+                                    </td>
+                                    <td>
+                                        <input class="gridfield restrictCutCopyPaste" style="width: 100%" maxlength="16" onkeypress="return OnlyNumeric(event);" data-bind='value: AccountNumber, uniqueName: true' /></td>
+                                    <td><a href='#' data-bind='click: $root.RemoveCurrentAccount'>Delete</a></td>
+                                </tr>
+                            </script>
+                            <div class="standard-table" style="width:90%">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="gridcolumnhead">Bank</th>
+                                            <th class="gridcolumnhead">Bank Type</th>
+                                            <th class="gridcolumnhead">Account Number</th>
+                                            <th class="gridcolumnhead">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-bind="template: { name:'CurrentAccountTemplate', foreach: Customer.CustomerCurrentAccountDetailDet }"></tbody>
+                                </table>
+
+                                <span>
+                                    <button class="Greenbutton" style="width: 8%; font-size: .8em" data-bind='click: AddNewCurrentAccount'>Add New</button></span>
+
+                            </div>
+
+                        </div>
+
+                        <h3>Credit Card Details</h3>
+                        <div class="row">
+                            <script id="CreditCardTemplate" type="text/html">
+                                <tr>
+                                    <td>
+                                        <select class="gridfield" data-bind="options: cardTypeDDL,optionsText:'Text',optionsValue:'Value',value: CardType"></select>
+                                    </td>
+                                    <td>
+                                        <select class="gridfield" data-bind="options: cardBrandDDL,optionsText:'Text',optionsValue:'Value',value: CardBrand"></select>
+                                    </td>
+                                    <td>
+                                        <input class="gridfield restrictCutCopyPaste" style="width: 100%" maxlength="16" onkeypress="return OnlyNumeric(event);" data-bind='value: CardNumber, uniqueName: true' /></td>
+                                    <td>
+                                        <select class="gridfield" style="width: 100%" data-bind="options: cardBankInstitutionDDL,optionsText:'Text',optionsValue:'Value',value: BankInstitutionId"></select>
+                                    </td>
+                                    <td>
+                                        <input class="gridfield" style="width: 100%" maxlength="5" data-bind='value: EffectiveToDate, uniqueName: true' placeholder="mm/yy" /></td>
+                                    <td>
+                                        <input class="gridfield restrictCutCopyPaste" style="text-align:right; width: 100%" maxlength="9" onkeypress="return OnlyNumeric(event);" data-bind='value: CreditLimit, uniqueName: true' /></td>
+                                    <td><a  style="width: 15em" href='#' data-bind='click: $root.RemoveCreditCard'>Delete</a></td>
+                                </tr>
+                            </script>
+                            <div class="standard-table" style="width:90%">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="gridcolumnhead">Card Type</th>
+                                            <th class="gridcolumnhead">Card Brand</th>
+                                            <th class="gridcolumnhead">Card Number</th>
+                                            <th class="gridcolumnhead">Bank Institution Id</th>
+                                            <th class="gridcolumnhead">Effective To Date</th>
+                                            <th class="gridcolumnhead">Credit Limit</th>
+                                            <th class="gridcolumnhead">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-bind="template: { name:'CreditCardTemplate', foreach: Customer.CustomerCreditCardDetailDet }"></tbody>
+                                </table>
+
+                                <span>
+                                    <button class="Greenbutton" style="width: 8%; font-size: .8em" data-bind='click: AddNewCreditCard'>Add New</button></span>
+
+                            </div>
+                        </div>
+
+                        <h3>Commercial House Consumption Details</h3>
+                        <div class="row">
+                            <script id="CommericalHouseConsumptionTemplate" type="text/html">
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label">Type</div>
+                                            <div class="Field">
+                                                <select data-bind="options: typeDDL,optionsText:'Text',optionsValue:'Value',value:Type"></select>
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label">Name</div>
+                                            <div class="Field">
+                                                <input type="text" id="ConsumptionName" name="Name" maxlength="50" data-bind="value: Name" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label">Card Number</div>
+                                            <div class="Field">
+                                                <input type="text" id="CardNumber" class="restrictCutCopyPaste" name="CardNumber" maxlength="16" onkeypress="return OnlyNumeric(event);" data-bind="value: CardNumber" />
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label">Account Status</div>
+                                            <div class="Field">
+                                                <select data-bind=" options: accountStatusDDL,optionsText:'Text',optionsValue:'Value',value:AccountStatus"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </script>
+                            <div>
+                                <div data-bind="template: { name: 'CommericalHouseConsumptionTemplate', foreach: Customer.CustomerCommericalHouseConsumptionDet }"></div>
+                            </div>
+                        </div>
+
+                        <h3>Billing Details</h3>
+                        <div class="row">
+                            <script id="BillingDetailTemplate" type="text/html">
+                               
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">Branch</div>
+                                            <div class="Field">
+                                                <select data-bind="options: branchDDL,optionsText:'Text',optionsValue: 'Value',value:BranchCode"></select>
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">Account Number</div>
+                                            <div class="Field">
+                                                <input type="text" id="AccountNo" class="restrictCutCopyPaste" name="AccountNo" maxlength="16" onkeypress="return OnlyNumeric(event);" data-bind="value:AccountNo">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label">Send Account Statement To</div>
+                                            <div class="Field">
+                                                <select data-bind="options: addressTypeDDL,optionsText:'Text',optionsValue:'Value',value:SendAccountStatementTo"></select>
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">Application Signed Off By Customer</div>
+                                            <div>
+                                                <input type="checkbox" id="IsApplicationSignedOffByCustomer" data-bind="value:IsApplicationSignedOffByCustomer">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </script>
+                        <div id="DivBillingDet" data-bind="template:{ name: 'BillingDetailTemplate', foreach: Customer.CustomerBillingDetailDet }"></div>
+                    </div>
+
+                        <h3>Dependent Details</h3>
+                        <div class="row">
+                            <script id="DependentTemplate" type="text/html">
+                                <tr>
+                                    <td>
+                                        <input class="gridfield restrictCutCopyPaste" maxlength="2" onkeypress="return OnlyNumeric(event);" data-bind='value: NoOfChildren, uniqueName: true' />
+                                    </td>
+                                    <td>
+                                         <select class="gridfield" data-bind="options: customerDependentAgeGroupDDL,optionsText:'Text',optionsValue:'Value',value: AgeGroup"></select>
+                                         @*<input class="gridfield" maxlength="5" data-bind='value: AgeGroup, uniqueName: true' />*@
+                                    </td>
+                                    <td><a href='#' data-bind='click: $root.RemoveDependent'>Delete</a></td>
+                                </tr>
+                            </script>
+                            <div class="standard-table" style="width:90%">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="gridcolumnhead">No Of Children</th>
+                                            <th class="gridcolumnhead">Age Group</th>
+                                            <th class="gridcolumnhead">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-bind="template: { name:'DependentTemplate', foreach: Customer.CustomerDependentDet }"></tbody>
+                                </table>
+
+                                <span>
+                                    <button id="AddNewDependent" class="Greenbutton" style="width: 8%; font-size: .8em" data-bind='click: AddNewDependent'>Add New</button></span>
+
+                            </div>
+                        </div>
+
+                        <h3>Decision Details</h3>
+                        <div class="row">
+                            <script id="CustomerDecisionTemplate" type="text/html">                             
+                                <div class="row">                                  
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label">Decision</div>
+                                            <div class="Field">
+                                                <select data-bind="options: decisionDDL,optionsText: 'Text',optionsValue: 'Value',value:DecisionCode"></select>
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label">Reason</div>
+                                            <div class="Field">
+                                                <select id="Reason",
+                                                    data-bind="options: decisionReasonDDL,optionsText:'Text',optionsValue:'Value',value:ReasonCode"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">Remarks</div>
+                                            <div class="Field">
+                                                <textarea id="Remarks" name="Remarks" maxlength="500" data-bind="value:Remarks" />
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label">Contract</div>
+                                            <div class="Field">
+                                                <select id="Contract",
+                                                    data-bind="options:contractDDL,
+                                                    optionsText:'Text',
+                                                    optionsValue:'Value',
+                                                    value:ContractCode,
+                                                    event: { change: ConctractOnChange }">
+                                                </select>
+                                                <label id="lblValidateContract" class="validationMessage" ></label>
+                                            </div>
+                                        </div>
+                                </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">Unemployment</div>
+                                            <div class="Field">
+                                                <select data-bind="options:unemploymentDDL,optionsText:'Text',optionsValue:'Value',value:Unemployment"></select>
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">Contract Accepted By Customer</div>
+                                            <div>
+                                                <input type="checkbox" id="IsContractAcceptedByCustomer" data-bind="value:IsContractAcceptedByCustomer" />
+                                            </div>
+                                        </div>
+                                </div>                                  
+                                </div>
+                            </script>
+                            <div id="DivDecisionDet" data-bind="template:{ name:'CustomerDecisionTemplate', foreach: Customer.CustomerDecisionDet }"></div>
+                        </div>
+                    </div>
+                    <!--Accoredion Ends-->
+
+                    @Html.Raw(Html.KnockoutButtons(lstPrivilege, false))
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <script>
+        var url = window.location.pathname;
+        var customerId = GetQueryStrings();
+        var viewModel;            
+        
+        if (customerId["ACustomerId"] && customerId["ACustomerId"] != 0) {
+            viewModel = new CustomerVM();
+            viewModel = new CustomerVM(CustomerValue);
+        }
+        else {
+            viewModel = new CustomerVM();
+        }
+
+        $(function () {
+           
+            viewModel.Customer.OrganizationCode = ko.observable(CustomerValue["OrganizationCode"]);
+            viewModel.Customer.ProductMemberTypeCode = ko.observable(CustomerValue["ProductMemberTypeCode"]);
+            var customerId = GetQueryStrings();
+            if(customerId["ARUT"] && customerId["ARUT"]!="")
+            {
+                $("#RUT").attr("value", customerId["ARUT"]);       
+                viewModel.Customer.RUT = ko.observable(customerId["ARUT"]);
+            }
+            
+            ko.validation.configure({
+                registerExtenders: true,
+                insertMessages: true,
+                messagesOnModified: false
+            });
+           
+            ko.applyBindings(viewModel);
+            
+            $("[id=Region]").append($('<option/>',
+            {
+                value: "",
+                text: "@Resources.SelectOne"
+            }));
+            $("[id=Communa]").append($('<option/>',
+            {
+                value: "",
+                text:"@Resources.SelectOne"
+            }));
+            $("[id=Product]").append($('<option/>',
+            {
+                value: "",
+                text:"@Resources.SelectOne"
+            }));
+            $("[id=Contract]").append($('<option/>',
+           {
+               value: "",
+               text:"@Resources.SelectOne"
+           }));
+            if (customerId["ACustomerId"] && customerId["ACustomerId"] != 0){
+               
+                PopulateCascadeDropDownLists("Region",CustomerValue,viewModel);
+                PopulateCascadeDropDownLists("Communa",CustomerValue,viewModel);
+                PopulateCascadeDropDownLists("Product",CustomerValue,viewModel);
+                PopulateCascadeDropDownLists("Contract",CustomerValue,viewModel);
+            }
+            
+            if( viewModel.Customer.RUT._latestValue.length == 6)
+            {          
+                $('#RUT').mask('99999-*');
+            }
+            else  if( viewModel.Customer.RUT._latestValue.length == 7)
+            { 
+                $('#RUT').mask('999999-*');
+            }
+            else  if( viewModel.Customer.RUT._latestValue.length == 8)
+            { 
+                $('#RUT').mask('9999999-*');
+            }
+            else  if( viewModel.Customer.RUT._latestValue.length == 9)
+            { 
+                $('#RUT').mask('99999999-*');
+            }
+            else  if( viewModel.Customer.RUT._latestValue.length == 10)
+            { 
+                $('#RUT').mask('999999999-*');
+            }            
+
+            var errors = ko.validation.group(viewModel.Customer, { deep: true });
+            errors.showAllMessages(false);
+        });
+       
+    </script>
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>
+
+
+
+

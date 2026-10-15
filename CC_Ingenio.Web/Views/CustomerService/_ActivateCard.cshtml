@@ -1,0 +1,121 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@{       
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+
+<style>
+    input[type=checkbox] {
+        border:none;
+        float:left;
+    }
+</style>    
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#Save").attr('disabled', true);
+        $("#Save").removeClass('Greenbutton').addClass('BtnDisabled');
+
+        if ('@ViewData["StatusCode"]' == '99') {
+            $("#Save").attr('disabled', false);
+            $("#Save").removeClass('BtnDisabled').addClass('Greenbutton');
+        }
+        else
+        {         
+            $('#Active').prop('checked', true);
+
+            $('#dialog').dialog({
+                resizable: false,
+                modal: true,
+                title: '@Resources.ApplicationName',
+                height: 180,
+                buttons: [{
+                    text: "@Resources.OK",  
+                    class:"ButtonStyle",              
+                    width:100,
+                    click: function () {
+                        $(this).dialog("close");                 
+                        $("#partialViewDiv").html('');
+                    }
+                }]
+            });
+            $('#dialog').text("@Resources.MsgCardAlreadyActivated");
+
+        }
+
+        $("#Active").click(function () {
+            $('#Active_Validate').text("");
+        });
+
+        $('#Save').click(function (e) {
+            e.preventDefault();
+
+            var checked = $("#Active").attr("checked") ? true : false;
+
+        
+            if (!checked) {
+                $('#Active_Validate').text("@Resources.MsgPleaseMakeCardActive");
+               
+                return false;
+            };
+
+            $.ajax({
+                url: '/CustomerService/ActivateCard/',
+                type: 'POST',
+                data: { ACardNumber: '@ViewData["CardNumber"]', AStatusCode: '@ViewData["StatusCode"]' },
+                cache: false,
+                success: function (data) {
+                    if (data != 'Undefined') {
+                        $('#partialViewDiv').html(data);
+                    }
+                }
+            });
+
+        });
+
+        if ('@ViewData["Saved"]' == 'True') {
+            ShowSimpleModalDialog("@Resources.MsgCardActivatedSuccessfully", "");
+        }
+
+        $('input[id="New"]').hide();
+        $('input[id="Submit"]').hide();
+        $('input[id="Delete"]').hide();
+
+    });
+</script>
+
+    <div class="row" >
+    <div class="BorderColumn"  style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.ActivateCard</div>
+            @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmActivateCard", Name = "frmActivateCard", @style = "height: 117px;" }))
+            {
+                <div class="row">
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label" style="width: 40%">@Resources.Active</div>
+                                @Html.CheckBox("Active", new { id = "Active", name = "Active" })
+                            <div class="row"><label id="Active_Validate" class="validationMessage"></label></div>
+                            </div>
+                        </div>
+                    <div>@Html.Raw(Html.BasicButtons(lstPriv))  </div>
+                
+            }
+    </div>
+    </div>
+
+<script>
+    $(function () {
+        EnableDisableControls('@ViewData["FormStatus"]');
+    })
+</script>

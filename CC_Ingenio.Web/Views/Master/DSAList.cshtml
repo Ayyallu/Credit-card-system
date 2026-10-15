@@ -1,0 +1,129 @@
+﻿@using CC_Ingenio.Web.ViewModel.Master;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.DSA, " ", Resources.Search });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model DSASearch
+@{
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    } 
+ }
+
+
+<section class="feature">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+                <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active">@Html.ActionLink(Resources.SearchPageHeading, "DSAList", "Master" )</li>
+            <li> @Html.ActionLink(Resources.DetailsPageHeading,"DSAAdd","Master" )</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("DSAList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.DSACode</div>
+                                        <div class="Field" style="padding-left:10px">
+                                            @Html.TextBoxFor(x=>x.DSACode, new { id = "DSACode", name="DSACode", maxlength = 5})
+                                        </div>                                       
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.DSAName</div>
+                                        <div class="Field" style="padding-left:10px">
+                                            @Html.TextBoxFor(x=>x.DSAName, new { id = "DSAName", name="DSAName", maxlength = 50 })
+                                        </div>
+                                    </div>
+                                </div>      
+                                                       
+                                <div class="SearchColumnbtn">
+                                    <span>
+                                        <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                    </span>
+                                    <span>
+                                        <input id="Button2" type="submit" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    }
+
+                </div>
+                <div class="row">
+                   
+                    <div class="standard-table">
+
+                        @grid.GetHtml(alternatingRowStyle:"alt",columns:grid.Columns(
+                                    grid.Column("DSACode",Resources.DSACode),                                    
+                                      grid.Column("DSAName",Resources.DSAName ),
+                                    grid.Column("ApprovalStatusDesc", Resources.Status),
+                                    grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink(Resources.Edit, "DSAAdd", "Master", new { ADSACode = item.DSACode }, null));
+                                                    
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "DirectSalesAgentView", "Master", new { ADSACode = item.DSACode }, null))); 
+                                                }
+                                            }),
+                                    grid.Column(Resources.Delete,   format: 
+                                        (item) =>
+                                                 {
+                                                     if (lstPriv.Contains("Delete"))
+                                                     {
+                                                         if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                                         {
+                                                             return Html.Raw(Html.ActionLink(Resources.Delete, "DirectSalesAgentDelete", "Master", new { ADSACode = item.DSACode }, new { @class = "delete-link" }));
+                                                         }
+                                                         else
+                                                         {
+                                                             return Html.Raw("");
+                                                         }
+                                                     }
+                                                     else
+                                                     {
+                                                         return Html.Raw("");
+                                                     }
+                                            })
+                    ))                
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>

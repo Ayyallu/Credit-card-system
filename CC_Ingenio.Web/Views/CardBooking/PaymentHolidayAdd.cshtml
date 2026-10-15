@@ -1,0 +1,237 @@
+﻿@using CC_Ingenio.DataTranfer.CardBookingInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@model PaymentHolidayDTO
+@{
+    List<string> lstPriv = new List<string>();    
+    if (ViewBag.Privileges != null)
+    {
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }    
+}
+
+
+@{
+    ViewBag.Title = Resources.MT_PaymentHoliday;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+
+    function setCalenderDates() {
+
+        var fromDate = $('#FromDate').val();
+        var toDate = $('#ToDate').val();
+
+        $('#FromDate').datepicker("option", "maxDate", toDate);
+        $('#ToDate').datepicker("option", "minDate", fromDate);
+
+
+    }
+
+    $(document).ready(function () {
+
+        $('#FromDate').datepicker("option", "onSelect", setCalenderDates);
+        $('#ToDate').datepicker("option", "onSelect", setCalenderDates);
+
+        function loading() {
+            $("div.loader").show();
+        }
+
+        $("#btnSearch").click(function () {
+            var CardNumber = $('#CardNumber').val();
+            $.ajax({
+                url: "/Master/RUTCardNumberSearchList",
+                type: "POST",
+                data: { ARUT: "", ACardnumber: CardNumber, ACustomername: "" },
+                cache: false,
+                contenttype: "application/json ; charset = utf-8",
+                success: function (data) {
+                    $("#RUTCardNumberSearchDiv").html(data);
+
+                    $('#CardNumber').val(CardNumber);
+                },
+                error: function (ts) { alert(ts.responseText) }
+            });
+
+            loading(); // loading
+            setTimeout(function () { // then show popup, deley in .5 second
+                loadPopup(); // function show popup
+            }, 500); // .5 second
+        })
+
+        $('#CardNumber').blur(function () {
+
+            var CardNo = $(this).val();
+            if (CardNo != '') {
+                $.ajax({
+                    type: 'GET',
+                    url: '/CardBooking/CardNumberAcountNoExists',
+                    data: { ACardNumber: CardNo, AProductCode: JSON.stringify(@Model.ProductCode) },
+                    cache: false,
+                    success: function (returnData) {
+                        if (returnData.CardNumber != CardNo) {
+                            alert("Invalid CardNo.");
+                            document.getElementById("CardNumber").value = '';
+                            $("#ProductCode").val('');
+                            $("#ProductName").val('');
+                            document.getElementById("CardNumber").focus();
+                           
+                            return false;
+                        }
+                        else {
+
+                            //if (CardNo != '') {
+                            $.ajax({
+                                type: 'GET',
+                                url: '/CardBooking/FindByCardNumberProductCode',
+                                data: { ACardNumber: CardNo, AProductCode: JSON.stringify(@Model.ProductCode) },
+                                cache: false,
+                                success: function (returnData) {
+                                    // alert(returnData.ProductCode);
+                                    if (returnData.ProductCode != '') {
+                                        $("#ProductCode").val(returnData.ProductCode);
+                                        $("#ProductName").val(returnData.ProductCode + ' - ' + returnData.ProductName);
+                                    }
+                                }
+                            });
+                        }
+                    }
+
+                })
+            }
+            else {
+                $("#ProductCode").val('');
+                $("#ProductName").val('');
+            }
+        });
+    });
+</script>
+@section featured
+    {
+    
+    }
+
+<section class="featured">
+     <div class="PageTitle">@ViewBag.Title </div>
+     <div class="PageRow">
+
+
+       <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li>@Html.ActionLink(Resources.SearchPageHeading, "PaymentHolidayList", "CardBooking")</li>
+                 
+            }
+            <li class="active"> @Html.ActionLink(Resources.DetailsPageHeading, "PaymentHolidayAdd", "CardBooking")</li>
+            
+        </ul>
+        <div id="RUTCardNumberSearchDiv"></div>
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("PaymentHolidaySave", "CardBooking", new { Id = Model.SlNo, }, FormMethod.Post))
+                 {
+                     <div class="tab-content" id="tab1">
+                         <div>
+                             <span>
+                                 @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                                 { 
+                                     <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                             </span>
+                         </div>
+                         <div class="row">
+
+                             <div class="row">
+                                 <div class="TwoColumn">
+                                     <div class="label">@Resources.CardNumber</div>
+                                     <div class="Field">
+                                          @Html.TextBoxFor(x => x.CardNumber, new { @class = "NumericOnly", id = "CardNumber", name = "CardNumber", maxlength = 16, @readonly = "readonly", style = "width:85%" })
+                                          @if (!string.IsNullOrWhiteSpace(Model.CardNumber))
+                                          {
+                                                 <input id="btnSearch" name="Command" value="" class="searchbuttondisabled" type="button" disabled="disabled" style="width:30px;border:none"/>
+                                          }
+                                          else
+                                          {
+                                                 //@Html.TextBoxFor(x => x.CardNumber, new { @class = "NumericOnly", id = "CardNumber", name = "CardNumber", maxlength = 16, style = "width:85%" })
+                                                 <input id="btnSearch" name="Command" value="" class="searchbutton" type="button" style="width:30px;border:none;"/>
+                                          }                                         
+                                          @Html.ValidationMessageFor(x => x.CardNumber)
+                                     </div>
+                                 </div>
+
+                                     <div class="TwoColumn">
+
+                                     <div class="label">@Resources.RUT</div>
+                                     <div class="Field">
+                                          @Html.TextBoxFor(x => x.RUT, new { id = "RUT", name = "RUT", @readonly = "true" })
+                                         @Html.ValidationMessageFor(x => x.RUT)
+                                     </div>
+                                 </div>
+
+                                
+                             </div>
+
+                             <div class="row">
+                                 <div class="TwoColumn">
+                                     <div class="label ">@Resources.FromDate</div>
+                                     <div class="Field">
+                                          @Html.TextBoxFor(x => x.FromDate, new {id = "FromDate", @class ="datepicker", @readonly="true", Value = Model.FromDate.ToShortDateString() })
+                                         @Html.ValidationMessageFor(x => x.FromDate)
+                                     </div>
+                                 </div>
+
+
+                                 <div class="TwoColumn">
+
+                                     <div class="label">@Resources.ToDate</div>
+                                     <div class="Field">
+                                          @Html.TextBoxFor(x => x.ToDate, new { id = "ToDate", @class ="datepicker", @readonly="true", Value = Model.ToDate.ToShortDateString() })
+                                         @Html.ValidationMessageFor(x => x.ToDate)
+                                     </div>
+                                 </div>
+                             </div>
+                        <div class="row">
+                          <div class="TwoColumn">
+                                     <div class="label">@Resources.Product</div>
+                                     <div class="Field">
+                                         @Html.TextBoxFor(x => x.ProductName, new { id = "ProductName", name = "ProductName", maxlength = 50, @readonly = "readonly" })
+                                         @Html.ValidationMessageFor(x => x.ProductCode)
+                                     </div>
+                                 </div>
+                         </div>
+                             </div>
+                             @Html.Raw(Html.BasicButtons(lstPriv))
+                             <div>
+                                 @Html.HiddenFor(x => x.SlNo)                                
+                                 @Html.HiddenFor(x => x.CardNumber)
+                                 @Html.HiddenFor(x => x.FromDate)
+                                 @Html.HiddenFor(x => x.ApprovalStatus)
+                                 @Html.HiddenFor(x => x.ProductCode)
+                               
+                             </div>
+                         </div>
+                     
+                 }
+
+            </div>
+        
+
+   </div>
+</section>
+<script>
+    $(function () {
+        setCalenderDates();
+
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>
+
+

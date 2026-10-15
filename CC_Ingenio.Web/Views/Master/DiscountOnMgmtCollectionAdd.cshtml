@@ -1,0 +1,265 @@
+﻿@using CC_Ingenio_Resources;
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.DiscountOnManagementCommission });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using System.Web.Script.Serialization;
+
+<script src="/Scripts/Master/DiscountOnMgmtCollection.js"></script>
+
+@model DiscountOnMgmtCollectionDTO
+@{
+    List<SelectListItem> ProductListItems = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+
+    foreach (var itm in ViewBag.ProductList)
+    {
+        ProductListItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> ContractItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.ContractList)
+    {
+        ContractItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> CommissionItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Commission)
+    {
+        CommissionItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+<script type="text/javascript">
+
+    var productListDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(ProductListItems));
+    // var contractDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(ContractItems));
+    var contractDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(""));
+    var commissionCodesDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(CommissionItems));
+    
+    var discountOnMgmtCollections =  @Html.Raw(ViewBag.DiscountOnMgmtCollections);
+    
+</script>
+
+<script type="text/javascript">
+
+    function setCurrencyPrecision() {
+        $.getJSON("/Master/GetCurrencyPrecision?ACurrencyCode=" + "UF",
+        function (modeldata) {
+            $.ajaxSetup({ cache: false });
+            precision = parseInt(modeldata.precision);
+        });
+    };
+
+    $(document).ready(function () {
+        
+        setCurrencyPrecision();
+
+        $("#frmDiscountOnMgmtCollectionSave").submit(function (e) {
+            if (parseFloat($('#ConsumptionRangeFrom').val().trim()) > parseFloat($('#ConsumptionRangeTo').val().trim())) {
+                $('#ConsumptionRangeTo_Validate').text("@Html.Raw(string.Format(Resources.MsgErrValueShouldBeLessThan, Resources.ConsumptionRangeFromUF, Resources.ConsumptionRangeToUF))");
+                e.preventDefault();
+            }
+        });
+
+        $('#ConsumptionRangeFrom').focusin(function () {
+            $('#ConsumptionRangeTo_Validate').text("");
+        });
+
+        $('#ConsumptionRangeTo').focusin(function () {
+            $('#ConsumptionRangeTo_Validate').text("");
+        });
+        
+        $('#Contract').change(function(){
+            if(discountOnMgmtCollections["DiscountOnMgmtCollectionId"] != 0)
+            {
+                var contractCode = $('#Contract').val();
+                if(contractCode == ''){
+                    $('#lblValidateContract').text("@Html.Raw(String.Format(Resources.MsgErrPleaseEnter2, Resources.Contract))");
+                }
+                else{
+                    $('#lblValidateContract').text('');
+                }
+            }
+        });
+        
+    });
+</script> 
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"DiscountOnMgmtCollectionList","Master" )</li>
+            }
+            <li class="active">@Html.ActionLink(Resources.DetailsPageHeading,"DiscountOnMgmtCollectionAdd","Master" )</li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("DiscountOnMgmtCollectionSave", "Master", new { Id = Convert.ToString(Model.DiscountOnMgmtCollectionId), }, FormMethod.Post, new { id = "frmDiscountOnMgmtCollectionSave", name = "frmDiscountOnMgmtCollectionSave" }))
+                 {
+                <div class="tab-content" id="tab1">
+                       <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>     
+                                  
+                    <div class ="row">
+                        
+                            <div class="row">
+                            <div class="row">
+                                <div class="TwoColumn"> 
+                                <div class="label">@Resources.Product</div>
+                                    <div class="Field">
+                                        <select id="Product",
+                                            data-bind="options: productListDDL,
+                                            optionsText: 'Text',
+                                            optionsValue: 'Value',
+                                            value: DiscountOnMgmtCollection.ProductCode">
+                                        </select>
+                                    </div>
+                            </div>
+                            <div class="TwoColumn"> 
+                                <div class="label">@Resources.Contract</div>
+                                    <div class="Field">
+                                        <select id = "Contract",
+                                            data-bind="options: contractDDL,
+                                            optionsText: 'Text',
+                                            optionsValue: 'Value',
+                                            value: DiscountOnMgmtCollection.ContractCode">
+                                        </select>
+                                    </div>
+                            </div>
+                                <div class="row">
+                            <div class="TwoColumn"> 
+                                <div class="label">@Resources.Commission</div>
+                                    <div class="Field">
+                                        <select data-bind="options: commissionCodesDDL,
+                                            optionsText: 'Text',
+                                            optionsValue: 'Value',
+                                            value: DiscountOnMgmtCollection.CommissionCode">
+                                        </select>
+                                    </div>
+                            </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                          
+                            <div class="row">
+                                 <script id="DiscountOnMgmtCollectionDetailsTemplate" type="text/html">
+                                <tr>
+                                    <td>
+                                        <input id="ConsumptionRangeFrom" data-bind="value: ConsumptionRangeFrom" maxlength="17", onkeypress = "return AllowOnlyAmountByCurrencyPrecision(this,event, precision);", class = "gridfield", style="text-align:right; width:80%", onblur = "FormatOnBlurWithDecimal(event)" />
+@*                                        <input id="ConsumptionRangeFrom" data-bind="value: ConsumptionRangeFrom" maxlength="11", onkeypress = "return AllowOnlyAmountWithoutDot(event)", class = "gridfield", style="text-align:right; width:80%", onblur = "FormatOnBlur(event)" />*@
+                                    </td>
+                                    <td>
+                                        <input id="ConsumptionRangeTo" data-bind="value: ConsumptionRangeTo" maxlength="17", onkeypress = "return AllowOnlyAmountByCurrencyPrecision(this,event, precision);", class = "gridfield", style="text-align:right; width:80%", onblur = "FormatOnBlurWithDecimal(event)" />
+@*                                        <input id="ConsumptionRangeTo" data-bind="value: ConsumptionRangeTo" maxlength="11", onkeypress = "return AllowOnlyAmountWithoutDot(event)", class = "gridfield", style="text-align:right; width:80%", onblur = "FormatOnBlur(event)" />*@
+                                    </td>
+                                    <td>
+                                        <input id="DiscountPercentage" data-bind="value: DiscountPercentage" maxlength="5", onkeypress="return validateFloatKeyPress(this,event);", class = "gridfield", style="text-align:right; width:80%" />
+                                    </td>
+                                    
+                                    <td><a href='#' data-bind='click: $root.remove'>Delete</a></td>
+                                </tr>
+                            </script>
+                            <div class="standard-table">
+                               <table>
+                                    <thead>
+                                        <tr>
+                                            <th>@Resources.ConsumptionRangeFromUF</th>
+                                            <th>@Resources.ConsumptionRangeToUF</th>
+                                            <th>@Resources.DiscountPercentage</th>
+                                            <th>@Resources.Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-bind="template: { name: 'DiscountOnMgmtCollectionDetailsTemplate', foreach: DiscountOnMgmtCollection.DiscountOnMgmtCollectionDetailsData }"></tbody>
+                              </table>
+
+                                    <span><button class="Greenbutton" data-bind='click: AddItem'>@Resources.AddNew</button></span>
+
+                            </div>
+                        </div>
+                                                     
+                        <div class="rowbtn">
+                            @Html.Raw(Html.KnockoutButtons(lstPriv, true))
+                        </div>
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+
+    
+        <script>
+            $(function () {
+                $("input#New").on('click', function () {
+                    window.location.href = "/Master/DiscountOnMgmtCollectionAdd";
+                })
+            });
+            var url = window.location.pathname;
+            var DiscountOnMgmtCollectionId = GetQueryStrings();
+            var viewModel;
+        
+            if (DiscountOnMgmtCollectionId["ADiscountOnMgmtCollectionId"] && DiscountOnMgmtCollectionId["ADiscountOnMgmtCollectionId"] != 0)
+            {
+                viewModel = new DiscountOnMgmtCollectionVM(discountOnMgmtCollections);
+            }
+            else
+            {
+                viewModel = new DiscountOnMgmtCollectionVM();
+            }
+            $(function ()
+            {
+                var DiscountOnMgmtCollectionId = GetQueryStrings();
+                ko.applyBindings(viewModel);
+  
+                $("[id=Contract]").append($('<option/>',
+                  {
+                      value: "",
+                      text:"@Resources.SelectOne"
+                  }));
+                if (DiscountOnMgmtCollectionId["ADiscountOnMgmtCollectionId"] && DiscountOnMgmtCollectionId["ADiscountOnMgmtCollectionId"] != 0){
+                    PopulateContractCascadeDDL(discountOnMgmtCollections,viewModel);
+                }
+
+                var errors = ko.validation.group(viewModel.DiscountOnMgmtCollection, { deep: true });
+                errors.showAllMessages(false);
+            });
+    </script>
+
+
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>

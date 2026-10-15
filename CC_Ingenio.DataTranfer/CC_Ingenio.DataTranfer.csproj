@@ -1,0 +1,240 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AC35B5F1-68DE-40D6-8E4B-179D92DF7C27}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CC_Ingenio.DataTranfer</RootNamespace>
+    <AssemblyName>CC_Ingenio.DataTranfer</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApprovalQueueInfo\ApprovalQueueDTO.cs" />
+    <Compile Include="AuthorizationInfo\AdjustmentDTO.cs" />
+    <Compile Include="AuthorizationInfo\AuthorizationCancellationDTO.cs" />
+    <Compile Include="AuthorizationInfo\BillingCycleViewDTO.cs" />
+    <Compile Include="AuthorizationInfo\ReversalTransactionDTO.cs" />
+    <Compile Include="AuthorizationInfo\EMIAuthorizationDTO.cs" />
+    <Compile Include="AuthorizationInfo\EMITransactionInstallmentDTO.cs" />
+    <Compile Include="AuthorizationInfo\EMITransactionDTO.cs" />
+    <Compile Include="AuthorizationInfo\ForceAuthorizationDTO.cs" />
+    <Compile Include="AuthorizationInfo\ManualTransactionDTO.cs" />
+    <Compile Include="AuthorizationInfo\TransactionAdjustmentDTO.cs" />
+    <Compile Include="BillingInfo\OnlinePaymentDTO.cs" />
+    <Compile Include="BillingInfo\RefinancingDTO.cs" />
+    <Compile Include="BillingInfo\RenegotiationDTO.cs" />
+    <Compile Include="BillingInfo\StatementGenerationDTO.cs" />
+    <Compile Include="CardBookingInfo\CardEmbossedDTO.cs" />
+    <Compile Include="CardBookingInfo\CardEmbossingDTO.cs" />
+    <Compile Include="CardBookingInfo\CardMasterDTO.cs" />
+    <Compile Include="CardBookingInfo\PaymentHolidayDTO.cs" />
+    <Compile Include="CustomerServiceInfo\AlertMessageDTO.cs" />
+    <Compile Include="CustomerServiceInfo\BillingCycleChangeDTO.cs" />
+    <Compile Include="CustomerServiceInfo\CardClosureHistoryDTO.cs" />
+    <Compile Include="CustomerServiceInfo\CardReactivationDTO.cs" />
+    <Compile Include="ContactInfo\AddressDTO.cs" />
+    <Compile Include="ContactInfo\ContactAddressDTO.cs" />
+    <Compile Include="ContactInfo\ContactDTO.cs" />
+    <Compile Include="CustomerServiceInfo\BlockSegmentCardDTO.cs" />
+    <Compile Include="CustomerServiceInfo\BlockedCardDetailsDTO.cs" />
+    <Compile Include="CustomerServiceInfo\CardClosureDTO.cs" />
+    <Compile Include="CustomerServiceInfo\ConversionTableDTO.cs" />
+    <Compile Include="CustomerServiceInfo\ChangeCreditLimitDTO.cs" />
+    <Compile Include="CustomerServiceInfo\FinancialSummaryDTO.cs" />
+    <Compile Include="CustomerServiceInfo\CustomerTransactionDetailsDTO.cs" />
+    <Compile Include="CustomerServiceInfo\DisputedTransactionsDTO.cs" />
+    <Compile Include="CustomerServiceInfo\InstallmentScheduleDetailsDTO.cs" />
+    <Compile Include="CustomerServiceInfo\InstallmentScheduleDTO.cs" />
+    <Compile Include="CustomerServiceInfo\LineUtilizationDTO.cs" />
+    <Compile Include="CustomerServiceInfo\LostStolenCardBlockDTO.cs" />
+    <Compile Include="CustomerServiceInfo\LostStolenReissueRequestDTO.cs" />
+    <Compile Include="CustomerServiceInfo\NotepadEntryDTO.cs" />
+    <Compile Include="CustomerServiceInfo\OverDueSummaryDTO.cs" />
+    <Compile Include="CustomerServiceInfo\SwapProductDTO.cs" />
+    <Compile Include="CustomerServiceInfo\UnbilledTransactionDetailsDTO.cs" />
+    <Compile Include="CustomerServiceInfo\UnbilledTransactionsDTO.cs" />
+    <Compile Include="CustomerServiceInfo\UnMatchedAuthorizationDTO.cs" />
+    <Compile Include="CustomerServiceInfo\CustomerServiceDetailsDTO.cs" />
+    <Compile Include="CustomerServiceInfo\UpdatedCustomerAddressDTO.cs" />
+    <Compile Include="CustomerServiceInfo\UploadDocumentDTO.cs" />
+    <Compile Include="LookUpInfo\AlertTypeDTO.cs" />
+    <Compile Include="LookUpInfo\ApprovalContextDTO.cs" />
+    <Compile Include="LookUpInfo\BankDTO.cs" />
+    <Compile Include="LookUpInfo\CardReactivationReasonDTO.cs" />
+    <Compile Include="LookUpInfo\CardTypeDTO.cs" />
+    <Compile Include="LookUpInfo\ClosureReasonDTO.cs" />
+    <Compile Include="LookUpInfo\ContractTypeDTO.cs" />
+    <Compile Include="LookUpInfo\ApprovalQueueContextDTO.cs" />
+    <Compile Include="LookUpInfo\EducationDTO.cs" />
+    <Compile Include="LookUpInfo\FeeTypesDTO.cs" />
+    <Compile Include="LookUpInfo\InterestCalculationDTO.cs" />
+    <Compile Include="LookUpInfo\FirstBillingDTO.cs" />
+    <Compile Include="LookUpInfo\MaritialStatusDTO.cs" />
+    <Compile Include="LookUpInfo\MCCDTO.cs" />
+    <Compile Include="LookUpInfo\MerchantDTO.cs" />
+    <Compile Include="LookUpInfo\DecisionDTO.cs" />
+    <Compile Include="LookUpInfo\DecisionReasonDTO.cs" />
+    <Compile Include="LookUpInfo\NetworkDTO.cs" />
+    <Compile Include="LookUpInfo\ProductLookUpDTO.cs" />
+    <Compile Include="LookUpInfo\ProfessionDTO.cs" />
+    <Compile Include="LookUpInfo\TransactionCheckFrequencyDTO.cs" />
+    <Compile Include="LookUpInfo\UserCultureDTO.cs" />
+    <Compile Include="MasterInfo\AdjustmentFinancialAccountDTO.cs" />
+    <Compile Include="MasterInfo\BillingCycleParameterDTO.cs" />
+    <Compile Include="MasterInfo\BillingParameterDTO.cs" />
+    <Compile Include="MasterInfo\BlockCodeForCommissionExclusionDTO.cs" />
+    <Compile Include="MasterInfo\BranchDTO.cs" />
+    <Compile Include="MasterInfo\CardCreditSegmentDTO.cs" />
+    <Compile Include="MasterInfo\ChangeBusinessDateDTO.cs" />
+    <Compile Include="MasterInfo\CollectionChargeDetailsDTO.cs" />
+    <Compile Include="MasterInfo\CollectionChargeDTO.cs" />
+    <Compile Include="MasterInfo\CommissionChargeDetailsDTO.cs" />
+    <Compile Include="MasterInfo\CommissionChargeDTO.cs" />
+    <Compile Include="MasterInfo\CommissionDTO.cs" />
+    <Compile Include="MasterInfo\MerchantDiscountDTO.cs" />
+    <Compile Include="MasterInfo\MerchantTransactionsDTO.cs" />
+    <Compile Include="MasterInfo\SalesIdDTO.cs" />
+    <Compile Include="MasterInfo\CreditSubSegmentDTO.cs" />
+    <Compile Include="MasterInfo\DirectSalesAgentDTO.cs" />
+    <Compile Include="MasterInfo\DiscountOnMgmtCollectionDetailsDTO.cs" />
+    <Compile Include="MasterInfo\DiscountPercentageDetailsDTO.cs" />
+    <Compile Include="MasterInfo\DiscountPercentageDTO.cs" />
+    <Compile Include="MasterInfo\IndustrialCustomerAddressDTO.cs" />
+    <Compile Include="MasterInfo\IndustrialCustomerDTO.cs" />
+    <Compile Include="MasterInfo\InterestMasterDetailsDTO.cs" />
+    <Compile Include="MasterInfo\MerchantsDTO.cs" />
+    <Compile Include="MasterInfo\RUTCardNumberSearchDTO.cs" />
+    <Compile Include="MasterInfo\SBIFInterestDetailsDTO.cs" />
+    <Compile Include="MasterInfo\StatementInterestDTO.cs" />
+    <Compile Include="MasterInfo\SystemMaintenanceConfigurationDTO.cs" />
+    <Compile Include="MasterInfo\CustomerBillingDetailDTO.cs" />
+    <Compile Include="MasterInfo\CustomerCommericalHouseConsumptionDTO.cs" />
+    <Compile Include="MasterInfo\CustomerCreditCardDetailDTO.cs" />
+    <Compile Include="MasterInfo\CustomerCurrentAccountDetailDTO.cs" />
+    <Compile Include="MasterInfo\CustomerDecisionDTO.cs" />
+    <Compile Include="MasterInfo\CustomerDependentDTO.cs" />
+    <Compile Include="LookUpInfo\MemberTypeDTO.cs" />
+    <Compile Include="LookUpInfo\ProductCategoryDTO.cs" />
+    <Compile Include="MasterInfo\BlockCodeDTO.cs" />
+    <Compile Include="MasterInfo\BoostMaintenanceDTO.cs" />
+    <Compile Include="MasterInfo\CalendarDateMaintenanceDTO.cs" />
+    <Compile Include="MasterInfo\CardStatusDTO.cs" />
+    <Compile Include="LookUpInfo\CityCategoryDTO.cs" />
+    <Compile Include="LookUpInfo\CommunaDTO.cs" />
+    <Compile Include="LookUpInfo\CompanyCategoryDTO.cs" />
+    <Compile Include="LookUpInfo\CountryDTO.cs" />
+    <Compile Include="LookUpInfo\HubDTO.cs" />
+    <Compile Include="LookUpInfo\LegalEntityDTO.cs" />
+    <Compile Include="LookUpInfo\RegionDTO.cs" />
+    <Compile Include="LookUpInfo\SpokeDTO.cs" />
+    <Compile Include="MasterInfo\CityDTO.cs" />
+    <Compile Include="MasterInfo\CompanyDTO.cs" />
+    <Compile Include="MasterInfo\ContractDTO.cs" />
+    <Compile Include="MasterInfo\ContractTemplateDTO.cs" />
+    <Compile Include="LookUpInfo\BillingCycleDTO.cs" />
+    <Compile Include="LookUpInfo\ProductSubCategoryDTO.cs" />
+    <Compile Include="LookUpInfo\ProductClassDTO.cs" />
+    <Compile Include="LookUpInfo\ProductMemberTypeDTO.cs" />
+    <Compile Include="LookUpInfo\ServiceDTO.cs" />
+    <Compile Include="LookUpInfo\ProductStatusDTO.cs" />
+    <Compile Include="LookUpInfo\InterestMethodDTO.cs" />
+    <Compile Include="MasterInfo\CurrencyDTO.cs" />
+    <Compile Include="MasterInfo\CreditSegmentDTO.cs" />
+    <Compile Include="MasterInfo\CustomerAddressDTO.cs" />
+    <Compile Include="MasterInfo\CustomerDTO.cs" />
+    <Compile Include="MasterInfo\CustomerOccupationDTO.cs" />
+    <Compile Include="MasterInfo\CustomerSegmentDTO.cs" />
+    <Compile Include="MasterInfo\CustomerSubSegmentDTO.cs" />
+    <Compile Include="LookUpInfo\DefaultAffinityDTO.cs" />
+    <Compile Include="MasterInfo\DesignationDTO.cs" />
+    <Compile Include="MasterInfo\DiscountOnMgmtCollectionDTO.cs" />
+    <Compile Include="MasterInfo\FeeDTO.cs" />
+    <Compile Include="MasterInfo\FeeTypeDTO.cs" />
+    <Compile Include="MasterInfo\FinancialAccountDTO.cs" />
+    <Compile Include="MasterInfo\FinancialActivityDTO.cs" />
+    <Compile Include="MasterInfo\FranchiseDTO.cs" />
+    <Compile Include="MasterInfo\GeneralDTO.cs" />
+    <Compile Include="MasterInfo\InsuranceChargeDTO.cs" />
+    <Compile Include="MasterInfo\InterestMasterDTO.cs" />
+    <Compile Include="MasterInfo\OrganizationDTO.cs" />
+    <Compile Include="MasterInfo\PaymentAllocationTypeDTO.cs" />
+    <Compile Include="MasterInfo\PlanMasterDTO.cs" />
+    <Compile Include="MasterInfo\ProductDTO.cs" />
+    <Compile Include="MasterInfo\ProductTypeDTO.cs" />
+    <Compile Include="MasterInfo\SBIFInterestDTO.cs" />
+    <Compile Include="MasterInfo\SourcingDTO.cs" />
+    <Compile Include="MasterInfo\StatementGroupingDTO.cs" />
+    <Compile Include="MasterInfo\SystemParameterDTO.cs" />
+    <Compile Include="MasterInfo\TransactionDTO.cs" />
+    <Compile Include="MasterInfo\TransactionSubCodeDTO.cs" />
+    <Compile Include="MasterInfo\UFRateSettingsDTO.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserInfo\LoginAuditDTO.cs" />
+    <Compile Include="UserInfo\LoginUserDTO.cs" />
+    <Compile Include="UserInfo\UserAllowedBranchDTO.cs" />
+    <Compile Include="UserInfo\UserDTO.cs" />
+    <Compile Include="UserInfo\UserGroupDTO.cs" />
+    <Compile Include="UserInfo\UserGroupMembersDTO.cs" />
+    <Compile Include="UserInfo\UserPrivilegeDTO.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CC_Ingenio.Common\CC_Ingenio.Common.csproj">
+      <Project>{7492d44e-db7b-42b5-9b47-8280f8ca9ffc}</Project>
+      <Name>CC_Ingenio.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CC_Ingenio_Resources\CC_Ingenio_Resources.csproj">
+      <Project>{f92320c6-0a4d-4309-9130-a0c107431869}</Project>
+      <Name>CC_Ingenio_Resources</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

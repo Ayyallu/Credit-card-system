@@ -1,0 +1,320 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+ 
+}
+<script>
+    $(function ()
+    {
+        
+       
+        //$("#AccountNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+        //$("#CardNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+        //$("#BatchNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+
+        $lstType = $('select[id*="Type"]');
+        
+        $lstType.change(function ()
+        {
+          
+            if ($lstType.val() == "BT")
+            {                
+             //   $("#AccountNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+                //  $("#CardNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+                $("#AccountNo").removeAttr("disabled", "").css("background-color", 'white');
+                $("#CardNo").removeAttr("disabled", "").css("background-color", 'white');
+                $("#BatchNo").removeAttr("disabled", "").css("background-color", 'white');
+            }
+            else if ($lstType.val() == "ML")
+            {
+                $("#AccountNo").removeAttr("disabled", "").css("background-color", 'white');
+                $("#CardNo").removeAttr("disabled", "").css("background-color", 'white');
+                $("#BatchNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+            }
+            else
+            {
+                $("#AccountNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+                $("#CardNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+                $("#BatchNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+            }
+        });
+    });
+    var index = 1;
+    $(document).ready(function () {
+        $("#allBox").click(function () {
+            var type = $lstType.val();
+
+            //alert( $(".checkbox").attr("checked", $(this).attr("checked")));
+            var all = $(".select").attr("checked") ? true : false;
+           // alert(all);
+            $(".select").attr("checked", $(this).attr("checked") ? true : false);
+            $.ajax({
+                url: '/Authorization/UpdatingForceSessionAll/',
+                data: { ischecked: all, Type: type },
+                type: 'get',
+                cache: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    //  alert(data);
+                }
+            });
+        });
+        $("input.select").each(function () {
+            $(this).data('row', index);
+            $(this).click(function () {
+                var type = $lstType.val();
+                var tr = $(this).parents('tr:first');
+                var CardNumber = tr.find("#EMIAuthNo").text();
+
+                var Isprinted = tr.find('#IsChecked').attr('checked') ? "True" : "False";
+
+
+                //alert(Isprinted);
+                $.ajax({
+                    url: '/Authorization/UpdatingEMIMasterSession/',
+                    data: { CardNumber: CardNumber, ischecked: Isprinted, Type: type },
+                    type: 'get',
+                    cache: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                       
+                        //  alert(data);
+                    }
+                });
+            });
+            index++;
+        });
+
+        $("#SearchButton").click(function () {
+
+            $.ajax({
+                type: 'POST',
+                url: '/Authorization/DeletingEMIData',
+                success: function (returnData) {
+
+                    if (returnData.RedirectUrl.length > 0) {
+
+                        window.location.href = returnData.RedirectUrl;
+                        return true;
+                    }
+
+                }
+
+            });
+
+        });
+
+
+
+    })
+
+</script>
+@using CC_Ingenio.Web.ViewModel.Authorization;
+@using CC_Ingenio_Resources;
+@model EMIAuthorizationSearch 
+@{
+        
+    var grid = new WebGrid(Model.SearchResults,
+                defaultSort: "AuthCode",
+                rowsPerPage: 5);
+
+    List<SelectListItem> TypeItems = new List<SelectListItem>();
+    TypeItems.Add(new SelectListItem { Text = Resources.SelectOne, Value = String.Empty });
+    TypeItems.Add(new SelectListItem { Text = "CardNumber", Value = "BT" });
+    TypeItems.Add(new SelectListItem { Text = "RUT", Value = "ML" });
+    
+
+    
+
+
+    
+
+
+    
+}
+@using System.Web.Script.Serialization;
+@section featured {
+}
+
+
+
+<script type="text/javascript">
+    $(function () {
+        $("#AuthPost").click(function (e) {
+
+            e.preventDefault();
+            $("#frmAuthPost").submit();
+            //$("#dialog").dialog({
+            //    resizable: false,
+            //    height: 160,
+            //    width: 'auto',
+            //    modal: true,
+            //    title: '@Resources.ApplicationName',
+            //    buttons: {
+            //        "Yes": function () {
+
+            //            $("#dialog").dialog("close");
+
+            //            $("#frmAuthPost").submit();
+                     
+
+            //        },
+            //        "No": function () {
+            //            $(this).dialog("close");
+            //        }
+            //    }
+            //});
+
+            //$("#dialog").text("Do you want to post the transactions");
+
+            //$("#dialog").dialog("open");
+
+
+        });
+
+        $("#Reset").click(function (e) {
+
+            $("#Type").attr("value", String.Empty);
+            $("#Type").attr("Text", "Select");
+
+            $("#AccountNo").attr("value", "");
+            $("#CardNo").attr("value", "");
+            $("#BatchNo").attr("value", ""); 
+            $("#TxnToDate").attr("value", ""); 
+            $("#TxnDate").attr("value", "");           
+           
+           
+        });
+    }); 
+</script>
+
+<section class="featured">
+    <div class="PageTitle">@Resources.PrePaymentOrPreClosureSettlment</div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            @using (Html.BeginForm("EMIAuthorizationAdd", "Authorization", FormMethod.Get, new { id = "frmNew", name = "frmNew" }))
+            {
+                <div class="tab-content" id="tab1">
+
+                    <div class="row">
+
+                        <fieldset class="double">
+                            <legend></legend>
+                             <div class="row">
+                                <div class="label">@Resources.Criteria</div>
+                                <div class="Field">
+                                     @Html.DropDownListFor(x => x.Type, TypeItems.AsEnumerable(), new { id="Type", name="Type"})
+                                    @Html.ValidationMessageFor(x => x.Type,"Please select Criteria")
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">@Resources.CardNumber</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CardNumber, new { id = "CardNumber", name = "CardNumber", maxlength = 16 })
+                                     @Html.ValidationMessageFor(x => x.CardNumber,string.Format(Resources.MsgErrPleaseSelect,Resources.CardNumber))
+
+                                </div>
+                            </div>
+                         
+                                  <div class="row">
+
+                                         
+                                <div class="label">@Resources.Prepayment</div>
+                                
+                                 @Html.RadioButtonFor(x => x.SettlmentType, "Pre", new { id = "SettlmentType", name = "SettlmentType" })
+                                   
+                                
+                         
+                            <div class="row">
+                                <div class="label">@Resources.PreClosure </div>
+                                
+                                    @Html.RadioButtonFor(x => x.SettlmentType,"Clo",new { id = "SettlmentType", name = "SettlmentType" })
+                                 @Html.ValidationMessageFor(x => x.SettlmentType,"Please select Settlement Type")
+                                  
+                                </div>
+                            </div>
+                         
+                          
+                  
+
+             
+
+
+                      
+                        </fieldset>
+
+             
+
+
+                        <div class="rowbtn">
+                            <span>
+                                <input id="SearchButton" name="SearchButton" value="@Resources.Search" type="submit" class="Greenbutton" /></span>
+                            <span>
+                                <input id="Reset" type="reset" class="Greenbutton" value="@Resources.Cancel" /></span>
+                        </div>
+                    </div>
+
+
+            
+                </div>
+            }
+
+        </div>
+
+                <div class="row">
+
+            <div class="standard-table">
+                 
+                         @grid.GetHtml(columns: grid.Columns(
+                   grid.Column(columnName: "IsCheck", header: " ", 
+                             //@<text><input class="box"  type="checkbox" /></text>), //
+                        //(item) => @Html.Raw("<input type='checkbox' class = 'select' id='IsPosted'  " + (((item.Value).IsPosted == true) ? "checked" : "") + " />")),    
+                        
+                           format: (item) =>
+                                            {
+                                                if (item.IsClosed)
+                                                {
+                                                    return Html.Raw("");
+                                                }   
+                                                else
+                                                {
+
+                                                    return @Html.Raw("<input type='checkbox' class = 'select' id='IsChecked'  " + (((item.Value).IsChecked == true) ? "checked" : "") + " />");
+                                                }
+                                            } )   ,                  
+
+
+                                  
+                                    grid.Column("CardNUmber", Resources.CardNumber),
+                                    grid.Column("AccountNo", Resources.AccountNumber),
+                                    grid.Column("MerchantCode", Resources.MerchantCode),
+                                    grid.Column("TransactionCode", Resources.TransactionCode),
+                                    grid.Column("EMIAuthNo", Resources.AuthCode,format: @<text><label id="EMIAuthNo" style="font-size: .95em;grid-column-align :end ; font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.EMIAuthNo</label> </text>),                                   
+                                    //grid.Column("SegmentCode", "Segment Code"),
+                                    grid.Column("TotalPrincipalAmt", Resources.PrincipalAmount,format: @<text><label id="TotalPrincipalAmt" style="font-size: .95em;  text-align :right ; font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.TotalPrincipalAmt</label> </text>),                                   
+                                      grid.Column("TotalInterestAmt", Resources.InterestAmount,format: @<text><label id="TotalInterestAmt" style="font-size: .95em;   text-align :right ; font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.TotalInterestAmt</label> </text>),                                   
+
+                                    grid.Column("LoanBookedDate", Resources.LoanDate, format:@<text> @item.LoanBookedDate.ToShortDateString()</text>)
+                                 
+                                   // grid.Column("AuthCode", "AuthCode")@*,
+                                    //grid.Column("Status", header: "Status", format: @<text>@Html.DropDownList("selection", AuthCodeItems)</text>)*@)
+                       ))
+
+            </div>
+        </div>
+
+          <div class="rowbtn">
+            @using (Html.BeginForm("EMIAuthorizationPost", "Authorization", FormMethod.Post, new { id = "frmAuthPost", name = "frmAuthPost" }))
+            {
+                <span>
+                  @*  <input type="hidden" id="hidData" name="hidData" value="@Html.Raw(new JavaScriptSerializer().Serialize(TempData["Data"]))" />*@
+                     <input type="hidden" id="hidData" name="hidData" value =ra />
+                    <input id="AuthPost" name="Submit" value=@Resources.AuthPost type="submit" class="Greenbutton" /></span>
+            }
+        </div>
+
+
+    </div>
+</section>

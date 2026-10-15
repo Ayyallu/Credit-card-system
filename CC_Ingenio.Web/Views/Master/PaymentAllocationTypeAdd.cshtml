@@ -1,0 +1,287 @@
+﻿@using CC_Ingenio_Resources;
+
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.PaymentAllocationType });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@model PaymentAllocationTypeDTO
+@{
+    List<SelectListItem> PaymentAllocationTypeItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.PaymentAllocationTypeList)
+    {
+        PaymentAllocationTypeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> PaymentAllocationSequenceItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.PaymentAllocationSequenceList)
+    {
+        PaymentAllocationSequenceItems.Add(new SelectListItem { Text = itm.Value, Value = itm.Value });
+    }
+    PaymentAllocationSequenceItems.RemoveAt(0);
+    
+    List<string> lstPriv = new List<string>();
+
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+    
+<style>
+    .custom-errors {
+	color:#db2a2a ;
+    font-family: 'Segoe UI', Arial, sans-serif;
+	font-weight: bold;
+	font-size: .90em;
+    padding-left : 10.5em;
+}
+</style>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        
+
+        $("#frmPaymentAllocationTypeSave").submit(function (e) {
+
+            $("#lstSelectedPaymentAllocSeq option").prop("selected", "selected");
+            if ($('#lstSelectedPaymentAllocSeq option:selected').length == 0) {
+                $('#AssignedList_Validate').text("@Html.Raw(String.Format(Resources.MsgErrPleaseEnter2, Resources.PaymentAllocationSequence))");
+                e.preventDefault;
+            }
+        });
+
+        $("#lstSelectedPaymentAllocSeq").change(function () {
+            $('#AssignedList_Validate').text("");
+        });
+
+        var originalItems;
+        var selectedItems;
+
+        window.globalVar = $("#lstPaymentAllocSeq option");
+        originalItems = $("#lstPaymentAllocSeq option");
+        var originalItemsCopy = originalItems;
+        $("#btnMoveUp").click(moveUp);
+        $("#btnMoveDown").click(moveDown);
+        resetList();
+
+        $('#btnRight').click
+            (function (e) {
+                var selectedItem = $('#lstPaymentAllocSeq option:selected');
+                if (selectedItem.length == 0) {
+                    alert("No Item selected.");
+                    e.preventDefault;
+                }
+                else {
+                    $("#lstPaymentAllocSeq > option:selected").appendTo("#lstSelectedPaymentAllocSeq");
+                    $("#lstSelectedPaymentAllocSeq")[0].selectedIndex = -1;
+                    $("#lstSelectedPaymentAllocSeq").change();
+                };
+            });
+
+        $('#btnLeft').click(function (e) {
+            var selectedItemLeft = $('#lstSelectedPaymentAllocSeq option:selected');
+            if (selectedItemLeft.length == 0) {
+                alert("No Item selected.");
+            }
+            else {
+                $('#lstSelectedPaymentAllocSeq > option:selected').appendTo("#lstPaymentAllocSeq");
+                resetList();
+                $("#lstPaymentAllocSeq")[0].selectedIndex = -1;
+            }
+        });
+
+        function moveUp() {
+            $("#lstSelectedPaymentAllocSeq option:selected").each(function () {
+                var listItem = $(this);
+                var listItemPosition = $("#lstSelectedPaymentAllocSeq option").index(listItem) + 1;
+
+                if (listItemPosition == 1) return false;
+
+                listItem.insertBefore(listItem.prev());
+            });
+        }
+
+        function moveDown() {
+
+            var itemsCount = $("#lstSelectedPaymentAllocSeq option").length;
+
+            $($("#lstSelectedPaymentAllocSeq option:selected").get().reverse()).each(function () {
+                var listItem = $(this);
+                var listItemPosition = $("#lstSelectedPaymentAllocSeq option").index(listItem) + 1;
+
+                if (listItemPosition == itemsCount) return false;
+
+                listItem.insertAfter(listItem.next());
+            });
+        }
+
+        function resetList() {
+
+            selectedItems = $("#lstSelectedPaymentAllocSeq option");
+
+            originalItemsCopy = globalVar.slice();
+
+            for (var i = 0; i < selectedItems.length; i++) {
+                removeFromArray(selectedItems[i].value);
+            }
+
+            function removeFromArray(arrElem) {
+                for (var i = originalItemsCopy.length; i--;) {
+                    if (originalItemsCopy[i].value === arrElem) {
+                        originalItemsCopy.splice(i, 1);
+                        return false;
+                    }
+                }
+            };
+
+            var result = originalItemsCopy;
+            var finalArray = result.get();
+            $("#lstPaymentAllocSeq").html(finalArray);
+
+        }
+
+
+    })
+
+</script>
+
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"PaymentAllocationTypeList","Master" )</li>
+            }
+            <li class="active"><a href="#tab1">@Resources.DetailsPageHeading</a></li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("PaymentAllocationTypeSave", "Master", new { Id = Convert.ToString(Model.PaymentAllocationTypeId), }, FormMethod.Post, new { id = "frmPaymentAllocationTypeSave", name = "frmPaymentAllocationType" }))
+                 {
+                <div class="tab-content" id="tab1">
+                      <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc })  </text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+                      <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.CardType</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.CardType, PaymentAllocationTypeItems.AsEnumerable(),new {@disabled="disabled" })
+                                    @Html.ValidationMessageFor(x => x.CardType)
+                                </div>
+                            </div>
+                    </div>
+                    <div class="row">
+                         <div class="TwoColumn">
+                                <div class="label">@Resources.CardOrRUTNo</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.SeqNr, new { id = "SeqNr", name="SeqNr", maxlength = "25",@readonly = "readonly" })
+                                    @Html.ValidationMessageFor(x => x.SeqNr)
+                                </div>
+                            </div>
+                     </div>
+                    <div class="row">
+@*                        <div class="TwoColumn">
+                            <div class="label blue">Payment Allocation Sequence</div>
+                            <div class="Field">
+                                <div style ="float:left">
+                                        @Html.ListBoxFor(m => m.PaymentAllocationList, new SelectList(PaymentAllocationSequenceItems, "Value", "Text", PaymentAllocationSequenceItems[0]), new { @Id = "lstPaymentAllocSeq", @style = "width:100px;height:150px;" })
+                                </div>
+                                <div style ="float:left;padding-left:5px">
+                                    <div class="row" style="padding-top:30px">
+                                        <input id="btnRight" name="Command" value="  >>" class="Greenbutton" type="button" style="width:50px" />
+                                    </div>
+                                    <div class="row" style="padding-top:0px">
+                                        <input id="btnLeft" name="Command" value="  <<" class="Greenbutton"  type="button" style="width:50px" />
+                                    </div>
+                                </div>
+                                <div style ="float:left">
+                                        @Html.ValidationMessageFor(x => x.PaymentAllocationSequence)
+                                        @Html.ListBoxFor(m => m.AssignedList, new SelectList(Model.AssignedList), new { @Id = "lstSelectedPaymentAllocSeq", @style = "width:100px;height:150px;" })
+                                        
+                                </div>
+
+                                <div style ="float:left;padding-left:5px">
+                                    <div class="row" style="padding-top:30px">
+                                        <input id="btnMoveUp" name="Command" value="Move Up" class="Greenbutton" type="button" style="width:50px" />
+                                    </div>
+                                    <div class="row" style="padding-top:0px">
+                                        <input id="btnMoveDown" name="Command" value="Move Down" class="Greenbutton"  type="button" style="width:50px" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>*@
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.PaymentAllocationSequence</div>
+                                <div class="Field">
+                                    <div class="ListBoxField">
+                                        @Html.ListBoxFor(m => m.PaymentAllocationList, new SelectList(PaymentAllocationSequenceItems, "Value", "Text", PaymentAllocationSequenceItems[0]), new { @Id = "lstPaymentAllocSeq", @style = "width:100px;height:120px;" })
+                                    </div>
+                                    <div class="ListBoxButton">
+                                        <div>
+                                            <input id="btnRight" name="Command" value="" class="moveright" type="button" style="width:45px; border:none" />
+                                        </div>
+                                        <div>
+                                            <input id="btnLeft" name="Command" value="" class="moveleft" type="button" style="width:45px; border:none" />
+                                        </div>
+                                    </div>
+                                    <div class="ListBoxField">
+                                        @Html.ListBoxFor(m => m.AssignedList, new SelectList(Model.AssignedList), new { @Id = "lstSelectedPaymentAllocSeq", @style = "width:100px;height:120px;" })
+                                    </div>
+                                    <div class="ListBoxButton">
+                                        <div>
+                                            <input id="btnMoveUp" name="Command" value="" class="moveup" type="button" style="width:45px; border:none" />
+                                        </div>
+                                        <div>
+                                            <input id="btnMoveDown" name="Command" value="" class="movedown" type="button" style="width:45px; border:none" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <label id="AssignedList_Validate" class="custom-errors"></label>
+
+                            </div>
+                    </div>
+                         @Html.HiddenFor(x => x.CardType)
+                                              
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>

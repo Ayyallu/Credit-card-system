@@ -1,0 +1,194 @@
+﻿@using CC_Ingenio.Web.Helpers;
+@using System.Web.Script.Serialization;
+@using CC_Ingenio.DataTranfer.UserInfo;
+@using CC_Ingenio.Web.ViewModel.User;
+@using CC_Ingenio_Resources;
+
+@model UserPrivilege
+@{                  
+    
+    var grid = new WebGrid(Model.PrivilegeList, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "", ajaxUpdateContainerId: "standard-table");
+    grid.Pager(WebGridPagerModes.All);
+
+    ViewBag.Title = Resources.USR_PRIVILEGE;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    input[type=checkbox] {
+        border:none;
+    }
+    
+    .gridSelectCol
+    {
+        width: 8%;
+        text-align:center;
+    }
+
+</style>
+
+@{
+    List<SelectListItem> organizationList = new List<SelectListItem>();
+    List<SelectListItem> userNameList = new List<SelectListItem>();
+
+    foreach (var item in ViewBag.OrganizationList)
+    {
+        organizationList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    foreach (var item in ViewBag.UserNames)
+    {
+        userNameList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+<link href="~/Content/PopUpStyle.css" rel="stylesheet" />
+<script src="~/Scripts/PopUpScript.js"></script> 
+
+<script type="text/javascript">
+
+    var index = 1;
+    $(document).ready(function () {
+
+
+        $("#OrganizationCode").change(function (evt) {
+            if ($("#OrganizationCode option:selected").text() != null) {
+                $('#SearchButton').click();
+            }
+        });
+
+        $("#UserName").change(function (evt) {
+            if ($("#UserName option:selected").text() != null) {
+                $('#SearchButton').click();
+            }
+        });
+
+          $("input.select").each(function () {
+              $(this).data('row', index);            
+            $(this).click(function () {
+
+                var tr = $(this).parents('tr:first');
+
+                var EntityCode = tr.find("#EntityCode").text();
+                var IsAddChecked = tr.find('#AddPriv').attr('checked') ? "True" : "False";
+                var IsUpdateChecked = tr.find('#UpdatePriv').attr('checked') ? "True" : "False";
+                var IsDeleteChecked = tr.find('#DeletePriv').attr('checked') ? "True" : "False";
+                var IsAuthorizeChecked = tr.find('#AuthorizePriv').attr('checked') ? "True" : "False";
+                var IsViewChecked = tr.find('#ViewPriv').attr('checked') ? "True" : "False";                    
+
+                $.ajax({
+                    url: '/User/UpdateUserPrivilegeSession/',
+                    data: {
+                        AOrganizationCode: '@Model.OrganizationCode', AUserName: '@Model.UserName', AEntityCode: EntityCode, AAddChecked: IsAddChecked,
+                        AUpdateChecked: IsUpdateChecked, ADeleteChecked: IsDeleteChecked, AAuthorizeChecked: IsAuthorizeChecked, AViewChecked: IsViewChecked                        
+                    },
+                    type: 'get',
+                    cache: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {                       
+                      
+                    }
+
+                });
+            });
+             index++;
+          });
+
+        if ('@Model.IsSaved' == 'True') {
+            ShowSimpleModalDialog("@Html.Raw(string.Format(Resources.MsgInfoSaveSuccess,Resources.Userprivilege))", "");
+        }       
+
+        $('input[id="New"]').hide();
+        $('input[id="Save"]').hide();
+        $('input[id="Delete"]').hide();       
+ });
+
+</script>
+
+<section class="feature">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+        @using (Html.BeginForm("UserPrivilegesActions", "User", FormMethod.Post, new { id = "frmUserPrivilegese", Name = "frmUserPrivilegese", @style = "height: 350px;" }))
+        {
+            <div class="row">
+                <div class="TwoColumn" style="width: 60%; float: left">
+                    <div class="row">
+                        <div class="TwoColumn">
+                    <div class="label" style="width: 40%">@Resources.OrganizationCode</div>
+                    <div class="Field" style="width: 52.5%">
+                        @Html.DropDownListFor(x => x.OrganizationCode, organizationList, new { id = "OrganizationCode", @class = "entryControls" })
+                        @Html.ValidationMessageFor(x => x.OrganizationCode, "", new { id = "Validation_MessageType" })
+                    </div>
+                </div>
+                <div class="TwoColumn">
+                    <div class="label" style="width: 25%">@Resources.Username</div>
+                    <div class="Field" style="width: 52.5%">
+                        @Html.DropDownListFor(x => x.UserName, userNameList, new { id = "UserName", @class = "entryControls" })
+                        @Html.ValidationMessageFor(x => x.UserName, "", new { id = "Validation_MessageType" })
+                    </div>                       
+                </div>
+                    </div>
+                </div>
+                <div class="TwoColumn" style="width: 20%; float: left">
+                    <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" style="width:45%" />  
+                </div>                     
+            </div> 
+            <div class="row">
+                <div class="standard-table">                 
+                @grid.GetHtml(htmlAttributes: new { id = "container-body" },
+                alternatingRowStyle: "alt",                
+                columns: grid.Columns(             
+                grid.Column(Resources.Entity, format: @<text><label id="EntityDesc" style="font-size: .95em;font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.EntityDesc</label><label id="EntityCode" style="visibility:hidden">@item.EntityCode</label> </text>),
+                     grid.Column(columnName: "Add", header: Resources.Save, format: (item) =>
+                     {
+                         return @Html.Raw("<input type='checkbox' class = 'select' id='AddPriv'  " + (((item.Value).AddPrivilege == true) ? "checked" : "") + (((item.Value).AddEnable == true) ? "" : " disabled") + " value=AddPrivilege  />");
+                     }, style: "gridSelectCol", canSort: false),
+                      grid.Column(columnName: "Update", header: Resources.Submit, format: (item) =>
+                      {
+                          return @Html.Raw("<input type='checkbox' class = 'select' id='UpdatePriv'  " + (((item.Value).UpdatePrivilege == true) ? "checked" : "") + (((item.Value).UpdateEnable == true) ? "" : " disabled") + " value=UpdatePrivilege  />");
+                      }, style: "gridSelectCol",canSort: false),
+
+                    grid.Column(columnName: "Delete", header: Resources.Delete, format: (item) =>
+                    {
+                        return @Html.Raw("<input type='checkbox' class = 'select' id='DeletePriv'  " + (((item.Value).DeletePrivilege == true) ? "checked" : "") + (((item.Value).DeleteEnable == true) ? "" : " disabled") + " value=DeletePrivilege  />");
+                    }, style: "gridSelectCol", canSort: false),
+                      grid.Column(columnName: "Authorize", header: Resources.Authorize, format: (item) =>
+                      {
+                          return @Html.Raw("<input type='checkbox' class = 'select' id='AuthorizePriv'  " + (((item.Value).AuthorizePrivilege == true) ? "checked" : "") + (((item.Value).AuthorizeEnable == true) ? "" : " disabled") + " value=AuthorizePrivilege  />");
+                      }, style: "gridSelectCol",canSort: false),
+                       grid.Column(columnName: "View", header: Resources.View, format: (item) =>
+                       {
+                           return @Html.Raw("<input type='checkbox' class = 'select' id='ViewPriv'  " + (((item.Value).ViewPrivilege == true) ? "checked" : "") + (((item.Value).ViewEnable == true) ? "" : " disabled") + " value=ViewPrivilege  />");
+                       }, style: "gridSelectCol", canSort: false)                     
+                    ))
+                </div>
+            </div>
+            <div>@Html.Raw(Html.BasicButtons(lstPriv)) </div>
+
+            <div>
+            </div>
+        }
+    </div>
+
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+
+        EnableDisableControls('@ViewData["FormStatus"]');
+    })
+</script>
+

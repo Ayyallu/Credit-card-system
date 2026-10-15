@@ -1,0 +1,333 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    $(function ()
+    {
+        
+       
+        //$("#AccountNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+        //$("#CardNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+        //$("#BatchNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+
+        $lstType = $('select[id*="Type"]');
+
+        if ($lstType.val() == "ML")
+        {
+            $("#BatchNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+        }
+        
+        $lstType.change(function ()
+        {
+          
+            if ($lstType.val() == "BT")
+            {                
+             //   $("#AccountNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+                //  $("#CardNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+                $("#AccountNo").removeAttr("disabled", "").css("background-color", 'white');
+                $("#CardNo").removeAttr("disabled", "").css("background-color", 'white');
+                $("#BatchNo").removeAttr("disabled", "").css("background-color", 'white');
+            }
+            else if ($lstType.val() == "ML")
+            {
+                $("#AccountNo").removeAttr("disabled", "").css("background-color", 'white');
+                $("#CardNo").removeAttr("disabled", "").css("background-color", 'white');
+                $("#BatchNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+            }
+            else
+            {
+                $("#AccountNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+                $("#CardNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+                $("#BatchNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+            }
+        });
+    });
+
+    var index = 1;
+    $(document).ready(function () {
+                $("#allBox").click(function () {
+                    var type = $lstType.val();
+                    
+                    //  alert( $(".checkbox").attr("checked", $(this).attr("checked"));
+                    var all = $(".select").attr("checked") ? true : false;                  
+                    $(".select").attr("checked", $(this).attr("checked") ? true : false);
+                    $.ajax({
+                        url: '/Authorization/UpdatingSessionAll/',
+                        data: { ischecked: all,Type :type },
+                        type: 'get',
+                        cache: false,
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            //  alert(data);
+                        }
+                    });
+                });
+                $("input.select").each(function () {
+                    $(this).data('row', index);
+                    $(this).click(function () {
+                        var type = $lstType.val();
+                        var tr = $(this).parents('tr:first');                       
+                        var CardNumber = tr.find("#TransactionNo").text();                    
+                     
+                        var Isprinted = tr.find('#IsCheck').attr('checked') ? "True" : "False";
+
+
+
+                        $.ajax({
+                            url: '/Authorization/UpdatingSession/',
+                            data: { CardNumber: CardNumber, ischecked: Isprinted,Type : type },
+                            type: 'get',
+                            cache: false,
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (data) {
+                                if (returnData.message == "1") {
+                                    $("#allbox").attr(value, "checked");
+                                }
+                                else if (returnData.message == "0") {
+                                    $("#allbox").attr(value, "");
+                                }
+                                //  alert(data);
+                            }
+                        });
+                    });
+                    index++;
+                });
+
+
+    })
+
+</script>
+@using CC_Ingenio.Common.Utils;
+@model TransactionEntrySearch
+@{
+        
+    var grid = new WebGrid(Model.SearchResults,
+                defaultSort: "AccountNo",
+                rowsPerPage: 5);
+
+    List<SelectListItem> AuthCodeItems = new List<SelectListItem>();
+    AuthCodeItems.Add(new SelectListItem { Text = "Select", Value = String.Empty });
+    foreach (var itm in ViewBag.AuthCodeList)
+    {
+        AuthCodeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    List<SelectListItem> AuthStatusItems = new List<SelectListItem>();
+    AuthStatusItems.Add(new SelectListItem { Text = "Select", Value = String.Empty });
+    foreach (var itm in ViewBag.AuthStatusList)
+    {
+        AuthStatusItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> TypeItems = new List<SelectListItem>();
+    TypeItems.Add(new SelectListItem { Text = "Select", Value = String.Empty });
+    TypeItems.Add(new SelectListItem { Text = "Batch", Value = "BT" });
+    TypeItems.Add(new SelectListItem { Text = "Manual", Value = "ML" });
+    
+
+
+    
+
+
+    
+}
+@using System.Web.Script.Serialization;
+@section featured {
+}
+
+
+@*<script type="text/javascript">
+        $(document).ready(function () {
+            
+        var data1 = JSON.stringify(@Html.Raw(new JavaScriptSerializer().Serialize(TempData["Data"])));
+            $("#AuthPost").click(function () {
+                alert("hai");
+            $("#frmAuthPost").submit(function () {
+                $.ajax({
+                    url: '/Authorization/AuthorizationPost',
+                    data: ("#frmAuthPost").serialize(),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (result) {
+                        
+                    }
+                });
+                return false;
+            });
+
+        });
+    });
+</script>*@
+
+<script type="text/javascript">
+    $(function () {
+        $("#AuthPost").click(function (e) {
+
+            e.preventDefault();
+            $("#dialog").dialog({
+                resizable: false,
+                height: 160,
+                width: 'auto',
+                modal: true,
+                title: '@Resources.ApplicationName',
+                buttons: {
+                    "Yes": function () {
+
+                        $("#dialog").dialog("close");
+
+                        $("#frmAuthPost").submit();
+
+                    },
+                    "No": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
+            $("#dialog").text("Do you want to post the transactions");
+
+            $("#dialog").dialog("open");
+
+
+        });
+
+        $("#Reset").click(function (e) {
+
+            
+
+            $("#Type").attr("value","");
+            $("#Type").attr("Text", "Select");
+
+            
+
+            $("#AccountNo").attr("value", "");
+            $("#CardNo").attr("value", "");
+            $("#BatchNo").attr("value", ""); 
+            $("#TxnToDate").attr("value", ""); 
+            $("#TxnDate").attr("value", "");           
+           
+           
+        });
+    });
+</script>
+
+<section class="featured">
+    <div class="PageTitle">Force Authorization</div>
+    <div class="PageRow">
+        
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+         <div class="tab-content" id="tab1">
+          <div class="row">
+            @using (Html.BeginForm("AuthorizationForce","Authorization", FormMethod.Post))
+            {
+                <div class="SearchBox">
+
+                    <div class="row">
+
+                        <div class="row">
+                             <div class="TwoColumn">
+                                <div class="label">Type</div>
+                                <div class="Field">
+                                     @Html.DropDownListFor(x => x.Type, TypeItems.AsEnumerable(), new { id="Type", name="Type"})
+                                     @Html.ValidationMessageFor(x => x.Type,"Please select type")
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">Card No</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CardNo, new { id = "CardNo", name = "CardNo", maxlength = 16 })
+                                </div>
+                            </div>
+                       </div>
+                       <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">From</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TxnDate, new { @class = "datepicker", @readonly = "false" })
+                                    @Html.ValidationMessageFor(x => x.TxnDate)
+                                </div>
+                            </div>
+                             <div class="TwoColumn">
+                                <div class="label">To</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TxnToDate, new { @class = "datepicker", @readonly = "false" })
+                                    @Html.ValidationMessageFor(x => x.TxnToDate)
+                                </div>
+                            </div>
+                       </div>  
+
+                       <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">Account No</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.AccountNo, new { id = "AccountNo", name = "AccountNo", maxlength = 20})
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">Batch No</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.BatchNo, new { id = "BatchNo", name = "BatchNo" })
+                                </div>
+                            </div>
+                       </div>
+
+
+                        <div class="SearchColumnbtn">
+                            <span>
+                                <input id="SearchButton" name="SearchButton" value="Search" type="submit" class="Greenbutton" /></span>
+                            <span>
+                                <button id="Reset" class="Greenbutton" name="Cancel" value="Cancel" style="height:31px">Cancel</button></span>
+                        </div>
+                    </div>
+                </div>
+            }
+          </div>
+
+
+        <div class="row">
+
+            <div class="standard-table">
+
+                @MvcHtmlString.Create(grid.GetHtml(columns: grid.Columns(
+                
+    //              grid.Column(columnName: "IsCheck", 
+    //header: "{CheckBoxHeading}", 
+    //format: (item) => @Html.Raw("<input type='checkbox' class = 'select' id='IsCheck'  " + (((item.Value).IsCheck == true) ? "checked" : "") + " />")),
+    
+        grid.Column(columnName: "IsCheck", header: "{CheckBoxHeading}", 
+                            format:  //@<text><input class="box"  type="checkbox" /></text>), //
+                        (item) => @Html.Raw("<input type='checkbox' class = 'select' id='IsCheck'  " + (((item.Value).IsCheck == true) ? "checked" : "") + " />")),                             
+                                    
+                        
+                                   grid.Column("TransactionNo", "Transaction No",format: @<text><label id="TransactionNo" style="font-size: .95em;font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.TransactionNo</label> </text>),                                   
+                                    grid.Column("CardNo", "Card Number"),
+                                    grid.Column("RUT", "RUT"),
+                                    grid.Column("MerchantCode", "Merchant Code"),
+                                    grid.Column("MCCCode", "MCC Code"),
+                                   // grid.Column("SegmentCode", "Segment Code"),
+                                    grid.Column("Amount", "Amount"),                                   
+                                    grid.Column("TxnDate", "Txn Date", format:@<text> @item.TxnDate.ToString("dd/MM/yyyy")</text>),
+                                    grid.Column("TxnTime", "Txn Time"),
+                                     grid.Column("BatchNo", "Batch No")
+                                   // grid.Column("TxnD", "Txn Date"),
+                                 
+                                   // grid.Column("AuthCode", "AuthCode"),
+                                   @* grid.Column("Status", header: "Status", format: @<text>@Html.DropDownList("selection", AuthCodeItems)</text>)*@)
+                    ). ToString().Replace("{CheckBoxHeading}", "<input type='checkbox' id='allBox'/>")  )
+
+            </div>
+        </div>
+
+        <div class="rowbtn">
+            @using (Html.BeginForm("AuthorizationPost", "Authorization", FormMethod.Post, new { id = "frmAuthPost", name = "frmAuthPost" }))
+            {
+                <span>
+                    <input type="hidden" id="hidData" name="hidData" value="@Html.Raw(new JavaScriptSerializer().Serialize(TempData["Data"]))" />
+                    <input id="AuthPost" name="AuthPost" value="Auth Post" type="submit" class="Greenbutton" /></span>
+            }
+        </div>
+     </div>
+    </div>
+ </div>
+</section>

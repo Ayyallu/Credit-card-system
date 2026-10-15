@@ -1,0 +1,436 @@
+﻿@using CC_Ingenio_Resources;
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.ManualTransaction });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using CC_Ingenio.DataTranfer.AuthorizationInfo;
+@using CC_Ingenio.Web.Helpers;
+
+@model ManualTransactionDTO
+@{
+    List<SelectListItem> CustomerSegmentCodeList = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+
+    foreach (var item in ViewBag.CustomerSegmentCodeList)
+    {
+        CustomerSegmentCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    } 
+
+    List<SelectListItem> IncomingTransTypeItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.IncomingTransTypeList)
+    {
+        IncomingTransTypeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+    List<SelectListItem> MerchantCodeList = new List<SelectListItem>();
+    foreach (var item in ViewBag.MerchantCodeList)
+    {
+        MerchantCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    List<SelectListItem> MCCCodeList = new List<SelectListItem>();
+    foreach (var item in ViewBag.MCCCodeList)
+    {
+        MCCCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }    
+}
+
+
+
+<style>
+    input[id="AccountNo"][readonly]
+    {
+         background:#e9e7e7;    
+    }
+    input[id="AuthCode"][readonly]
+    {
+         background:#e9e7e7;    
+    }
+</style>
+
+<script type="text/javascript">
+
+    function setCalenderDates() {
+        var fromDate = $('#TxnDate').val();       
+    }
+  
+    function onchangeevent() {
+    
+        var CardNo = $('#CardNumber').val();
+        if (CardNo != '') {
+            $.ajax({
+                type: 'GET',
+                url: '/CardBooking/CardNumberAcountNoExists',
+                data: { ACardNumber: CardNo },
+                cache : false,
+                success: function (returnData) {
+                    if (returnData.CardNumber != CardNo) {
+
+                        alert("Invalid CardNo.");
+                        document.getElementById("CardNumber").value = '';
+                        return true;
+                    }
+                    else if (returnData.AccountNo != '') {
+
+                        document.getElementById("AccountNo").value = returnData.AccountNo;
+                        return true;
+                    }
+                }
+            })
+        }
+    }
+    
+    $("div.close").hover(
+					function () {
+					    $('span.ecs_tooltip').show();
+					},
+					function () {
+					    $('span.ecs_tooltip').hide();
+					}
+				);
+
+    $("div.close").click(function () {
+        disablePopup();  // function close pop up
+    });
+
+    $(this).keyup(function (event) {
+        if (event.which == 27) { // 27 is 'Ecs' in the keyboard
+            disablePopup();  // function close pop up
+        }
+    });
+
+
+    /************** start: functions. **************/
+    function loading() {
+        $("div.loader").show();
+    }
+    function closeloading() {
+        $("div.loader").fadeOut('normal');
+    }
+
+    var popupStatus = 0; // set value
+
+    function loadPopup() {
+        if (popupStatus == 0) { // if value is 0, show popup
+            closeloading(); // fadeout loading
+            $("#divPopup").fadeIn(0500); // fadein popup div
+            $("#backgroundPopup").css("opacity", "0.7"); // css opacity, supports IE7, IE8
+            $("#backgroundPopup").fadeIn(0001);
+            popupStatus = 1; // and set value to 1
+        }
+    }
+
+    function disablePopup() {
+        if (popupStatus == 1) { // if value is 1, close popup
+            $("#divPopup").fadeOut("normal");
+            $("#backgroundPopup").fadeOut("normal");
+            popupStatus = 0;  // and set value to 0
+        }
+    }
+
+    $(document).ready(function () {
+       
+
+        //$('#frmManualTransactionSave').on('submit', function (e) {
+        //    alert('hai');
+        //    e.preventDefault();
+        //});
+
+
+
+        $("#btnSearch").click(function () {
+            $.ajax({
+                url: "/Billing/RUTCardNumberSearchList",
+                type: "POST",
+                data: { ARUT: "", ACardnumber: "", ACustomername: "" , Isloading: false},
+                contenttype: "application/json ; charset = utf-8",
+                success: function (data) {
+                    $("#RUTCardNumberSearchDiv").html(data);
+                },
+                error: function (ts) { alert(ts.responseText) }
+            });
+
+            loading(); // loading
+            setTimeout(function () { // then show popup, deley in .5 second
+                loadPopup(); // function show popup
+            }, 1000); // .5 second
+        })
+
+
+        $("#TxnDate").datepicker({
+            changeYear: true,
+            changeMonth: true,
+            yearRange: '2000:2020',
+            dateFormat: "@Resources.FormatDateJS",
+            onSelect: setCalenderDates               
+        });
+
+        $("#IncomingTransType").change(function () {
+            
+            if ($('#IncomingTransType option:selected').text() == 'PYD - Payment Reversal (Debit)') {
+
+                $('#divReferenceNo').show();
+            }
+            else {
+                $('#divReferenceNo').hide();
+            }
+        });
+
+
+        $("#Time").blur(function () {
+            var txnTime = $(this).val();
+            if (txnTime == '__:__:__') {
+                $(this).val('');
+            }
+            else {
+                var array = txnTime.split(':');
+                var newTxnTime;
+                if (array[0] == '__' || array[0] == '') {
+                    newTxnTime = '00';
+                }
+                else {
+                    newTxnTime = array[0];
+                }
+                if (array[1] == '__' || array[1] == '') {
+                    newTxnTime = newTxnTime + ':00';
+                }
+                else {
+                    newTxnTime = newTxnTime + array[1];
+                }
+                if (array[2] == '__' || array[2] == '') {
+                    newTxnTime = newTxnTime + ':00';
+                }
+                else {
+                    newTxnTime = newTxnTime + array[2];
+                }
+                $(this).val(newTxnTime);
+            }
+        });
+     
+        $('input[id="Save"]').hide();
+        $('input[id="Authorize"]').hide();
+        $('input[id="Delete"]').hide();
+
+        $('#Time').mask('99:99:99');
+
+    });
+    /////////////////////////
+    //re = /^(\d{1,2}):(\d{2})([ap]m)?$/;
+
+    //if(form.starttime.value != '') {
+    //    if(regs = form.starttime.value.match(re)) {
+    //        if(regs[3]) {
+    //            // 12-hour value between 1 and 12
+    //            if(regs[1] < 1 || regs[1] > 12) {
+    //                alert("Invalid value for hours: " + regs[1]);
+    //                form.starttime.focus();
+    //                return false;
+    //            }
+    //        } else {
+    //            // 24-hour value between 0 and 23
+    //            if(regs[1] > 23) {
+    //                alert("Invalid value for hours: " + regs[1]);
+    //                form.starttime.focus();
+    //                return false;
+    //            }
+    //        }
+    //        // minute value between 0 and 59
+    //        if(regs[2] > 59) {
+    //            alert("Invalid value for minutes: " + regs[2]);
+    //            form.starttime.focus();
+    //            return false;
+    //        }
+    //    } else {
+    //        alert("Invalid time format: " + form.starttime.value);
+    //        form.starttime.focus();
+    //        return false;
+    //    }
+    //}
+
+    //////////////////////////////
+</script>
+
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li>@Html.ActionLink(Resources.SearchPageHeading, "ManualTransactionList", "Authorization")</li>
+            <li class="active">@Html.ActionLink(Resources.DetailsPageHeading, "ManualTransactionAdd", "Authorization")</li>
+        </ul>
+
+        <div id="RUTCardNumberSearchDiv">
+       
+        </div>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            @using (Html.BeginForm("ManualTransactionSave", "Authorization", new { Id = Model.AuthCode, }, FormMethod.Post, new { id = "frmManualTransactionSave", name = "frmManualTransactionSave" }))
+            {
+                <div class="tab-content" id="tab1">
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>
+
+                    <div class="row">
+                        <div class="TwoColumn">
+                            <div class="label ">@Resources.CardNumber</div>
+                            <div class="Field">
+@*                                @Html.TextBoxFor(x => x.CardNumber, new { @class = "NumericOnly", id = "CardNumber", name = "CardNumber", maxlength = 16, @onchange = "onchangeevent();" })
+                                @Html.ValidationMessageFor(x => x.CardNumber)*@
+                                    @Html.TextBoxFor(x => x.CardNumber, new { id = "CardNumber", name = "CardNumber", maxlength = 16, style = "width:85%",@readonly = "readonly" }) @*, disabled = "@disabled"*@
+                                    <input id="btnSearch" name="Command" value="" class="searchbutton" type="button" style="width:30px;border:none"/>
+                                    @Html.ValidationMessageFor(x => x.CardNumber)
+                            </div>
+                        </div>
+                        <div class="TwoColumn">
+                            <div class="label ">@Resources.RUT</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.RUT, new { id = "RUT", name = "AccountNo", maxlength = 25, @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">                      
+
+
+                         <div class="TwoColumn">
+                            <div class="label">@Resources.TransactionType</div>
+                            <div class="Field">
+                                @Html.DropDownListFor(x => x.IncomingTransType, IncomingTransTypeItems.AsEnumerable(), new { id = "IncomingTransType" })
+                                @Html.ValidationMessageFor(x => x.IncomingTransType)
+                            </div>
+                        </div>
+
+                       @* <div class="TwoColumn">
+                            <div class="label ">Auth Code</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.AuthCode, new { id = "AuthCode", name = "AuthCode", maxlength = 25, placeholder = "Auto Generated", @readonly = "readonly" })
+                            </div>
+                        </div>*@
+
+                         <div class="TwoColumn">
+                            <div class="label ">@Resources.InvoiceNo</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.InvoiceNo, new { id = "InvoiceNo", name = "InvoiceNo", maxlength = 25 })
+                                  @Html.ValidationMessageFor(x => x.InvoiceNo)
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="TwoColumn">
+                            <div class="label">@Resources.TransactionDate</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.TxnDate, "{0: dd/MM/yyyy}", new { id = "TxnDate", @readonly = "true" })
+                                @Html.ValidationMessageFor(x => x.TxnDate)
+                            </div>
+                        </div>
+
+                         <div class="TwoColumn">
+                            <div class="label">@Resources.Amount</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.Amount, @String.Format("{0:N0}", Model.Amount), new { @class = "NumberCommaDot", id = "Amount", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                @Html.ValidationMessageFor(x => x.Amount)
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <div class="row">
+                       @* <div class="TwoColumn">
+                            <div class="label">Transaction Time</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.Time, new { id = "Time", name = "Time", maxlength = 8, placeholder = "hh:mm:ss" })
+                                @Html.ValidationMessageFor(x => x.Time)
+                            </div>
+                        </div>*@
+                        <div class="TwoColumn">
+                            <div class="label fontmandatory">@Resources.Merchant</div>
+                            <div class="Field">
+                                @Html.DropDownListFor(x => x.MerchantCode, MerchantCodeList)
+                                @Html.ValidationMessageFor(x => x.MerchantCode)
+                            </div>
+                        </div>
+
+                        
+                        <div class="TwoColumn">
+                            <div class="label fontmandatory">@Resources.MCCCode</div>
+                            <div class="Field">
+                                @Html.DropDownListFor(x => x.MCCCode, MCCCodeList)
+                                @Html.ValidationMessageFor(x => x.MCCCode)
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                     <div class="row">
+                
+                        <div class="TwoColumn">
+                            <div class="label fontmandatory">@Resources.SalesId</div>
+                            <div class="Field">
+                                 @Html.TextBoxFor(x => x.SalesId, new { id = "SalesId", name = "SalesId", maxlength = 25,@readonly = "readonly"  })
+                            </div>
+                        </div>
+
+                        
+                        <div class="TwoColumn">
+                            <div class="label fontmandatory">@Resources.OrderNo</div>
+                            <div class="Field">
+                                  @Html.TextBoxFor(x => x.OrderNo, new { id = "OrderNo", name = "OrderNo", maxlength = 25 })
+                            </div>
+                        </div>
+                    </div>
+
+                       <div class="row">                
+                        <div class="TwoColumn">
+                            <div class="label fontmandatory">@Resources.Remarks</div>
+                            <div class="Field">
+                                 @Html.TextBoxFor(x => x.Remarks, new { id = "Remarks", name = "SalesId", maxlength = 50 })
+                            </div>
+                        </div>
+                                      
+                        <div class="TwoColumn" id="divReferenceNo">
+                            <div class="label">@Resources.ReferenceNo</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.ReferenceAuthCode, new { id = "ReferenceNo", name = "ReferenceNo", maxlength = 25, @style = "text-align: right" })
+                                @Html.ValidationMessageFor(x => x.ReferenceAuthCode)
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                @Html.HiddenFor(x => x.SegmentCode)
+                @Html.HiddenFor(x => x.CardNumber)
+                @Html.Raw(Html.BasicButtons(lstPriv))
+            }
+        </div>
+    </div>
+</section>
+<script>
+    if ($('#IncomingTransType option:selected').text() == 'PYD - Payment Reversal (Debit)') {
+        $('#divReferenceNo').show();
+    }
+    else {
+        $('#divReferenceNo').hide();
+    }
+</script>
+
+

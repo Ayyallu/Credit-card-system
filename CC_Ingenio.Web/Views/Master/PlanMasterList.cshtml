@@ -1,0 +1,184 @@
+﻿@using CC_Ingenio.Web.ViewModel.Master;
+@using CC_Ingenio_Resources;
+
+@model PlanMasterSearch
+@{
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "PlanID", ajaxUpdateContainerId: "standard-table");
+    grid.Pager(WebGridPagerModes.All);
+    
+    
+    List<SelectListItem> ProductCodeList = new List<SelectListItem>();
+    foreach(var item in ViewBag.ProductCodeList) 
+    {
+        ProductCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    ProductCodeList.Add(new SelectListItem { Text = "ALL", Value = "ALL" });
+    ProductCodeList.RemoveAt(0);
+    ProductCodeList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+
+    List<SelectListItem>CustomerSegmentCodeList = new List<SelectListItem>();
+    foreach (var item in ViewBag.CustomerSegmentCodeList)
+    {
+        CustomerSegmentCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    CustomerSegmentCodeList.Add(new SelectListItem { Text = "ALL", Value = "ALL" });
+    CustomerSegmentCodeList.RemoveAt(0);
+    CustomerSegmentCodeList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+
+    List<SelectListItem> CustomerSubSegmentCodeList = new List<SelectListItem>();
+    foreach (var item in ViewBag.CustomerSubSegmentCodeList)
+    {
+        CustomerSubSegmentCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    CustomerSubSegmentCodeList.Add(new SelectListItem { Text = "ALL", Value = "ALL" });
+    CustomerSubSegmentCodeList.RemoveAt(0);
+    CustomerSubSegmentCodeList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+
+    List<SelectListItem> CreditSegmentCodeListItems = new List<SelectListItem>();
+    foreach (var item in ViewBag.CreditSegmentCodeItems)
+    {
+        CreditSegmentCodeListItems.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    CreditSegmentCodeListItems.RemoveAt(0);
+    CreditSegmentCodeListItems.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+ }
+
+ 
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.PlanMaster, " ", Resources.Search });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="featured">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active"> @Html.ActionLink(Resources.SearchPageHeading,"PlanMasterList","Master" )</li>
+            <li> @Html.ActionLink(Resources.DetailsPageHeading,"PlanMasterAdd","Master" )</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("PlanMasterList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CreditSegment</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x=>x.CreditSegmentCode, CreditSegmentCodeListItems)   
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.Product</div>
+                                        <div class="Field">
+                                         @Html.DropDownListFor(x=>x.ProductCode,ProductCodeList)   
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CustomerSegment</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x=>x.CustomerSegmentCode,CustomerSegmentCodeList)
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CustomerSubSegment</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x=>x.CustomerSubSegmentCode,CustomerSubSegmentCodeList)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                                                                                    
+                                <div class="SearchColumnbtn">
+                                    <span>
+                                        <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                    </span>
+                                    <span>
+                                        <input id="Button2" type="submit" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    }
+
+                </div>
+                <div class="row">
+                   
+                    <div class="standard-table">
+
+                        @grid.GetHtml(alternatingRowStyle:"alt", columns:grid.Columns(
+                                    grid.Column("CreditSegmentDesc",Resources.CreditSegment),
+                                    grid.Column("ProductName", Resources.Product),
+                                    grid.Column("TransactionDesc", Resources.TransactionCode),   
+                                    grid.Column("ApprovalStatusDesc",Resources.Status),
+                                      grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink(Resources.Edit, "PlanMasterAdd", "Master", new { id = item.PlanID }, null));
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "PlanMasterView", "Master", new { id = item.PlanID }, null))); 
+                                                }
+                                            }),
+                                    grid.Column(Resources.Delete,   format: 
+                                        (item) =>
+                                                 {
+                                                     if (lstPriv.Contains("Delete"))
+                                                     {
+                                                         if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                                         {
+                                                             return Html.Raw(Html.ActionLink(Resources.Delete, "PlanMasterDelete", "Master", new { id = item.PlanID }, new { @class = "delete-link" }));
+                                                         }
+                                                         else
+                                                         {
+                                                             return Html.Raw("");
+                                                         }
+                                                     }
+                                                     else
+                                                     {
+                                                         return Html.Raw("");
+                                                     }
+                                            })
+                               ))        
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>

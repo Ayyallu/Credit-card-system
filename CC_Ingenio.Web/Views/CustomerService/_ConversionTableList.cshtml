@@ -1,0 +1,29 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@using CC_Ingenio_Resources;
+@model List<ConversionTableDTO>  
+
+@{
+    var conversionTableGrid = new WebGrid(Model, canPage: true, rowsPerPage: 5, ajaxUpdateContainerId: "container-body");
+    conversionTableGrid.Pager(WebGridPagerModes.All);
+}
+
+<div class="row">
+        <div class=" BorderColumn" style="width: 98.6%">
+            <div class="CustomerColumnTitle">@Resources.ConversionTableDetails</div>
+            <div style="width:100%; overflow-y: scroll">
+            <div class="standard-table"> 
+             @conversionTableGrid.GetHtml(htmlAttributes: new {  id = "container-body" },
+             alternatingRowStyle: "alt", 
+             columns:conversionTableGrid.Columns(
+                    conversionTableGrid.Column("MaskedRUT",Resources.RUT),
+                    conversionTableGrid.Column("CustomerCardName",Resources.CustomerName),
+                    conversionTableGrid.Column("LegacyCardNumber",Resources.LegacyCardNumber),
+                    conversionTableGrid.Column("NewCardNumber",Resources.NewCardNumber),
+                    conversionTableGrid.Column("ValidFromDate",Resources.ValidFrom,format:@<text>@item.ValidFromDate.ToShortDateString()</text>),
+                    conversionTableGrid.Column("CardExpiryDate",Resources.ValidTo,format:@<text>@item.CardExpiryDate.ToShortDateString()</text>)
+                ))
+            </div>
+</div>
+        </div>
+
+    </div>

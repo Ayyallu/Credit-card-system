@@ -1,0 +1,30 @@
+﻿@using CC_Ingenio_Resources;
+@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@model List<UnMatchedAuthorizationDTO>  
+
+@{
+    var unMatchedAuthGrid = new WebGrid(Model, canPage: true, rowsPerPage: 5, ajaxUpdateContainerId: "container-body");
+    unMatchedAuthGrid.Pager(WebGridPagerModes.All);
+}
+
+<div class="row">
+    <div class=" BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.UnmatchedAuthorizationDetails</div>
+        <div style="width: 100%;" class="VerticalScrollBar">
+            <div class="standard-table">
+                @unMatchedAuthGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+             alternatingRowStyle: "alt",
+             columns: unMatchedAuthGrid.Columns(
+                    unMatchedAuthGrid.Column("CardNumber",Resources.CardNumber),
+                    unMatchedAuthGrid.Column("SegmentName", Resources.SegmentName),
+                    unMatchedAuthGrid.Column("MerchantName", Resources.MerchantName),
+                    unMatchedAuthGrid.Column("Amount", Resources.Amount),
+                    unMatchedAuthGrid.Column("TxnDate", Resources.TransactionDate, format: @<text>@item.TxnDate.ToShortDateString()</text>),
+                    unMatchedAuthGrid.Column("TxnTime", Resources.TransactionTime)
+                                              ))
+            </div>
+        </div>
+    </div>
+</div>
+
+

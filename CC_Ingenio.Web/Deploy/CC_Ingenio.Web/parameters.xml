@@ -1,0 +1,9 @@
+﻿<parameters>
+  <parameter name="IIS Web Application Name" defaultValue="Default Web Site/CC_Ingenio.Web_deploy" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^D:\\Ingenio\\CC_Ingenio\.Web\\obj\\Debug\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^D:\\Ingenio\\CC_Ingenio\.Web\\obj\\Debug\\Package\\PackageTmp$" />
+  </parameter>
+  <parameter name="CC_Ingenio.Data.UnitOfWork-Web.config Connection String" defaultValue="CC_Ingenio.Data.UnitOfWork_ConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\Ingenio\\CC_Ingenio\.Web\\obj\\Debug\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='CC_Ingenio.Data.UnitOfWork']/@connectionString" />
+  </parameter>
+</parameters>

@@ -1,0 +1,427 @@
+﻿@*@using CC_Ingenio.Web.ViewModel.CardBooking;
+@model CustomerRUTSearch*@
+@using CC_Ingenio_Resources;
+
+@{
+    List<SelectListItem> ProductMemberType = new List<SelectListItem>();
+    foreach (SelectListItem item in ViewBag.ProductMemberTypeList)
+    {
+        ProductMemberType.Add(new SelectListItem() { Text = item.Text, Value = item.Value, Selected = item.Value == "P" ? true : false });
+    }
+    ProductMemberType.RemoveAt(0);
+
+    ViewBag.Title = String.Concat(new object[] { Resources.CDBK_CUS });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section featured
+{
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        function loading() {
+            $("div.loader").show();
+        }
+
+        $("#btnSearch").click(function () {
+            var RUTNumber = document.getElementById("CustomerRUT").value + '-' + document.getElementById("CheckDigit").value;
+
+              //if (document.getElementById("ParentCustomerName").value == "" || document.getElementById("CustomerRUT").value == "") {
+                var flag = 0;
+                if ($('#ProductMemberType').val() == 'A') {
+                    if (document.getElementById("ParentCustomerName").value == "") {
+                        $('#lblValidateCustomer').text("@Html.Raw(string.Format(Resources.MsgErrInvalid, Resources.ParentCustomer))");
+                        flag = 1;
+                    }
+                    else {
+                        $('#lblValidateCustomer').text("");
+                    }
+                }
+                if (document.getElementById("CustomerRUT").value == "") {
+                    $('#lblValidateSearchCriteria').text("@Html.Raw(string.Format(Resources.MsgErrPleaseEnter2, Resources.RUT))");
+                    flag = 1;
+                }
+                else if (document.getElementById("CheckDigit").value == "") {
+                    $('#lblValidateSearchCriteria').text("@Html.Raw(string.Format(Resources.MsgErrPleaseEnter2, Resources.CheckDigit))");
+                    flag = 1;
+                }
+                else if (document.getElementById("CustomerRUT").value.length < 5) {
+                    $('#lblValidateSearchCriteria').text("@Html.Raw(string.Format(Resources.MsgErrValueShouldBeBetween, Resources.RUT, "5", "9"))");
+                    document.getElementById("CheckDigit").value = "";
+                    flag = 1;
+                    e.preventDefault();
+                }
+                else if (parseFloat(document.getElementById("CustomerRUT").value).toString() == "NaN") {
+                    $('#lblValidateSearchCriteria').text("@Html.Raw(string.Format(Resources.MsgErrInvalid, Resources.RUT))");
+
+                    document.getElementById("CheckDigit").value = "";
+                    e.preventDefault();
+                    flag = 1;
+                }
+                else if (parseFloat(document.getElementById("CustomerRUT").value).toString().length != document.getElementById("CustomerRUT").value.length) {
+                    $('#lblValidateSearchCriteria').text("@Html.Raw(string.Format(Resources.MsgErrInvalid, Resources.Number))");
+                    document.getElementById("CheckDigit").value = "";
+                    e.preventDefault();
+                    flag = 1;
+                }
+                if (document.getElementById("SalesId").value == "") {
+                    $('#lblValidateSalesId').text("@Html.Raw(string.Format(Resources.MsgErrPleaseSelect, Resources.SalesId))");
+                    flag = 1;
+                }
+
+                if (flag == 1) {
+                    return false;
+                }
+            //}
+            var RUTNumber = document.getElementById("CustomerRUT").value;
+            var CheckDigit = document.getElementById("CheckDigit").value;
+
+            $.ajax({
+                type: 'POST',
+                url: '/CardBooking/CheckIfValidCard',
+                data: { Id: RUTNumber, ACheckDigit: CheckDigit },
+                cache: false,
+                success: function (returnData) {
+                    if (returnData.RedirectUrl.length > 0) {
+                        window.location.href = json.RedirectUrl;
+                    }
+                    else {
+                        if (CheckDigit.toUpperCase() == (returnData.CheckDigit).toUpperCase()) {
+                            if (returnData.Isvalid) {
+                                $('#lblValidateSearchCriteria').text("");
+                                var RUTNumber = document.getElementById("CustomerRUT").value + '' + document.getElementById("CheckDigit").value;
+
+                                $.ajax({
+                                    type: 'GET',
+                                    url: '/Master/GetCustomerDetailsIfExists',
+                                    data: { ARUTNumber: RUTNumber, ASalesId: $('#SalesId').val() },
+                                    cache: false,
+                                    success: function (returnData) {
+                                        if (returnData) {
+                                            if (returnData.ProductMemberType) {
+                                                $('#ProductMemberType').val(returnData.ProductMemberType);
+                                                $('#ProductMemberType').prop("disabled", true);
+                                                $('#hidParentCustomerId').val(returnData.ParentCustomerId);
+                                                $('#ParentCustomerName').val(returnData.ParentCustomerName);
+                                                $('#btnCustomerZoom').removeClass('searchbutton').addClass('searchbuttondisabled');
+                                                $('#btnCustomerZoom').prop('disabled', true);
+                                            }
+                                            else {
+                                                $('#ProductMemberType').val("P").change();
+                                                $('#ProductMemberType').prop("disabled", false);
+                                                $('#ParentCustomerName').val("");
+                                                $('#hidParentCustomerId').val("0");
+                                            }
+                                            if (returnData.WarningMessage) {
+                                                ShowSimpleModalDialog(returnData.WarningMessage, "");
+                                                return false;
+                                            }
+                                            else {
+                                                $.ajax({
+                                                    type: 'GET',
+                                                    url: '/CardBooking/CheckIfAlreadyExistsCard',
+                                                    data: { ARUTNumber: RUTNumber, AProductMemberType: $('#ProductMemberType').val(), AParentCustId: $('#hidParentCustomerId').val(), ASalesIdSelected: $('#SalesId').val() },
+                                                    cache: false,
+                                                    success: function (returnData) {
+                                                        if (returnData.Message.length > 0) {
+                                                            ShowSimpleModalDialog(returnData.Message, "");
+                                                        }
+                                                        if (!returnData.isExistsInAnotherOrganization) {
+                                                            if (returnData.RedirectUrl.length > 0) {
+                                                                window.location.href = returnData.RedirectUrl;
+                                                                return true;
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                                return;
+                            }
+                        }
+                        else {
+                            $('#lblValidateSearchCriteria').text("@Html.Raw(string.Format(Resources.MsgErrInvalid, Resources.RUT))");
+                                e.preventDefault();
+                            }
+                        }
+                        return false;
+                    }
+                });
+
+        });
+
+        $('#CustomerRUT').focusin(function () {
+            $('#lblValidateSearchCriteria').text("");
+            $('#CustomerRUT_Validate').text("");
+        });
+
+        $('#CustomerRUT').blur(function () {
+            if (document.getElementById("CustomerRUT").value.length >= 5) {
+                if (parseFloat(document.getElementById("CustomerRUT").value).toString().length == document.getElementById("CustomerRUT").value.length) {
+                    ValidateRUT();
+                }               
+            }
+        });
+
+        $('#CheckDigit').blur(function () {
+            if (document.getElementById("CustomerRUT").value.length >= 5) {
+                if (parseFloat(document.getElementById("CustomerRUT").value).toString().length == document.getElementById("CustomerRUT").value.length) {
+                    ValidateRUT();
+                }
+            }
+        });
+
+        //$('#SalesId').focusin(function () {
+        //    if (document.getElementById("CustomerRUT").value.length > 5) {
+        //        if (parseFloat(document.getElementById("CustomerRUT").value).toString().length == document.getElementById("CustomerRUT").value.length) {
+        //            ValidateRUT();
+        //        }
+        //    }
+        //});        
+
+        $('#SalesId').change(function () {
+            if ($('#SalesId').val() != "") {
+                $('#lblValidateSalesId').text("");
+                GetCustomerDetailsIfExists();
+            }
+        });
+
+        $('#btnClear').click(function () {
+            $('#ProductMemberType').val('P');
+            $('#ProductMemberType').prop("disabled", false);
+            $('#CustomerRUT').val('');
+            $('#ParentCustomerName').val('');
+            $('#CheckDigit').val('');
+            $('#SalesId').val('');
+            RefreshDropDownList('SalesId');
+            $('#lblValidateSearchCriteria').text('');
+            $('#lblValidateCustomer').text('');
+            $('#lblValidateSalesId').text('');
+            SetZoomButton();
+        });
+
+        $('#ProductMemberType').change(function () {
+            SetZoomButton();
+        });
+
+        $("#btnCustomerZoom").click(function () {
+
+            $.ajax({
+                url: "/Master/RUTCardNumberSearchList",
+                type: "GET",
+                data: { ARUT: "", ACardnumber: "", ACustomername: "", AIsLoading: false, AIsParentCustomerSearch: true },
+                cache: false,
+                contenttype: "application/json ; charset = utf-8",
+                success: function (data) {
+                    $("#RUTCardNumberSearchDiv").html(data);
+                },
+                error: function (ts) { alert(ts.responseText) }
+            });
+
+            loading(); // loading
+            setTimeout(function () { // then show popup, deley in .5 second
+                loadPopup(); // function show popup
+            }, 500); // .5 second
+
+        })
+        SetZoomButton();
+
+        $("[id=SalesId]").append($('<option/>',
+        {
+            value: "",
+            text: "@Resources.SelectOne"
+        }));
+
+        if (document.getElementById("CustomerRUT").value && document.getElementById("CheckDigit").value) {
+            ValidateRUT();
+        }
+    });
+
+    function SetZoomButton() {
+        var btnZoom = $('#btnCustomerZoom');
+        if ($('#ProductMemberType').val() == 'A') {
+            btnZoom.removeClass('searchbuttondisabled').addClass('searchbutton');
+            btnZoom.prop('disabled', false);
+        }
+        else {
+            btnZoom.removeClass('searchbutton').addClass('searchbuttondisabled');
+            btnZoom.prop('disabled', true);
+            $('#lblValidateCustomer').text('');
+            $('#ParentCustomerName').val('');
+            $('#hidParentCustomerId').val('');
+        }
+    }
+
+    function GetCustomerDetailsIfExists() {
+        var RUTNumber = document.getElementById("CustomerRUT").value;
+        var CheckDigit = document.getElementById("CheckDigit").value;
+        var SalesId = document.getElementById("SalesId").value;
+        if (RUTNumber && CheckDigit) {
+            $.ajax({
+                type: 'POST',
+                url: '/CardBooking/CheckIfValidCard',
+                data: { Id: RUTNumber, ACheckDigit: CheckDigit },
+                cache: false,
+                success: function (returnData) {
+                    if (CheckDigit.toUpperCase() == (returnData.CheckDigit).toUpperCase()) {
+                        if (returnData.Isvalid) {
+                            $('#lblValidateSearchCriteria').text("");
+                            var RUTNumber = document.getElementById("CustomerRUT").value + '' + document.getElementById("CheckDigit").value;
+
+                            $.ajax({
+                                type: 'GET',
+                                url: '/Master/GetCustomerDetailsIfExists',
+                                data: { ARUTNumber: RUTNumber, ASalesId: SalesId },
+                                cache: false,
+                                success: function (returnData) {
+                                    if (returnData) {
+                                        if (returnData.ProductMemberType) {
+                                            $('#ProductMemberType').val(returnData.ProductMemberType);
+                                            $('#ProductMemberType').prop("disabled", true);
+                                            $('#hidParentCustomerId').val(returnData.ParentCustomerId);
+                                            $('#ParentCustomerName').val(returnData.ParentCustomerName);
+                                            $('#btnCustomerZoom').removeClass('searchbutton').addClass('searchbuttondisabled');
+                                            $('#btnCustomerZoom').prop('disabled', true);
+                                        }
+                                        else {
+                                            $('#ProductMemberType').val("P").change();
+                                            $('#ProductMemberType').prop("disabled", false);
+                                            $('#ParentCustomerName').val("");
+                                            $('#hidParentCustomerId').val("0");
+                                        }
+                                        if (returnData.WarningMessage) {
+                                            ShowSimpleModalDialog(returnData.WarningMessage, "");
+                                            return false;
+                                        }
+                                    }
+                                }
+                            });
+                            return;
+                        }
+                    }
+                    else {
+                        $('#lblValidateSearchCriteria').text("@Html.Raw(string.Format(Resources.MsgErrInvalid, Resources.RUT))");
+                        $('#ProductMemberType').val("P").change();
+                        $('#ProductMemberType').prop("disabled", false);
+                        $('#ParentCustomerName').val("");
+                        $('#hidParentCustomerId').val("0");
+                    }
+                    return false;
+                }
+            });
+        }
+        else {
+            SetZoomButton();
+        }
+    }
+
+    function ValidateRUT() {
+        var RUTNumber = document.getElementById("CustomerRUT").value;
+        var CheckDigit = document.getElementById("CheckDigit").value;
+        var SalesId = document.getElementById("SalesId").value;
+        if (RUTNumber && CheckDigit) {
+            $.ajax({
+                type: 'POST',
+                url: '/CardBooking/CheckIfValidCard',
+                data: { Id: RUTNumber, ACheckDigit: CheckDigit },
+                cache: false,
+                success: function (returnData) {
+                    if (CheckDigit.toUpperCase() == (returnData.CheckDigit).toUpperCase()) {
+                        if (returnData.Isvalid) {
+                            $('#lblValidateSearchCriteria').text("");
+                            var RUTNo = document.getElementById("CustomerRUT").value + '' + document.getElementById("CheckDigit").value;
+                            $("[id=SalesId]").empty();
+                            PopulateDropDownViaAjax("#SalesId", "/Master/GetSalesIdByRUT?ARUT=" + RUTNo);
+                            return;
+                        }
+                    }
+                    else {
+                        $('#lblValidateSearchCriteria').text("@Html.Raw(string.Format(Resources.MsgErrInvalid, Resources.RUT))");
+                    }
+                    return false;
+                }
+            });
+        }
+        else {
+            SetZoomButton();
+        }
+    }
+
+
+</script>
+
+<style>
+    input[type="text"][readonly],
+    select[disabled]
+    {
+        background: #e9e7e7;
+    }
+</style>
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+        <div id="RUTCardNumberSearchDiv"></div>
+        <div class="tabs-container">
+            @using (Html.BeginForm("", ""))
+            {
+                <div class="tab-content" id="tab1">
+                    <div class="row">
+                        <div class="SearchColumn">
+                            @*style="width:35%"*@
+                            <div class="row">
+                                <div class="label">@Resources.RUT</div>
+                                <div class="Field" style="width: 55%">
+                                    <div>
+                                        <span>@Html.TextBox("CustomerRUT", string.Empty, new { maxlength = 9, @class = "NumericOnly", @style = "width:82%; float:left" }) </span>
+
+                                        <span>
+                                            <label style="width: 1%; float: left; padding: 6px 3px 0px 3px">-</label></span>
+                                        <span>@Html.TextBox("CheckDigit", string.Empty, new { maxlength = 1, @class = "AlphaNumericOnly", @style = "width:4%; float:left" })</span>
+                                        <label id="lblValidateSearchCriteria" class="validationMessage"></label>
+                                        <label id="CustomerRUT_Validate" class="validationMessage"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">@Resources.SalesId</div>
+                                <div class="Field" style="width: 55%">
+                                    @Html.DropDownList("SalesId", new List<SelectListItem>())
+                                    <label id="lblValidateSalesId" class="validationMessage"></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">@Resources.ProductMemberType</div>
+                                <div class="Field" style="width: 55%">
+                                    @Html.DropDownList("ProductMemberType", ProductMemberType)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">@Resources.ParentCustomer </div>
+                                <div class="Field" style="width: 55%">
+                                    @Html.TextBox("ParentCustomerName", "", new { id = "ParentCustomerName", name = "ParentCustomerName", @readonly = "readonly", style = "width:95.5%" })
+                                    @*@Html.TextBox("ParentCustomerName", "", new { id = "ParentCustomerName", name = "ParentCustomerName", @readonly = "readonly", style = "width:80%" })
+                                    <input id="btnCustomerZoom" name="Command" value="" class="searchbutton" type="button" style="width: 9%; border: none;" />*@
+                                    <label id="lblValidateCustomer" class="validationMessage"></label>
+                                </div>
+                            </div>
+
+                            @Html.Hidden("hidParentCustomerId", "", new { id = "hidParentCustomerId", name = "hidParentCustomerId" })
+                        </div>
+                        <div class="SearchColumnbtn">
+                            <input id="btnSearch" value="@Resources.Search" type="button" class="Greenbutton" />
+                            <input id="btnClear" value="@Resources.Clear" type="button" class="Greenbutton" />
+                        </div>
+                    </div>
+                    <div class="row">
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+

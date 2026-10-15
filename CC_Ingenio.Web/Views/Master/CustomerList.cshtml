@@ -1,0 +1,161 @@
+﻿@using CC_Ingenio.Web.ViewModel.Master;
+@using CC_Ingenio_Resources;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = String.Concat(new object[] { Resources.CDBK_CUS, " ", Resources.Search });
+}
+
+@model CustomerSearch
+@{
+    var grid = new WebGrid(Model.SearchResults, canSort: false, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "CustomerId", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+
+    List<SelectListItem> CustomerTypeList = new List<SelectListItem>();
+    foreach (var itm in ViewBag.CustomerType)
+    {
+        CustomerTypeList.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    CustomerTypeList.RemoveAt(0);
+    CustomerTypeList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    
+
+    List<SelectListItem> CustomerStatusList = new List<SelectListItem>();
+    foreach (var itm in ViewBag.CustomerStatus)
+    {
+        CustomerStatusList.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    CustomerStatusList.RemoveAt(0);
+    CustomerStatusList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+}
+
+
+
+<section class="featured">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active"> @Html.ActionLink(Resources.SearchPageHeading,"CustomerList","Master" )</li>
+            <li hidden="hidden"> @Html.ActionLink(Resources.DetailsPageHeading,"CustomerAdd","Master" )</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm(Model.isUnderWriter ? "ListCustomersToUnderwrite" : "CustomerList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.RUT</div>
+                                        <div class="Field">
+                                             @Html.TextBoxFor(x => x.RUT, new { maxlength = 11, @class="NumberHyphen" })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.Name</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.Name, new { maxlength = 50 })
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CustomerType</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x => x.CustomerType, CustomerTypeList)
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        @if (Model.isUnderWriter) 
+                                        { 
+                                            <div class="label"></div>
+                                            <div class="Field"></div>
+                                        }
+                                        else
+                                        {                                           
+                                            <div class="label">@Resources.Status</div>
+                                            <div class="Field">
+                                                @Html.DropDownListFor(x => x.CustomerStatus, CustomerStatusList)
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="SearchColumnbtn">
+                                        <span>
+                                            <input id="SearchButton" type="submit" class="Greenbutton" name="SearchButton" value="@Resources.Search" />
+                                        </span>
+                                        <span>
+                                            <input id="ClearButton" type="submit" class="Greenbutton" name="ClearButton" value="@Resources.Clear" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    }
+
+                </div>
+                <div class="row">
+
+                    <div class="standard-table">
+                        @if (Model.isUnderWriter) 
+                        { 
+                            /*Underwriter*/
+                              @grid.GetHtml(alternatingRowStyle: "alt", columns:grid.Columns(
+                                        grid.Column("Name", Resources.Name),
+                                        grid.Column("RUT",Resources.RUT), 
+                                        grid.Column("CustomerTypeDesc", Resources.CustomerType),
+                                        grid.Column("NationalityDesc", Resources.Nationality),
+                                        //grid.Column("ApplicationReferenceNo", Resources.ApplicationRefNo),
+                                        grid.Column("ProductName", Resources.Product),
+                                        grid.Column("ProductMemberTypeDesc", Resources.ProductMemberType),
+                                        grid.Column("CreditScore",Resources.CreditScore),
+                                        grid.Column("ApprovalStatusDesc",Resources.Status),
+                                        grid.Column("", format:(item) => {
+                                            return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, CC_Ingenio.Common.Utils.Utils.OrganizationTypeCode == "IND" ? "IndustrialCustomerForUnderWritingView" : "ViewCustomerToUnderwrite", "Master", new { ACustomerId = item.CustomerId }, null)));
+                                            //return Html.Raw(Html.Raw(Html.ActionLink(Resources.Edit, "ViewCustomerToUnderwrite", "Master", new { ACustomerId = item.CustomerId }, null)));
+                                        })                                 
+                                      ))
+                        }
+                        else
+                        {
+                            /*Customer List*/
+                             @grid.GetHtml(alternatingRowStyle: "alt", columns:grid.Columns(
+                                        grid.Column("Name", Resources.Name),
+                                        grid.Column("RUT",Resources.RUT), 
+                                        grid.Column("CustomerTypeDesc", Resources.CustomerType),
+                                        grid.Column("NationalityDesc", Resources.Nationality),
+                                        //grid.Column("ApplicationReferenceNo", Resources.ApplicationRefNo),
+                                        grid.Column("ProductName", Resources.Product),
+                                        grid.Column("ProductMemberTypeDesc",Resources.ProductMemberType),
+                                        //grid.Column("IsActive","Active", format: (item) => @Html.Raw("<input type = 'checkbox' " + ((item.IsActive==true) ? "checked" : "") + " disabled = 'disabled' />")),
+                                        //grid.Column("IsBlackListed",Resources.BlackListed, format: (item) => @Html.Raw("<input type = 'checkbox' " + ((item.IsBlackListed==true) ? "checked" : "") + " disabled = 'disabled' />")),
+                                        grid.Column("ApprovalStatusDesc",Resources.Status),
+                                        grid.Column("", format:(item) => {
+                                            return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, CC_Ingenio.Common.Utils.Utils.OrganizationTypeCode == "IND" ? "IndustrialCustomerView" : "CustomerView", "Master", new { ACustomerId = item.CustomerId }, null)));
+                                        })                                 
+                                      ))                           
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>

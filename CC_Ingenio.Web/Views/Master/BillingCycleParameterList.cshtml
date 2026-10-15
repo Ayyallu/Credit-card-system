@@ -1,0 +1,155 @@
+﻿@using CC_Ingenio.Web.ViewModel.Master;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.MT_BILLING_CYCLE_PARAMETER, " ", Resources.Search });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model BillingCycleParameterSearch
+@{
+    var grid = new WebGrid(Model.SearchResults, canSort: false, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+
+    List<SelectListItem> MonthItems = new List<SelectListItem>();
+
+    foreach (var itm in ViewBag.Month)
+    {
+        MonthItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    MonthItems.RemoveAt(0);
+    MonthItems.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+
+    List<SelectListItem> BillingCycleItems = new List<SelectListItem>();
+
+    foreach (var itm in ViewBag.BillingCycle)
+    {
+        BillingCycleItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    BillingCycleItems.RemoveAt(0);
+    BillingCycleItems.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+     
+    }
+
+<section class="featured">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active">@Html.ActionLink(Resources.SearchPageHeading,"BillingCycleParameterList","Master" )</li>
+            <li> @Html.ActionLink(Resources.DetailsPageHeading,"BillingCycleParameterAdd","Master" )</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("BillingCycleParameterList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.BillMonth</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x=>x.BillMonth,MonthItems)
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CycleCode</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x=>x.BillingCycleCode,BillingCycleItems)
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="SearchColumnbtn">
+
+                                    <span>
+                                        <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                    </span>
+
+                                    <span>
+                                        <input id="Button2" type="submit" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                    </span>
+
+
+                                </div>
+
+
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    }
+
+                </div>
+                <div class="row">
+                   
+                    <div class="standard-table">
+                        @grid.GetHtml(alternatingRowStyle: "alt", columns:grid.Columns(
+                                    grid.Column("BillMonthDesc",Resources.BillMonth), 
+                                    grid.Column("BillingCycleDesc", Resources.BillingCycle),
+                                    grid.Column("BillDate", Resources.BillDate, format:@<text> @item.BillDate.ToShortDateString()</text>),
+                                    grid.Column("StatementDate", Resources.StatementDate, format:@<text> @item.StatementDate.ToShortDateString()</text>),
+                                    grid.Column("PaymentDueDate", Resources.PaymentDueDate, format:@<text> @item.PaymentDueDate.ToShortDateString()</text>),
+                                    grid.Column("ApprovalStatusDesc",Resources.Status),
+                                    grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink(Resources.Edit, "BillingCycleParameterAdd", "Master", new { Id = Convert.ToString(item.BillingCycleParameterId) }, null));
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "BillingCycleParameterView", "Master", new { id = item.BillingCycleParameterId }, null)));
+                                                }
+                                            }),
+                                    grid.Column(Resources.Delete,   format: 
+                                        (item) =>
+                                                             {
+                                                                 if (lstPriv.Contains("Delete"))
+                                                                 {
+                                                                     if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                                                     {
+                                                                         return Html.Raw(Html.ActionLink(Resources.Delete, "BillingCycleParameterDelete", "Master", new { id = item.BillingCycleParameterId }, new { @class = "delete-link" }));
+                                                                     }
+                                                                     else
+                                                                     {
+                                                                         return Html.Raw("");
+                                                                     }
+                                                                 }
+                                                                 else
+                                                                 {
+                                                                     return Html.Raw("");
+                                                                 }
+                                            })
+                                  ))
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>

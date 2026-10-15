@@ -1,0 +1,161 @@
+﻿@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.General });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+@model GeneralDTO
+@{
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+    }
+<script type="text/javascript">
+
+    function setCalenderDates() {
+
+        var fromDate = $('#FromDate').val();
+        var toDate = $('#ToDate').val();
+
+        $('#FromDate').datepicker("option", "maxDate", toDate);
+        $('#ToDate').datepicker("option", "minDate", fromDate);
+    }
+
+     $(document).ready(function () {
+
+        $('#FromDate').datepicker("option", "onSelect", setCalenderDates);
+        $('#ToDate').datepicker("option", "onSelect", setCalenderDates);
+
+        $("#frmGeneral").submit(function (e) {
+
+            if ($('#KeyName').val().trim() <= parseFloat(0)) {
+                $('#KeyName_Validate').text(" Key Code should not be 0");
+                e.preventDefault();
+            }
+        })
+
+        $('#KeyName').focusin(function () {
+            $('#KeyName_Validate').text("");
+        });
+
+    });
+
+</script>
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title </div>
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"GeneralList","Master" )</li>
+            }
+            <li class="active"> @Html.ActionLink(Resources.DetailsPageHeading,"GeneralAdd","Master" )</li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("GeneralSave", "Master", new { AKeyName = Model.KeyName, AOrganizationCode = Model.OrganizationCode }, FormMethod.Post, new { id = "frmGeneral", name = "frmGeneral" }))
+                 {
+                <div class="tab-content" id="tab1">
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc })</text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+                       
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.KeyCode</div>
+                                <div class="Field">
+                                    @if (!string.IsNullOrWhiteSpace(Model.KeyName))
+                                    { 
+                                        @Html.TextBoxFor(x => x.KeyName, new { id = "KeyName", name = "KeyName", maxlength = 5, @readonly = "readonly" })
+                                    }
+                                    else
+                                    { 
+                                        @Html.TextBoxFor(x => x.KeyName, new { id = "KeyName", name = "KeyName", maxlength = 5 })
+                                    }
+                                    @Html.ValidationMessageFor(x => x.KeyName)
+                                     <label id="KeyName_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">&nbsp;</div>
+                                <div class="Field">
+                                    &nbsp;
+@*                                    <div class="row">
+                                        &nbsp;
+                                    </div>*@
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Value1</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Value1, new { id = "Value1", name = "Value1", maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.Value1)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Value2</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Value2, new { id = "Value2", name = "Value2", maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.Value2)
+                                </div>
+                            </div>
+                         </div>
+
+                         <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.EffectiveFromDate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.EffectiveFromDate, new {id = "FromDate", @class ="datepicker", @readonly="true", Value = Model.EffectiveFromDate.ToShortDateString() })
+                                    @Html.ValidationMessageFor(x => x.EffectiveFromDate)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">Effective To Date</div>
+                                <div class="Field">
+                                   @Html.TextBoxFor(x => x.EffectiveToDate, new {id = "ToDate", @class ="datepicker", @readonly="true", Value = Model.EffectiveToDate.ToShortDateString() })
+                                    @Html.ValidationMessageFor(x => x.EffectiveToDate)
+                                </div>
+                            </div>
+                         </div>
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>
+<script>
+    $(function () {
+        setCalenderDates();
+
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>

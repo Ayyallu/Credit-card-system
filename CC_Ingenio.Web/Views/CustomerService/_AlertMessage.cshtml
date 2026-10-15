@@ -1,0 +1,153 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@using System.Web.Script.Serialization;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+@model AlertMessageDTO
+@{    
+    List<SelectListItem> alertTypeList = new List<SelectListItem>();
+    if(ViewBag.AlertTypes != null)
+    {
+      foreach (var item in ViewBag.AlertTypes)
+      {
+       alertTypeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+      }
+    }
+
+
+
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+  
+    
+ }
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#AlertType').change(function () {
+                          
+            $.ajax({
+                url: '/CustomerService/FillAlertMessageDetails/',
+                type: 'POST',
+                data: { AAlertType: $('#AlertType').val(), ACardNumber: JSON.stringify(@Model.CardNumber) },
+                    cache: false,
+                    success: function (data) {
+                        if (data != 'Undefined') {
+                            $('#partialViewDiv').html(data);
+                        }
+                    }
+                });         
+      
+        });
+
+
+        $('#Save').click(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/CustomerService/SaveAlertMessage/',
+                type: 'POST',
+                data: $('#frmAlertMessage').serialize(),
+                cache: false,
+                success: function (data) {
+                    if (data != 'Undefined') {
+                        $('#partialViewDiv').html(data);
+                    }
+                }
+            });
+
+        });
+
+        if ('@Model.IsSaved' == 'True') {
+            ShowSimpleModalDialog("@Html.Raw(string.Format(Resources.MsgInfoSaveSuccess,Resources.AlertMessage))", "");
+        }
+
+    $('input[id="New"]').hide();
+    $('input[id="Submit"]').hide();
+    $('input[id="Delete"]').hide();
+
+    });
+    </script>
+
+<div class="row">
+    <div class="BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle"">@Resources.AlertMessage</div>
+        @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmAlertMessage", Name = "frmAlertMessage", @class = "Scrolling", @style = "height: 310px;" }))
+        {     
+            <div class="row">
+                <div class="row">
+                    <div class="TwoColumn" style="width: 40%; float: left">
+                        <div class="label">@Resources.AlertType</div>
+                        <div class="Field" style="width: 70%">
+                            @Html.DropDownListFor(x => x.AlertType, alertTypeList, new { id = "AlertType", @class = "entryControls" })
+                            @Html.ValidationMessageFor(x => x.AlertType, "", new { id = "Validation_MessageType" })
+                        </div>
+                    </div>
+                    <div class="TwoColumn" style="width: 45%; float: left">
+                        <div class="label" style="width: 90%">@Resources.MsgInfoSelectChannel</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="TwoColumn" style="width: 40%; float: left">
+                        <div class="label">@Resources.Message</div>
+                        <div class="Field" style="width: 70%;">
+                            @Html.TextAreaFor(x => x.Message, new { id = "Message", style = "height: 70px;", maxlength="500" })
+                            @Html.ValidationMessageFor(x => x.Message, "", new { id = "Validation_MessageType" })
+                        </div>
+                    </div>
+                    <div class="TwoColumn" style="width: 18%; float: left">
+                        <div>@Html.CheckBoxFor(x => x.IsEmailAlert, new { id = "Email", name = "Email", text = "Email" })<div class="label">@Resources.Email</div>
+                        </div>
+                    </div>
+                    <div class="TwoColumn" style="width: 20%; float: left">
+                        <div>@Html.CheckBoxFor(x => x.IsMobileAlert, new { id = "Mobile", name = "Mobile", text = "Mobile" })<div class="label">@Resources.Mobile</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="TwoColumn" style="width: 40%; float: left">
+                        <div class="label">@Resources.Email</div>
+                        <div class="Field" style="width: 70%">
+                            @Html.TextBoxFor(x => x.EmailId, new { id = "EmailId", name = "EmailId", maxlength="50" })
+                            @Html.ValidationMessageFor(x => x.EmailId, "", new { id = "Validation_MessageType" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="TwoColumn" style="width: 40%; float: left">
+                        <div class="label">@Resources.Mobile</div>
+                        <div class="Field" style="width: 70%">
+                            @Html.TextBoxFor(x => x.MobileNo, new { id = "MobileNo", name = "MobileNo" ,maxlength="15"})
+                            @Html.ValidationMessageFor(x => x.MobileNo, "", new { id = "Validation_MessageType" })
+                        </div>
+                    </div>
+                    <div class="TwoColumn" style="width: 25%; float: left">
+                        <div class="label">@Resources.Charged</div>
+                        <div>
+                            @Html.CheckBoxFor(x => x.IsCharged, new { id = "Charged", name = "Charged" })
+                        </div>
+                    </div>
+                </div>
+                <div>@Html.Raw(Html.BasicButtons(lstPriv))</div>
+                <div>@Html.HiddenFor(x => x.CardNumber)</div>
+            </div>                               
+        }
+
+    </div>
+</div>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+
+        EnableDisableControls('@ViewData["FormStatus"]');
+    })
+</script>

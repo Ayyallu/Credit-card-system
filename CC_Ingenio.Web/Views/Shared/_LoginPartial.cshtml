@@ -1,0 +1,35 @@
+﻿<script type="text/javascript">
+    $(function () {
+        $(".linkdisabled").click(function () {
+            return false;
+        })
+    });
+</script>
+
+
+@if (Request.IsAuthenticated)
+{
+    <text>
+    <div style="display: inline;">
+
+        @*@Html.ActionLink("Hello " + User.Identity.Name, "", "", routeValues: null, htmlAttributes: new { @class = "linkdisabled", title = User.Identity.Name })*@
+
+        @*@Html.ActionLink(User.Identity.Name, "", "", routeValues: null, htmlAttributes: new { @class = "linkdisabled", title = User.Identity.Name })*@
+
+        @Html.ActionLink(User.Identity.Name, "ViewUserDetails", "user", routeValues: new { AUserName = User.Identity.Name }, htmlAttributes: new { title = User.Identity.Name })
+
+        @using (Html.BeginForm("LogOff", "User", FormMethod.Post, new { id = "logoutForm" }))
+        {
+            @Html.AntiForgeryToken()
+            <span><a href="javascript:document.getElementById('logoutForm').submit()"><i class="icon-signout"></i>@CC_Ingenio_Resources.Resources.Logout</a></span> 
+        }
+    </div>
+    </text>
+}
+else
+{
+    <ul>
+        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

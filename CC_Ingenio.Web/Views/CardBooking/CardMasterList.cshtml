@@ -1,0 +1,171 @@
+﻿@using CC_Ingenio.Web.ViewModel.CardBooking;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.CardMaster, " ", Resources.Details });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model CardMasterSearch
+@{
+    var grid = new WebGrid(Model.SearchResults,  canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "CardNumber", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+
+    //List<SelectListItem> OrganizationList = new List<SelectListItem>();
+    List<SelectListItem> ProductList = new List<SelectListItem>();
+    List<SelectListItem> CustomerSegmentList = new List<SelectListItem>();
+    List<SelectListItem> CustomerSubSegmentList = new List<SelectListItem>();
+    
+    //foreach (var item in ViewBag.Organization)
+    //{
+    //    OrganizationList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    //}
+    //OrganizationList.RemoveAt(0);
+    //OrganizationList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });    
+    
+    foreach (var item in ViewBag.Product)
+    {
+        ProductList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    ProductList.RemoveAt(0);
+    ProductList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    
+    foreach (var item in ViewBag.CustomerSegment)
+    {
+        CustomerSegmentList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    CustomerSegmentList.RemoveAt(0);
+    CustomerSegmentList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    
+    foreach (var item in ViewBag.CustomerSubSegment)
+    {
+        CustomerSubSegmentList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    CustomerSubSegmentList.RemoveAt(0);
+    CustomerSubSegmentList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    
+}
+
+
+<section class="featured">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active">@Html.ActionLink(Resources.SearchPageHeading,"CardMasterList","CardBooking" )</li>
+            <li hidden="hidden"> @Html.ActionLink(Resources.DetailsPageHeading,"CardMasterUpdate","CardBooking" )</li>            
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("CardMasterList", "CardBooking", FormMethod.Post, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+  
+                            <div class="row">
+                                 <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.RUT</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x=>x.RUT,new { id = "RUT", name="RUT", maxlength = 9,@class="AlphaNumericOnly" })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CardNumber</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x=>x.CardNumber,new { id = "CardNumber", name="CardNumber", maxlength = 16 })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                 <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CustomerSegment</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x=>x.CustomerSegmentCode, CustomerSegmentList)
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CustomerSubSegment</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x=>x.CustomerSubSegmentCode, CustomerSubSegmentList)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                 <div class="row">                                     
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.Product</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x=>x.ProductCode,ProductList)
+                                        </div>
+                                    </div>
+                                     <div class="TwoColumn">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="Field">&nbsp;</div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="SearchColumnbtn">
+                                        <span>
+                                            <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                        </span>
+
+                                        <span>
+                                            <input id="Button2" type="submit" name="ClearButton" class="Greenbutton" value="@Resources.Clear" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    }
+
+                </div>
+                <div class="row">
+                   
+                    <div class="standard-table">
+
+                        @grid.GetHtml(alternatingRowStyle:"alt",columns:grid.Columns(
+                                    grid.Column("CustomerCardName",Resources.CustomerName),
+                                    grid.Column("RUT",Resources.RUT),
+                                    grid.Column("CardNumber", Resources.CardNumber),
+                                    grid.Column("OrganizationName",Resources.Organization),
+                                    grid.Column("ProductName",Resources.Product),
+                                    grid.Column("CustomerSegmentName", Resources.CustomerSegment),
+                                    grid.Column("CustomerSubSegmentName", Resources.CustomerSubSegment),
+                                    grid.Column("ApprovalStatusDesc", Resources.Status),
+                                    grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                if (item.ApprovalStatus.Equals("A") || item.ApprovalStatus.Equals("P"))
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "CardMasterView", "CardBooking", new { id = item.CardNumber }, null)));
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw(Html.ActionLink(Resources.Edit, "CardMasterLoadForUpdate", "CardBooking", new { id = item.CardNumber }, null));
+                                                }
+                                            })                                  
+                    ))
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+

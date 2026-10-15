@@ -1,0 +1,224 @@
+﻿@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio.Web.ViewModel.CustomerService;
+@using CC_Ingenio_Resources;
+@model CustomerTransactions 
+@{
+    var customerTransactionGrid = new WebGrid(Model.TransactionsList, canPage: true, rowsPerPage: 5, ajaxUpdateContainerId: "container-body");
+    customerTransactionGrid.Pager(WebGridPagerModes.All);
+
+    List<SelectListItem> IncomingTransTypeItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.IncomingTransTypeList)
+    {
+        IncomingTransTypeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+
+<script type="text/javascript">
+
+    function setCalenderDates() {
+
+        var fromDate = $('#FromDate').val();
+        var toDate = $('#ToDate').val();
+
+        if (toDate == "") {
+            $("#ToDate").datepicker("setDate", fromDate);
+        }
+
+        if (fromDate == "") {
+            $("#FromDate").datepicker("setDate", toDate);
+        }
+
+        fromDate = $('#FromDate').val();
+        $('#ToDate').datepicker("option", "minDate", fromDate);
+
+    }
+
+ var index = 1;
+ $(document).ready(function () {
+     $("#FromDate").datepicker({
+         changeYear: true,
+         changeMonth: true,
+         yearRange: '2014:2020',
+         dateFormat:  "@Resources.FormatDateJS",
+         numberOfMonths: 1,
+         onSelect: setCalenderDates
+     });
+     $("#ToDate").datepicker({
+         changeYear: true,
+         changeMonth: true,
+         yearRange: '2014:2020',
+         dateFormat: "@Resources.FormatDateJS",
+         numberOfMonths: 1,
+         onSelect: setCalenderDates
+     });
+     setCalenderDates();
+
+     $("#SearchButton").click(function (e) {       
+       
+             var fromDate, toDate;
+             fromDate = $('#FromDate').val();
+             toDate = $('#ToDate').val();
+
+             e.preventDefault;
+             $.ajax({
+                 url: '/CustomerService/ShowCustomerTransactions',
+                 type: 'GET',
+                 data: { ACardNumber: JSON.stringify(@Model.CardNumber), AFromDate: $('#FromDate').val(), AToDate: $('#ToDate').val(), ATransType: $('#IncomingTransType').val() },
+                 cache: false,
+                 success: function (returnData) {
+                     $('#partialViewDiv').html(returnData);
+                     $("#FromDate").datepicker("setDate", fromDate);
+                     $("#ToDate").datepicker("setDate", toDate);                    
+                   
+                 }
+             });
+                      
+     });
+
+     $("#Save").click(function (e) {
+         e.preventDefault;
+         $.ajax({
+             url: '/CustomerService/SaveDisputedTransactions',
+             type: 'POST',
+             data: { ACardNumber: JSON.stringify(@Model.CardNumber), AFromDate: $('#FromDate').val(), AToDate: $('#ToDate').val(),ATransType: $('#IncomingTransType').val()  }, 
+             cache: false,
+             success: function (returnData) {
+                 $('#partialViewDiv').html(returnData);
+             }
+         });
+      });
+     
+     $(document).on("click", ".select", function (e) {        
+         var tr = $(this).parents('tr:first');
+         var CardNo = tr.find("#CardNumber").text();
+         var AuthCode = tr.find("#AuthCode").text();
+         var IsDisputedChecked = tr.find('#Disputed').attr('checked') ? "True" : "False";
+
+                 $.ajax({
+                     url: '/CustomerService/UpdateDisputedTransactionSession/',
+                     data: {
+                         ACardNo: CardNo, AAuthCode: AuthCode, ADisputeChecked: IsDisputedChecked
+                        },
+                        type: 'get',
+                        cache: false,
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {                           
+                        }
+
+                    });
+
+         e.preventDefault;
+        
+     });
+
+    if ('@Model.IsSaved' == 'True') {
+         ShowSimpleModalDialog("@Html.Raw(string.Format(Resources.MsgInfoUpdateSuccess,Resources.Transactions))", "");
+    }
+
+    
+
+
+     $('#ClearButton').click(function () {
+         var currDate = '@ViewBag.BusinessDate';
+         $("#FromDate").datepicker("setDate", currDate);
+         $("#ToDate").datepicker("setDate", currDate);
+         $('#TransactionsCount_Validate').text("");
+         $('#IncomingTransType').val("");
+     });
+
+    
+     $('input[id="New"]').hide();
+     $('input[id="Submit"]').hide();
+     $('input[id="Delete"]').hide();
+     $('input[id="Reset"]').hide();
+
+
+});
+
+</script>
+
+<div class="row">
+    <div class=" BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.AllTransactions</div>
+        <div class="SearchBox">  
+            <div class="row">
+                <div class="TwoColumn">
+                    <div class="label">@Resources.TransactionType</div>
+                    <div class="Field">
+                        @Html.DropDownListFor(x => x.TransType, IncomingTransTypeItems.AsEnumerable(), new { @id = "IncomingTransType" })
+                        <label id="lblValidateTransType" class="validationMessage" style="color: red; font-size: .95em;"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="TwoColumn">
+                        <div class="label">@Resources.FromDate</div>
+                        <div class="Field">
+                            <span>
+                                @Html.TextBoxFor(x => x.FromDate, new {id = "FromDate", style="width:24%", @readonly="true", Value = Model.FromDate.ToShortDateString() })
+                            </span>
+                            <span>
+                                <label class="inline" style="font-size: 100%; padding: 6px 10px 0px 5%">@Resources.ToDate  </label>
+                            </span>
+                            <span>
+                                @Html.TextBoxFor(x => x.ToDate, new {id = "ToDate", style="width:24%; float:right", @readonly="true", Value = Model.ToDate.ToShortDateString() })
+                            </span>
+                        </div>
+                    </div>
+                    <div class="TwoColumn">
+                               <div class="SearchColumnbtn">
+                        <span>
+                            <input style="width:auto" id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search"/>
+                            <input style="width:auto" id="ClearButton" class="Greenbutton" type="button" value="@Resources.Clear" />
+                        </span>
+                    </div>
+                    <label id="TransactionsCount_Validate" class="validationMessage"></label>
+                    </div>
+                </div>               
+            </div>
+
+            <div class="row">
+                <div class="standard-table">
+                    @customerTransactionGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+                alternatingRowStyle: "alt",
+                columns: customerTransactionGrid.Columns(
+                    customerTransactionGrid.Column(Resources.CardNumber, format: @<text><label id="CardNumber" style="font-size: .95em; font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.CardNumber</label>
+                    </text>),
+                    customerTransactionGrid.Column(Resources.AuthCode, format: @<text><label id="AuthCode" style="font-size: .95em; font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.AuthCode</label>
+                    </text>),
+                    customerTransactionGrid.Column(Resources.MerchantCode, format: @<text><label id="MerchantCode" style="font-size: .95em; font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.MerchantCode</label>
+                    </text>),
+                    customerTransactionGrid.Column(Resources.MerchantName, format: @<text><label id="MerchantName" style="font-size: .95em; font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.MerchantName</label>
+                    </text>),
+                    customerTransactionGrid.Column(Resources.TransactionDate, format: @<text>@item.TxnDate.ToShortDateString()</text>),
+                    customerTransactionGrid.Column(Resources.Description, format: @<text><label id="Description" style="font-size: .95em; font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.Description</label>
+                    </text>),
+                    customerTransactionGrid.Column(Resources.Amount, format: @<text><label id="Amount" style="font-size: .95em; font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.Amount</label>
+                    </text>),
+                    customerTransactionGrid.Column("Disputed", Resources.Disputed, format: (item) =>
+                    {
+                        return @Html.Raw("<input type='checkbox' class = 'select' id='Disputed'  " + (((item.Value).Disputed == true) ? "checked" : "") + " value=Disputed  />");
+                    }, style: "gridSelectCol", canSort: false)))
+
+
+                </div>
+                @if (Model.TransactionsList.Count == 0)
+                    {
+                         @Html.Label(Resources.MsgErrNoRecordsFound,new { @class = "validationMessage"})
+                    }
+            </div>
+            <div>@Html.Raw(Html.BasicButtons(lstPriv)) </div>
+                 @Html.HiddenFor(x => x.CardNumber)
+        </div>
+        </div>
+    </div>

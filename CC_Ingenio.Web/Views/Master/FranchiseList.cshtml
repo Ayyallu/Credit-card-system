@@ -1,0 +1,131 @@
+﻿@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Search, " ", Resources.Franchise});
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.Web.ViewModel.Master;
+@using CC_Ingenio_Resources;
+
+@model FranchiseSearch
+@{
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+
+<section class="feature">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active">@Html.ActionLink(Resources.SearchPageHeading,"FranchiseList","Master" )</li>
+            <li> @Html.ActionLink(Resources.DetailsPageHeading,"FranchiseAdd","Master" )</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("FranchiseList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.FranchiseCode</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x=>x.FranchiseCode, new { maxlength = 5 })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.FranchiseName</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x=>x.FranchiseName, new { maxlength = 50 })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="SearchColumnbtn">
+                                        <span>
+                                            <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                        </span>
+                                        <span>
+                                            <input id="Button2" type="submit" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                        </span>
+                                </div>                                
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    }
+
+                </div>
+                <div class="row">
+                   
+                    <div class="standard-table">
+
+                        @grid.GetHtml(columns:grid.Columns(
+                                    grid.Column("FranchiseCode",Resources.FranchiseCode),
+                                    grid.Column("FranchiseName",Resources.FranchiseName),
+                                    grid.Column("OrganizationDesc", Resources.Organization),
+                                    grid.Column("EffectiveFromDate", Resources.EffectiveFromDate,format:@<text> @item.EffectiveFromDate.ToShortDateString()</text>),  
+                                    grid.Column("EffectiveToDate", Resources.EffectiveToDate,format:@<text> @item.EffectiveToDate.ToShortDateString()</text>),   
+                                    grid.Column("ApprovalStatusDesc", Resources.Status),
+                                    grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                if(item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink(Resources.Edit, "FranchiseAdd", "Master", new { AFranchiseCode = item.FranchiseCode, AOrganizationCode = item.OrganizationCode }, null));
+                                                    
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "FranchiseView", "Master", new { AFranchiseCode = item.FranchiseCode, AOrganizationCode = item.OrganizationCode }, null))); 
+                                                }
+                                            }),
+                                    grid.Column(Resources.Delete,   format: 
+                                        (item) =>
+                                                             {
+                                                                 if (lstPriv.Contains("Delete"))
+                                                                 {
+                                                                     if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                                                     {
+                                                                         return Html.Raw(Html.ActionLink(Resources.Delete, "FranchiseDelete", "Master", new { Id = item.FranchiseCode, AOrganizationCode = item.OrganizationCode }, new { @class = "delete-link" }));
+                                                                     }
+                                                                     else
+                                                                     {
+                                                                         return Html.Raw("");
+                                                                     }
+                                                                 }
+                                                                 else
+                                                                 {
+                                                                     return Html.Raw("");
+                                                                 }
+                                            })
+                    ))
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+

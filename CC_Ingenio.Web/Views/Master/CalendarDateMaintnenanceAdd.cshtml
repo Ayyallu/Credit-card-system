@@ -1,0 +1,85 @@
+﻿@{
+    ViewBag.Title = "CalendarDateMaintenanceAdd";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.DataTranfer.MasterInfo;
+@model CalendarDateMaintenanceDTO
+@{
+    List<SelectListItem> TypeItems = new List<SelectListItem>();
+    TypeItems.Add(new SelectListItem { Text = "Select", Value = String.Empty });
+    foreach (var itm in ViewBag.TypeList)
+    {
+        TypeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+}
+
+@section featured {
+}
+
+<section class="featured">
+    <div class="PageTitle">Add Calendar Date Maintenance </div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active"><a href="#tab1">Details</a></li>
+            <li> @Html.ActionLink("Search","CalendarDateMaintenanceList","Master" )</li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("CalendarDateMaintenanceSave", "Master", new { Id = Convert.ToString(Model.Id), }, FormMethod.Post))
+                {
+                <div class="tab-content" id="tab1">
+
+                    <div class="row">
+                        <fieldset class="double">
+                            <legend></legend>
+                            <div class="row">
+                                <div class="label">Type</div>
+                                <div class="Field">
+                                    @Html.ValidationMessageFor(x => x.Type)
+                                    @Html.DropDownListFor(x => x.Type, TypeItems.AsEnumerable(), new { id = "Type", name = "Type" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">Date</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Date, new { @class ="datepicker", @readonly="true" })
+                                    @Html.ValidationMessageFor(x => x.Date)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">Description</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Description)
+                                    @Html.ValidationMessageFor(x => x.Description)
+                                </div>
+                            </div>
+                        </fieldset>
+                        
+                             
+                        <div class="rowbtn">
+                            <span>
+
+                                <input id="Add" name="Command" value="Add"   type="submit" class="Greenbutton" /></span>
+                            <span>
+                                <input id="Save" name="Command" value="Save" type="submit" class="Greenbutton" /></span>
+                                
+                            <span>
+                                <input id="Delete" name="Command" type="submit" class="Greenbutton" /></span>
+                            <span>
+                                <input id="Authorize" type="button" class="Greenbutton" value="Authorize"  /></span>
+                            <span>
+                                <input id="Button5" type="reset" class="Greenbutton" value="Cancel" /></span>
+                        </div>
+                    </div>
+                </div>
+                 }
+
+            </div>
+    </div>
+</section>
+

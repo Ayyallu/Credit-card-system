@@ -1,0 +1,159 @@
+﻿@using CC_Ingenio.Web.ViewModel.CardBooking;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.CardGeneration});
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model CardGenerationSearch
+@{
+    var customerGrid = new WebGrid(Model.SearchResult, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE);// selectionFieldName: "CustomerId", ajaxUpdateContainerId: "container-body"
+    customerGrid.Pager(WebGridPagerModes.All);
+
+    List<SelectListItem> userBranchList = new List<SelectListItem>();
+    foreach(var item in ViewBag.UserBranchList)
+    {
+        userBranchList.Add(new SelectListItem() { Text = item.Text, Value = item.Value });
+    }
+    userBranchList.RemoveAt(0);
+    userBranchList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+}
+@section featured
+{
+}
+<script>
+    var index = 1;
+
+    $(document).ready(function () {
+       
+        $("#allBox").click(function () {
+
+            var all = $("#allBox").attr("checked") ? true : false;
+            $(".select").attr("checked", $(this).attr("checked") ? true : false);
+            var pageIndex = $('#PageIndex').val() == "" ? 0 : $('#PageIndex').val();
+            $.ajax({
+                url: '/CardBooking/UpdateAllInCardGenerationDetailsSession/',
+                data: { isChecked: all, APageIndex: pageIndex },
+                type: 'get',
+                cache: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    //alert(data);
+                }
+            });
+        });
+
+        $("input.select").each(function () {
+            $(this).data('row', index);
+            $(this).click(function () {
+
+                var tr = $(this).parents('tr:first');
+
+                var CustomerID = tr.find("#IsChecked").val();
+                var IsChecked = tr.find('#IsChecked').attr('checked') ? "True" : "False";
+
+                $.ajax({
+                    url: '/CardBooking/UpdateCardGenerationDetailsSession/',
+                    data: { ACustomerId: CustomerID, IsChecked: IsChecked },
+                    type: 'get',
+                    cache: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                    }
+
+                });
+            });
+            index++;
+        });      
+
+    });
+   
+    function ClearSession() {
+
+        $.ajax({
+            type: 'POST',
+            url: '/CardBooking/DeleteCardGenerationDetailsSessionData',
+            success: function (returnData) {
+            }
+        });
+    };
+</script>
+
+<style>
+    .gridSelectCol
+    {
+        width: 4px;
+    }
+</style>
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+        
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+            @using (Html.BeginForm("CardMasterAdd", "CardBooking",FormMethod.Get))
+            {
+                <div class="row">
+                        <div class="SearchBox">
+                             <div class="row">
+                                 <div class="SearchColumn">
+                                      <div class="row">
+                                        <div class="label">@Resources.RUT</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.RUT, new { name = "RUT", id = "RUT", maxlength = 9, @class = "AlphaNumericOnly" })
+                                        </div>
+                                      </div>
+                                 </div>
+                                  <div class="SearchColumn">
+                                      <div class="row">
+                                        <div class="label">@Resources.Branch</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x => x.BranchCode, userBranchList, new { id = "Branch", name = "Branch", })
+                                        </div>
+                                      </div>
+                                 </div>
+                                 <div class="row">
+                                     <div class="SearchColumnbtn">
+                                         <div>
+                                             <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" onclick="ClearSession()" />
+                                             <input id="ClearButton" name="ClearButton" class="Greenbutton" type="submit" value="@Resources.Clear" onclick="ClearSession()" />
+                                            @Html.HiddenFor(x=>x.Page, new { id="PageIndex" })
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>                            
+                        </div>
+                </div>
+            }
+                @using (Html.BeginForm("CardGenerate", "CardBooking", FormMethod.Post, new { ACardGenerationSearch = Model }))
+                {
+                    <div class="row" >
+                        <div class="standard-table">
+
+                              @MvcHtmlString.Create(customerGrid.GetHtml(htmlAttributes: new { id="container-body" },
+                                alternatingRowStyle: "alt", 
+                                columns: customerGrid.Columns(
+                                    customerGrid.Column(columnName: "IsChecked", header: "{CheckBoxHeading}", format: (item) =>
+                                        {
+                                            return @Html.Raw("<input type='checkbox' class = 'select' id='IsChecked'  " + (((item.Value).IsChecked == true) ? "checked" : "") + " value=" + item.CustomerId + "  />");
+                                        }, style: "gridSelectCol",canSort: false),
+                                    customerGrid.Column("CustomerName", Resources.CustomerName),
+                                    customerGrid.Column("RUT", Resources.RUT),
+                                    customerGrid.Column("BranchName", Resources.Branch),
+                                    customerGrid.Column("ProductName", Resources.Product)
+                                    //,customerGrid.Column("ApplicationReferenceNo", Resources.ApplicationRefNo)                                    
+                                    )).ToString().Replace("{CheckBoxHeading}", "<input type='checkbox' id='allBox'/>"))
+                        </div>
+                        
+                            <div style="float:right;">
+                                <input style="width:100%" id="CardGenerateButton" name="CardGenerateButton" class="Greenbutton" type="submit" value="@Resources.GenerateCard" />
+                            </div>                       
+                    </div>
+                }            
+            </div>
+        </div>
+    </div>
+</section>
+

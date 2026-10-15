@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="TestMVC.Models.TestMVCDbContextModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="TestMVCModelsTestMVCDbContextModelStoreContainer">
+          <EntitySet Name="Addresses" EntityType="TestMVC.Models.TestMVCDbContextModel.Store.Addresses" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="ContactAddresses" EntityType="TestMVC.Models.TestMVCDbContextModel.Store.ContactAddresses" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CONTACTS" EntityType="TestMVC.Models.TestMVCDbContextModel.Store.CONTACTS" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="Fk_ContactAddress_AddressId" Association="TestMVC.Models.TestMVCDbContextModel.Store.Fk_ContactAddress_AddressId">
+            <End Role="Addresses" EntitySet="Addresses" />
+            <End Role="ContactAddresses" EntitySet="ContactAddresses" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_ContactAddress_ContactId" Association="TestMVC.Models.TestMVCDbContextModel.Store.Fk_ContactAddress_ContactId">
+            <End Role="CONTACTS" EntitySet="CONTACTS" />
+            <End Role="ContactAddresses" EntitySet="ContactAddresses" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Addresses">
+          <Key>
+            <PropertyRef Name="AddressId" />
+          </Key>
+          <Property Name="AddressId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Line1" Type="varchar" MaxLength="100" />
+          <Property Name="Line2" Type="varchar" MaxLength="100" />
+          <Property Name="City" Type="varchar" MaxLength="25" />
+          <Property Name="State" Type="varchar" MaxLength="25" />
+          <Property Name="Country" Type="varchar" MaxLength="25" />
+        </EntityType>
+        <EntityType Name="ContactAddresses">
+          <Key>
+            <PropertyRef Name="ContactAddressId" />
+          </Key>
+          <Property Name="ContactAddressId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ContactId" Type="int" />
+          <Property Name="AddressId" Type="int" />
+        </EntityType>
+        <EntityType Name="CONTACTS">
+          <Key>
+            <PropertyRef Name="ContactId" />
+          </Key>
+          <Property Name="ContactId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="MobileNo" Type="varchar" MaxLength="25" />
+          <Property Name="HomePhoneNo" Type="varchar" MaxLength="25" />
+          <Property Name="OfficePhoneNo" Type="varchar" MaxLength="25" />
+          <Property Name="Type" Type="varchar" MaxLength="5" />
+          <Property Name="OrganizationName" Type="varchar" MaxLength="5" />
+          <Property Name="FirstName" Type="varchar" MaxLength="25" />
+          <Property Name="MiddleName" Type="varchar" MaxLength="25" />
+          <Property Name="LastName" Type="varchar" MaxLength="25" />
+          <Property Name="SSN" Type="varchar" MaxLength="25" />
+        </EntityType>
+        <Association Name="Fk_ContactAddress_AddressId">
+          <End Role="Addresses" Type="TestMVC.Models.TestMVCDbContextModel.Store.Addresses" Multiplicity="0..1" />
+          <End Role="ContactAddresses" Type="TestMVC.Models.TestMVCDbContextModel.Store.ContactAddresses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Addresses">
+              <PropertyRef Name="AddressId" />
+            </Principal>
+            <Dependent Role="ContactAddresses">
+              <PropertyRef Name="AddressId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_ContactAddress_ContactId">
+          <End Role="CONTACTS" Type="TestMVC.Models.TestMVCDbContextModel.Store.CONTACTS" Multiplicity="0..1" />
+          <End Role="ContactAddresses" Type="TestMVC.Models.TestMVCDbContextModel.Store.ContactAddresses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CONTACTS">
+              <PropertyRef Name="ContactId" />
+            </Principal>
+            <Dependent Role="ContactAddresses">
+              <PropertyRef Name="ContactId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TestMVC.Models.TestMVCDbContextModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="Entities" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="Addresses" EntityType="TestMVC.Models.TestMVCDbContextModel.Addresses" />
+          <EntitySet Name="ContactAddresses" EntityType="TestMVC.Models.TestMVCDbContextModel.ContactAddresses" />
+          <AssociationSet Name="Fk_ContactAddress_AddressId" Association="TestMVC.Models.TestMVCDbContextModel.Fk_ContactAddress_AddressId">
+            <End Role="Addresses" EntitySet="Addresses" />
+            <End Role="ContactAddresses" EntitySet="ContactAddresses" />
+          </AssociationSet>
+          <EntitySet Name="Contact" EntityType="TestMVC.Models.TestMVCDbContextModel.CONTACTS" />
+          <AssociationSet Name="Fk_ContactAddress_ContactId1" Association="TestMVC.Models.TestMVCDbContextModel.Fk_ContactAddress_ContactId1">
+            <End Role="CONTACTS" EntitySet="Contact" />
+            <End Role="ContactAddresses" EntitySet="ContactAddresses" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Addresses">
+          <Key>
+            <PropertyRef Name="AddressId" />
+          </Key>
+          <Property Type="Int32" Name="AddressId" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Line1" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Line2" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="City" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="State" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Country" MaxLength="25" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ContactAddresses" Relationship="TestMVC.Models.TestMVCDbContextModel.Fk_ContactAddress_AddressId" FromRole="Addresses" ToRole="ContactAddresses" />
+        </EntityType>
+        <EntityType Name="ContactAddresses">
+          <Key>
+            <PropertyRef Name="ContactAddressId" />
+          </Key>
+          <Property Type="Int32" Name="ContactAddressId" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ContactId" />
+          <Property Type="Int32" Name="AddressId" />
+          <NavigationProperty Name="Addresses" Relationship="TestMVC.Models.TestMVCDbContextModel.Fk_ContactAddress_AddressId" FromRole="ContactAddresses" ToRole="Addresses" />
+          <NavigationProperty Name="CONTACTS" Relationship="TestMVC.Models.TestMVCDbContextModel.Fk_ContactAddress_ContactId1" FromRole="ContactAddresses" ToRole="CONTACTS" />
+        </EntityType>
+        <Association Name="Fk_ContactAddress_AddressId">
+          <End Type="TestMVC.Models.TestMVCDbContextModel.Addresses" Role="Addresses" Multiplicity="0..1" />
+          <End Type="TestMVC.Models.TestMVCDbContextModel.ContactAddresses" Role="ContactAddresses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Addresses">
+              <PropertyRef Name="AddressId" />
+            </Principal>
+            <Dependent Role="ContactAddresses">
+              <PropertyRef Name="AddressId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CONTACTS">
+          <Key>
+            <PropertyRef Name="ContactId" />
+          </Key>
+          <Property Type="Int32" Name="ContactId" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="MobileNo" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="HomePhoneNo" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="OfficePhoneNo" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Type" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="OrganizationName" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="FirstName" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="MiddleName" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="LastName" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="SSN" MaxLength="25" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ContactAddresses" Relationship="TestMVC.Models.TestMVCDbContextModel.Fk_ContactAddress_ContactId1" FromRole="CONTACTS" ToRole="ContactAddresses" />
+        </EntityType>
+        <Association Name="Fk_ContactAddress_ContactId1">
+          <End Type="TestMVC.Models.TestMVCDbContextModel.CONTACTS" Role="CONTACTS" Multiplicity="0..1" />
+          <End Type="TestMVC.Models.TestMVCDbContextModel.ContactAddresses" Role="ContactAddresses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CONTACTS">
+              <PropertyRef Name="ContactId" />
+            </Principal>
+            <Dependent Role="ContactAddresses">
+              <PropertyRef Name="ContactId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="TestMVCModelsTestMVCDbContextModelStoreContainer" CdmEntityContainer="Entities">
+          <EntitySetMapping Name="Addresses">
+            <EntityTypeMapping TypeName="TestMVC.Models.TestMVCDbContextModel.Addresses">
+              <MappingFragment StoreEntitySet="Addresses">
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Line2" ColumnName="Line2" />
+                <ScalarProperty Name="Line1" ColumnName="Line1" />
+                <ScalarProperty Name="AddressId" ColumnName="AddressId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ContactAddresses">
+            <EntityTypeMapping TypeName="TestMVC.Models.TestMVCDbContextModel.ContactAddresses">
+              <MappingFragment StoreEntitySet="ContactAddresses">
+                <ScalarProperty Name="AddressId" ColumnName="AddressId" />
+                <ScalarProperty Name="ContactId" ColumnName="ContactId" />
+                <ScalarProperty Name="ContactAddressId" ColumnName="ContactAddressId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Contact">
+            <EntityTypeMapping TypeName="TestMVC.Models.TestMVCDbContextModel.CONTACTS">
+              <MappingFragment StoreEntitySet="CONTACTS">
+                <ScalarProperty Name="SSN" ColumnName="SSN" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="OrganizationName" ColumnName="OrganizationName" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="OfficePhoneNo" ColumnName="OfficePhoneNo" />
+                <ScalarProperty Name="HomePhoneNo" ColumnName="HomePhoneNo" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="ContactId" ColumnName="ContactId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

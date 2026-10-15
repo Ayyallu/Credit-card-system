@@ -1,0 +1,157 @@
+﻿
+
+@using CC_Ingenio.DataTranfer.CustomerServiceInfo
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@model ChangeCreditLimitDTO  
+@{       
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+<link href="~/Content/PopUpStyle.css" rel="stylesheet" />
+<script src="~/Scripts/PopUpScript.js"></script> 
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        window.actualLimit = JSON.stringify(@Model.ProductCreditLimit)
+
+        $('#Submit').click(function (e) {
+
+            e.preventDefault();
+            
+            if (parseFloat($('#NewCreditLimit').val().trim()) <= parseFloat(0)) {
+                $('#NewCreditLimit_Validate').text("@Html.Raw(String.Format(Resources.MsgErrValueGreaterThanZero, Resources.NewCreditLimit))");
+                return false;
+            }
+
+            if (Globalize(resourceProvider.ResourceCulture).parseFloat($('#NewCreditLimit').val().trim()) > parseFloat(actualLimit)) {
+                $('#NewCreditLimit_Validate').text(String.format(resourceProvider.MsgErrValueShouldBeLessThan, 'Value', actualLimit));
+                return false;
+            }
+            
+            $("#dialog").dialog({
+                resizable: false,
+                width: 400,
+                height: 160,
+                modal: true,
+                title: resourceProvider.ApplicationName,
+                buttons: [{
+                    class: "LeftButton",
+                    text: resourceProvider.Yes,
+                    click: function () {
+
+                        $.ajax({
+                            url: '/CustomerService/SaveChangeCreditLimit/',
+                            type: 'POST',
+                            data: $('#frmChangeCreditLimit').serialize(),
+                            cache: false,
+                            success: function (data) {
+
+                                if (data != 'Undefined') {
+                                    $('#partialViewDiv').html(data);
+                                }
+                            }
+                        });
+
+                        $(this).dialog("close");
+                    }
+                },
+                {
+                    text: resourceProvider.No,
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+
+            $("#dialog").text(resourceProvider.MsgConfSubmit);
+
+            $("#dialog").dialog("open");
+            
+        });
+        
+        $('#NewCreditLimit').focusin(function () {
+            $('#NewCreditLimit_Validate').text("");
+        });
+
+
+        $('#NewCreditLimit').blur(function () {
+
+            if ($('#NewCreditLimit_Validate').text().length > 0) {
+                $('#NewCreditLimit_Validate').text('');
+            }
+            if (Globalize(resourceProvider.ResourceCulture).parseFloat($('#NewCreditLimit').val().trim()) > parseFloat(0)) {
+                FormatOnBlur(event);
+                if (Globalize(resourceProvider.ResourceCulture).parseFloat($('#NewCreditLimit').val().trim()) > parseFloat(999999999)) {
+                    $('#NewCreditLimit_Validate').text(String.format(resourceProvider.MsgErrValueShouldBeLessThan, 'Value', 999999999));
+                }
+            }
+        });
+
+
+        if ('@ViewData["Saved"]' == 'True') {
+            ShowSimpleModalDialog("@Html.Raw(String.Format(Resources.MsgInfoUpdateSuccess, Resources.CreditLimit))", "");
+        }
+
+        $('input[id="New"]').hide();
+        $('input[id="Save"]').hide();
+        $('input[id="Delete"]').hide();
+
+    });
+</script>
+
+    <div class="row" >
+    <div class="BorderColumn"  style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.ChangeCreditLimit</div>
+            @using (Html.BeginForm("SaveChangeCreditLimit", "CustomerService", FormMethod.Post, new { id = "frmChangeCreditLimit", Name = "frmChangeCreditLimit", @style = "height: 130px;" }))
+            {
+                
+                <span>
+                    @if (Model.ApprovalStatus == "P" || Model.ApprovalStatus == "R")
+                    {
+                        <text> <b>@String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusdesc })</b> </text>
+                    }
+                </span>
+                                
+                <div class="row"></div>
+                <div class="row">
+                <div class="TwoColumn">
+                    <div class="label">@Resources.CurrentCreditLimit</div>
+                    <div class="Field">
+                        @Html.TextBoxFor(x => x.CurrentCreditLimit, String.Format("{0:N0}", Model.CurrentCreditLimit), new { id = "CurrentCreditLimit", name = "CurrentCreditLimit", maxlength = 9, @class = "Number", onkeypress = "return OnlyNumeric(event);", @disabled = "disabled" })
+                    </div>
+                </div>
+                <div class="TwoColumn">
+                    <div class="label">@Resources.NewCreditLimit</div>
+                    <div class="Field">
+                        @Html.TextBoxFor(x => x.NewCreditLimit, String.Format("{0:N0}", Model.NewCreditLimit), new { id = "NewCreditLimit", name = "NewCreditLimit", maxlength = 9, @class = "Number", onkeypress = "return OnlyNumeric(event);" })
+                        @Html.ValidationMessageFor(x => x.NewCreditLimit)
+                        <label id="NewCreditLimit_Validate" class="validationMessage"></label>
+                    </div>
+                </div>
+                </div>
+                <div>
+                    @Html.HiddenFor(x => x.CardNumber)
+                    @Html.HiddenFor(x => x.CustomerId)
+                    @Html.HiddenFor(x => x.CurrentCreditLimit)
+                </div>
+                <div>@Html.Raw(Html.BasicButtons(lstPriv))  </div>
+            }
+    </div>
+    </div>
+
+<script>
+    $(function () {
+        EnableDisableControls('@ViewData["FormStatus"]');
+    })
+</script>

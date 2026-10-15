@@ -1,0 +1,28 @@
+﻿
+@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@using CC_Ingenio_Resources;
+@model List<OverDueSummaryDTO>  
+@{
+    var overDueSummaryGrid = new WebGrid(Model, canPage: true, rowsPerPage: 5, ajaxUpdateContainerId: "container-body");
+    overDueSummaryGrid.Pager(WebGridPagerModes.All);   
+}
+
+<div class="row">
+    <div class=" BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.OverdueSummary</div>           
+        <div style="width: 100%; overflow:scroll">
+            <div class="standard-table">
+
+                @overDueSummaryGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+                alternatingRowStyle: "alt",
+                    columns: overDueSummaryGrid.Columns(
+                    overDueSummaryGrid.Column("OrginalDebt", Resources.OriginalDebt, format: (item) => string.Format("{0:N0}", item.OrginalDebt)),
+                    overDueSummaryGrid.Column("PaymentAmount",Resources.PaymentAmount, format: (item) => string.Format("{0:N0}", item.PaymentAmount)),   
+                    //overDueSummaryGrid.Column("PaymentDate", Resources.PaymentPostDate, (item)=> item.PaymentDate == null ? string.Empty : @item.PaymentDate.ToShortDateString() ),
+                    //overDueSummaryGrid.Column("PaymentRefNo", Resources.PaymentRefNo),
+                    overDueSummaryGrid.Column("CurrentBalance",Resources.CurrentBalance, format: (item) => string.Format("{0:N0}", item.CurrentBalance))))                                     
+                                                  
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,109 @@
+﻿@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.BillGeneration});
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using System.Web.Script.Serialization;
+@using CC_Ingenio.Common.Utils;
+@model BillGeneration
+@{
+    List<SelectListItem> BillCycleItems = new List<SelectListItem>();
+    BillCycleItems.Add(new SelectListItem { Text = "Select", Value = String.Empty });
+    foreach (var itm in ViewBag.BillCycleCodeList)
+    {
+        BillCycleItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+ }
+
+
+
+<script type="text/javascript">
+$(function () {
+    $("#Add").click(function (e) {
+     
+        e.preventDefault();
+        $("#dialog").dialog({
+            resizable: false,
+            height: 160,
+            width: 'auto',
+            modal: true,
+            title: '@Resources.ApplicationName',
+            buttons: {
+                "Yes": function () {
+
+                    $("#dialog").dialog("close");
+
+                    //$("#frmAdd").submit();
+                    window.open('/Authorization/Statement', 'mywindow', 'width=900,height=700');
+                    return false;
+                    
+                },
+                "No": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+        $("#dialog").text("@Html.Raw(string.Format(Resources.MsgConfGenerate,Resources.Statement))");
+
+        $("#dialog").dialog("open");
+
+
+    });
+});
+</script>
+
+
+
+<section class="featured">
+     <div class="PageTitle">@ViewBag.Title</div>
+     <div class="PageRow">
+
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                
+               @using (Html.BeginForm("Statement", "Authorization", FormMethod.Post, new { id = "frmAdd", name = "frmAdd", target="_blank" }))
+                {
+                <div class="tab-content" id="tab1">
+
+                    <div class="row">
+                            
+                        <fieldset class="double">
+                            <legend></legend>
+                            <div class="row">
+                                <div class="label">@Resources.BillDate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.BillDate, new { @class = "datepicker", @readonly = "true"})
+                                     @Html.ValidationMessageFor(x => x.BillDate)
+                                </div>
+                            </div>    
+                            <div class="row">
+                                <div class="label">@Resources.BillCycleCode</div>
+                                <div class="Field">
+                                     @Html.ValidationMessageFor(x => x.BillCycleCode)
+                                    @Html.DropDownListFor(x => x.BillCycleCode, BillCycleItems.AsEnumerable(), new { id = "BillCycleCode", name = "BillCycleCode" })
+                                </div>
+                            </div>
+                                  
+                        </fieldset>
+
+
+                        <div class="rowbtn">
+                            <span>
+                                <input id="Add" name="Command" value="Generate" class="Greenbutton" type="@Resources.Submit")/></span>
+                            <span>
+                               <input id="Reset" type="reset" class="Greenbutton" value="@Resources.Cancel" /></span>
+                        </div> 
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>

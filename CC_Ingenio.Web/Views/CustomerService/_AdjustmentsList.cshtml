@@ -1,0 +1,138 @@
+﻿@using CC_Ingenio.DataTranfer.AuthorizationInfo;
+@using CC_Ingenio_Resources;
+@model List<AdjustmentDTO>
+@{
+    var adjustGrid = new WebGrid(Model,canPage:true,rowsPerPage:5, ajaxUpdateContainerId: "container-body");
+    adjustGrid.Pager(WebGridPagerModes.All);
+}
+<script type="text/javascript">
+
+    function setCalenderDates() {
+
+        var fromDate = $('#FromDate').val();
+        var toDate = $('#ToDate').val();
+
+        if (toDate == "") {
+            $("#ToDate").datepicker("setDate", fromDate);
+        }
+
+        if (fromDate == "") {
+            $("#FromDate").datepicker("setDate", toDate);
+        }
+
+        fromDate = $('#FromDate').val();
+        $('#ToDate').datepicker("option", "minDate", fromDate);
+
+    }
+    $(document).ready(function () {
+          
+        $("#FromDate").datepicker({
+            changeYear: true,
+            changeMonth: true,
+            yearRange: '2000:2020',
+            dateFormat: "dd/mm/yy",
+            numberOfMonths: 1,
+            onSelect: setCalenderDates
+        });
+        $("#ToDate").datepicker({
+            changeYear: true,
+            changeMonth: true,
+            yearRange: '2000:2020',
+            dateFormat: "dd/mm/yy",
+            numberOfMonths: 1,
+            onSelect: setCalenderDates
+        });
+
+        setCalenderDates();
+
+        $('#SearchButton').click(function () {
+
+            if ($('#FromDate').val() != "" && $('#ToDate').val() != "") {
+
+                var fromDate, toDate;
+                fromDate = $('#FromDate').val();
+                toDate = $('#ToDate').val();
+                $.ajax({
+                    url: '/CustomerService/GetAdjustmentDetails/',
+                    type: 'POST',
+                    data: { ACardNumber: JSON.stringify(@ViewData["CardNumber"]), AFromDate: $('#FromDate').val(), AToDate: $('#ToDate').val() },
+                    cache: false,
+                    success: function (data) {
+                        //alert(data);
+                        $('#partialViewDiv').html(data);
+                        $("#FromDate").datepicker("setDate", fromDate);
+                        $("#ToDate").datepicker("setDate", toDate);
+                    }
+                });
+            }
+            else {
+                if ($('#FromDate').val() == "")
+                {
+                    $('#lblValidateFromDate').text("@Html.Raw(string.Format(Resources.MsgErrPleaseSelect,Resources.FromDate))");
+                }
+                if ($('#ToDate').val() == "") {
+                    $('#lblValidateToDate').text("@Html.Raw(string.Format(Resources.MsgErrPleaseSelect,Resources.ToDate))");
+                }
+            }
+        });
+       
+        $('#ClearButton').click(function () {
+            $("#FromDate").datepicker("setDate", "");
+            $("#ToDate").datepicker("setDate", "");
+        });
+
+        $('#FromDate').focusin(function () {
+            $('#lblValidateFromDate').text("");
+            $('#lblValidateToDate').text("");
+        });
+     });
+</script>
+<div class="row">
+        <div class=" BorderColumn" style="width: 98.6%">
+            <div class="CustomerColumnTitle">@Resources.Adjustments</div>
+           @* @using (Html.BeginForm("GetAdjustmentDetails", "CustomerService", new { ACardNumber = ViewData["CardNumber"] }, FormMethod.Get))
+            {*@
+            <div class="row">
+                <div class="SearchBox">
+                    <div class="row">
+                        <div class="TwoColumn" style="width: 30%">
+                         <div class="label">@Resources.FromDate</div>
+                            <div class="Field" style="width:50%">
+                                 @Html.TextBox("FromDate", "", new { name = "FromDate", id = "FromDate", @readonly = "readonly" })
+                                 <label id="lblValidateFromDate" class="validationMessage" style="color: red ;font-size: .95em;"></label>
+                         </div>
+                         </div>
+                        <div class="TwoColumn"  style="width: 30%">
+                        <div class="label">@Resources.ToDate</div>
+                            <div class="Field" style="width: 50%">
+                                @Html.TextBox("ToDate", "", new { name = "ToDate", id = "ToDate", @readonly = "readonly" })
+                                 <label id="lblValidateToDate" class="validationMessage" style="color: red ;font-size: .95em;"></label>
+                            </div>
+                        </div>
+                         <div class="TwoColumn" style="width: 25%">
+                                <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" style="width:auto"  />
+                                <input id="ClearButton" class="Greenbutton" type="button" value="@Resources.Clear" style="width:auto"  />
+                             @Html.Hidden("CardNumber",ViewData["CardNumber"])
+                    </div>
+                </div>
+            </div>
+         </div>
+            @*}*@
+            <div style="width: 100%;"  class="VerticalScrollBar">
+                <div class="standard-table">
+
+                    @adjustGrid.GetHtml(htmlAttributes: new { id = "container-body" }, alternatingRowStyle: "alt",
+                columns: adjustGrid.Columns(
+                   
+                    adjustGrid.Column("AuthCode", Resources.AuthCode),
+                     adjustGrid.Column("TxnDate", Resources.TransactionDate, format: (item) => item.TxnDate.ToShortDateString()),
+                    adjustGrid.Column("AdjustmentNarration", Resources.AdjustmentNarration),
+                    adjustGrid.Column("AdjustedAmount", Resources.Amount, format: (item) => string.Format("{0:N0}", item.AdjustedAmount))
+                ))
+
+                </div>
+            </div>
+        </div>
+
+</div>
+   

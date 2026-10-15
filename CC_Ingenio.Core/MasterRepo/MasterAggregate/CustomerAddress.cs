@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CC_Ingenio.Core.MasterRepo.MasterAggregate
+{
+    [Table("MT_CustomerAddress")]
+    public class CustomerAddress 
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int AddressId { get; set; }        
+	    public string AddressTypeCode { get; set; }      
+	    public int CustomerId { get; set; }
+        //[ForeignKey("CustomerId")]
+        public virtual Customer Customer { get; set; }       
+	    public string TypeOfResidenceClearance { get; set; }
+	    public string RegionCode { get; set; }
+	    public string CityCode { get; set; }
+	    public string CommunaCode { get; set; }
+	    public string Street { get; set; }
+	    public string Number { get; set; }
+	    public string Block { get; set; }
+	    public string ComplementOfAddress { get; set; }
+	    public string Town { get; set; }
+	    public string Landmark { get; set; }
+	    public string PostalCode { get; set; }
+	    public string POBox { get; set; }
+	    public string Phone { get; set; }
+        public string Mobile { get; set; }
+	    public string Fax { get; set; }
+    }
+}

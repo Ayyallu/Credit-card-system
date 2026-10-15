@@ -1,0 +1,300 @@
+﻿@using CC_Ingenio_Resources;
+@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@model List<UnbilledTransactionsDTO>  
+@{
+    var unbilledTransactionGrid = new WebGrid(Model, canPage: true, rowsPerPage: 5, ajaxUpdateContainerId: "container-body");
+    unbilledTransactionGrid.Pager(WebGridPagerModes.All);
+}
+<style>
+.gridColWidthMedium
+    {
+        width: 14%;
+        text-align:center;
+    }
+.gridColWidthShort
+    {
+        width: 5%;
+        text-align:center;
+    }
+.gridColAmount
+    {
+        width: 20%;
+        text-align:right;
+    }
+</style>
+
+<div class="row">
+        <div class=" BorderColumn" style="width: 98.6%">
+             @if (ViewBag.TransactionType == "UnbilledPurchase")
+                { 
+                    <div class="CustomerColumnTitle">@Resources.UnbilledPurchaseDetails</div>
+                    <div style="width:100%; overflow:scroll">
+                    <div class="standard-table"> 
+               
+                             @unbilledTransactionGrid.GetHtml(htmlAttributes: new {  id = "container-body" },
+                             alternatingRowStyle: "alt", 
+                             columns:unbilledTransactionGrid.Columns(
+                                    unbilledTransactionGrid.Column("InvoiceNo",Resources.InvoiceNo),
+                                    unbilledTransactionGrid.Column("TransactionDate",Resources.TransactionDate,format:@<text>@item.TransactionDate.ToShortDateString()</text>),
+                                    unbilledTransactionGrid.Column("MerchantName",Resources.MerchantName),
+                                    unbilledTransactionGrid.Column("TransactionAmount",Resources.TransactionAmount,format:@<text> @String.Format("{0:N0}",item.TransactionAmount)</text>)
+                                    //unbilledTransactionGrid.Column("AmountCancelled",Resources.AmountCancelled,format:@<text> @String.Format("{0:N0}",item.AmountCancelled)</text>)
+                                ))
+                    </div>
+                    </div>
+                }
+             else if (ViewBag.TransactionType == "UnbilledCreditNote")
+                { 
+                    <div class="CustomerColumnTitle">@Resources.UnbillledCreditNoteDetails</div>
+                    <div style="width:100%; overflow:scroll">
+                    <div class="standard-table"> 
+               
+                             @unbilledTransactionGrid.GetHtml(htmlAttributes: new {  id = "container-body" },
+                             alternatingRowStyle: "alt", 
+                             columns:unbilledTransactionGrid.Columns(
+                                    unbilledTransactionGrid.Column("CreditNoteNo",Resources.CreditNoteNo),
+                                    unbilledTransactionGrid.Column("InvoiceNo",Resources.InvoiceNo),
+                                    unbilledTransactionGrid.Column("TransactionDate",Resources.TransactionDate,format:@<text>@item.TransactionDate.ToShortDateString()</text>),
+                                    unbilledTransactionGrid.Column("MerchantName",Resources.MerchantName),
+                                    unbilledTransactionGrid.Column("TransactionAmount",Resources.TransactionAmount,format:@<text> @String.Format("{0:N0}",item.TransactionAmount)</text>)
+                                ))
+                    </div>
+                    </div>
+                }
+             else if (ViewBag.TransactionType == "UnBilledServiceTax")
+                { 
+                    <div class="CustomerColumnTitle">@Resources.UnbilledServiceTaxDetails</div>
+                    <div style="width:100%; overflow:scroll">
+                    <div class="standard-table"> 
+               
+                             @unbilledTransactionGrid.GetHtml(htmlAttributes: new {  id = "container-body" },
+                             alternatingRowStyle: "alt", 
+                             columns:unbilledTransactionGrid.Columns(
+                                    unbilledTransactionGrid.Column("RevolvingServiceTax",Resources.RevolvingServiceTax,format:@<text> @String.Format("{0:N0}",item.RevolvingServiceTax)</text>),
+                                    unbilledTransactionGrid.Column("DelinquencyServiceTax",Resources.DelinquencyServiceTax,format:@<text> @String.Format("{0:N0}",item.DelinquencyServiceTax)</text>)
+                                    
+                                ))
+                    </div>
+                    </div>
+                }
+             else if (ViewBag.TransactionType == "UnbilledInterest")
+                { 
+                    <div class="CustomerColumnTitle">@Resources.UnbilledInterestDetails</div>
+                    <div style="width:100%; overflow:scroll">
+                    <div class="standard-table"> 
+               
+                             @unbilledTransactionGrid.GetHtml(htmlAttributes: new {  id = "container-body" },
+                             alternatingRowStyle: "alt", 
+                             columns:unbilledTransactionGrid.Columns(
+                                    unbilledTransactionGrid.Column("RevolvingInterest",Resources.RevolvingInterest,format:@<text> @String.Format("{0:N0}",item.RevolvingInterest)</text>),
+                                    unbilledTransactionGrid.Column("DelinquencyInterest",Resources.DelinquencyInterest,format:@<text> @String.Format("{0:N0}",item.DelinquencyInterest)</text>)
+                                    
+                                ))
+                    </div>
+                    </div>
+                }
+             else if (ViewBag.TransactionType == "UnbilledPayments")
+                { 
+                    <div class="CustomerColumnTitle">@Resources.UnbilledPaymentDetails</div>
+                    <div style="width:100%; overflow:scroll">
+                    <div class="standard-table"> 
+               
+                             @unbilledTransactionGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+                             alternatingRowStyle: "alt",
+                             columns: unbilledTransactionGrid.Columns(
+                                    unbilledTransactionGrid.Column("ReferenceNo", Resources.ReferenceNo),
+                                     unbilledTransactionGrid.Column("TransactionDesc",Resources.Collector +' ' + Resources.RUT ),
+                                     unbilledTransactionGrid.Column("MerchantName",Resources.Collector +' ' + Resources.Name ),
+                                    unbilledTransactionGrid.Column("TransactionDate", Resources.TransactionDate, format: @<text>@item.TransactionDate.ToShortDateString()</text>),
+                                    unbilledTransactionGrid.Column("TransactionAmount", Resources.TransactionAmount, format: @<text> @String.Format("{0:N0}", item.TransactionAmount)</text>),
+                                unbilledTransactionGrid.Column("Status",Resources.Status, style: "gridColWidthMedium")
+                             
+                                ))
+                    </div>
+                    </div>
+                }
+
+             else if (ViewBag.TransactionType == "PaymentReversal")
+                { 
+                    <div class="CustomerColumnTitle">@Resources.PaymentReversal </div>
+                    <div style="width:100%; overflow:scroll">
+                    <div class="standard-table"> 
+               
+                             @unbilledTransactionGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+                             alternatingRowStyle: "alt",
+                             columns: unbilledTransactionGrid.Columns(
+                                    unbilledTransactionGrid.Column("ReferenceNo", Resources.ReferenceNo),
+                                      unbilledTransactionGrid.Column("TransactionDesc",Resources.Payment +' ' + Resources.ReferenceNo ),
+                                    unbilledTransactionGrid.Column("TransactionDate", Resources.TransactionDate, format: @<text>@item.TransactionDate.ToShortDateString()</text>),
+                                    unbilledTransactionGrid.Column("TransactionAmount", Resources.TransactionAmount, format: @<text> @String.Format("{0:N0}", item.TransactionAmount)</text>)
+                                //unbilledTransactionGrid.Column("TransactionDesc",Resources.Status, style: "gridColWidthMedium")
+                             
+                                ))
+                    </div>
+                    </div>
+                }
+
+
+             else if (ViewBag.TransactionType == "UnbilledFinancialCreditNote")
+                { 
+                    <div class="CustomerColumnTitle">@Resources.UnBilledFinancialCreditNote </div>
+                    <div style="width:100%; overflow:scroll">
+                    <div class="standard-table"> 
+               
+                             @unbilledTransactionGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+                             alternatingRowStyle: "alt",
+                             columns: unbilledTransactionGrid.Columns(
+                                    unbilledTransactionGrid.Column("ReferenceNo", Resources.ReferenceNo),
+                                    unbilledTransactionGrid.Column("TransactionDate", Resources.TransactionDate, format: @<text>@item.TransactionDate.ToShortDateString()</text>),
+                                    unbilledTransactionGrid.Column("TransactionAmount", Resources.TransactionAmount, format: @<text> @String.Format("{0:N0}", item.TransactionAmount)</text>),
+                                     unbilledTransactionGrid.Column("Status",Resources.Status, style: "gridColWidthMedium")
+                             
+                                ))
+                    </div>
+                    </div>
+                }
+
+                
+             else if (ViewBag.TransactionType == "UnPosted")
+                { 
+                    <div class="CustomerColumnTitle">@Resources.UnPosted  </div>
+                    <div style="width:100%; overflow:scroll">
+                    <div class="standard-table"> 
+               
+                             @unbilledTransactionGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+                             alternatingRowStyle: "alt",
+                             columns: unbilledTransactionGrid.Columns(
+                                    unbilledTransactionGrid.Column("ReferenceNo", Resources.ReferenceNo),
+                                    unbilledTransactionGrid.Column("TransactionDate", Resources.TransactionDate, format: @<text>@item.TransactionDate.ToShortDateString()</text>),
+                                    unbilledTransactionGrid.Column("TransactionAmount", Resources.TransactionAmount, format: @<text> @String.Format("{0:N0}", item.TransactionAmount)</text>),
+                                     unbilledTransactionGrid.Column("TransactionDesc",Resources.Status, style: "gridColWidthMedium")
+                             
+                                ))
+                    </div>
+                    </div>
+                }
+
+             else if (ViewBag.TransactionType == "UnbilledEMI")
+                { 
+                    <div class="CustomerColumnTitle">@Resources.UnbilledEMIDetails</div>
+                    @*<div style="width:100%; overflow:scroll">*@
+                    <div class="standard-table"> 
+               
+                             @unbilledTransactionGrid.GetHtml(htmlAttributes: new {  id = "container-body" },
+                             alternatingRowStyle: "alt", 
+                             columns:unbilledTransactionGrid.Columns(
+                                    unbilledTransactionGrid.Column("InvoiceNo",Resources.InvoiceNo, style: "gridColWidthMedium"),
+                                    unbilledTransactionGrid.Column("TransactionAmount",Resources.TransactionAmount,format:@<text> @String.Format("{0:N0}",item.TransactionAmount)</text>, style: "gridColAmount"),
+                                    unbilledTransactionGrid.Column("TransactionDate",Resources.TransactionDate,format:@<text>@item.TransactionDate.ToShortDateString()</text>, style: "gridColWidthMedium"),
+                                    unbilledTransactionGrid.Column("Tenure",Resources.Tenure, style: "gridColWidthShort"),
+                                    unbilledTransactionGrid.Column("Status",Resources.Status, style: "gridColWidthMedium"),
+                                    unbilledTransactionGrid.Column("TransactionDesc",Resources.TransactionCode, style: "gridColWidthMedium")
+                                ))
+                    </div>
+                    @*</div>*@
+                }
+
+               else if ( ViewBag.TransactionType == "RenegotiationAmount" )
+                { 
+                    <div class="CustomerColumnTitle">@Resources.RenegotiationDetails</div>
+                    @*<div style="width:100%; overflow:scroll">*@
+                    <div class="standard-table"> 
+               
+                             @unbilledTransactionGrid.GetHtml(htmlAttributes: new {  id = "container-body" },
+                             alternatingRowStyle: "alt", 
+                             columns:unbilledTransactionGrid.Columns(                                   
+                                    unbilledTransactionGrid.Column("TransactionAmount",Resources.TransactionAmount,format:@<text> @String.Format("{0:N0}",item.TransactionAmount)</text>, style: "gridColAmount"),
+                                    unbilledTransactionGrid.Column("TransactionDate",Resources.TransactionDate,format:@<text>@item.TransactionDate.ToShortDateString()</text>, style: "gridColWidthMedium"),
+                                    unbilledTransactionGrid.Column("Tenure",Resources.Tenure, style: "gridColWidthShort"),
+                                    unbilledTransactionGrid.Column("Status",Resources.Status, style: "gridColWidthMedium"),
+                                    unbilledTransactionGrid.Column("TransactionDesc",Resources.TransactionCode, style: "gridColWidthMedium")
+                                ))
+                    </div>
+                    @*</div>*@
+                }
+             else if ( ViewBag.TransactionType == "RefinanceAmount")
+                { 
+                    <div class="CustomerColumnTitle">@Resources.RefinanceDetails</div>
+                    @*<div style="width:100%; overflow:scroll">*@
+                    <div class="standard-table"> 
+               
+                             @unbilledTransactionGrid.GetHtml(htmlAttributes: new {  id = "container-body" },
+                             alternatingRowStyle: "alt", 
+                             columns:unbilledTransactionGrid.Columns(                                   
+                                    unbilledTransactionGrid.Column("TransactionAmount",Resources.TransactionAmount,format:@<text> @String.Format("{0:N0}",item.TransactionAmount)</text>, style: "gridColAmount"),
+                                    unbilledTransactionGrid.Column("TransactionDate",Resources.TransactionDate,format:@<text>@item.TransactionDate.ToShortDateString()</text>, style: "gridColWidthMedium"),
+                                    unbilledTransactionGrid.Column("Tenure",Resources.Tenure, style: "gridColWidthShort"),
+                                    unbilledTransactionGrid.Column("Status",Resources.Status, style: "gridColWidthMedium"),
+                                    unbilledTransactionGrid.Column("TransactionDesc",Resources.TransactionCode, style: "gridColWidthMedium")
+                                ))
+                    </div>
+                    @*</div>*@
+                }
+
+             else if (ViewBag.TransactionType == "DebitAdjustment")
+                { 
+                    <div class="CustomerColumnTitle">@Resources.DebitAdjustment</div>
+                    <div class="standard-table"> 
+               
+                        @unbilledTransactionGrid.GetHtml(htmlAttributes: new {  id = "container-body" },
+                        alternatingRowStyle: "alt", 
+                            columns:unbilledTransactionGrid.Columns(  
+                            unbilledTransactionGrid.Column("InvoiceNo",Resources.AuthCode, style: "gridColWidthMedium"),  
+                            unbilledTransactionGrid.Column("TransactionDesc",Resources.TransactionCode, style: "gridColWidthMedium"),      
+                                                
+                            unbilledTransactionGrid.Column("TransactionAmount",Resources.TransactionAmount,format:@<text> @String.Format("{0:N0}",item.TransactionAmount)</text>, style: "gridColAmount"),
+                        unbilledTransactionGrid.Column("AmountCancelled",Resources.AdjustedAmount,format:@<text> @String.Format("{0:N0}",item.AmountCancelled)</text>, style: "gridColAmount"),
+                            unbilledTransactionGrid.Column("TransactionDate",Resources.TransactionDate,format:@<text>@item.TransactionDate.ToShortDateString()</text>, style: "gridColWidthMedium")                            ,
+                        unbilledTransactionGrid.Column("AdjustedDate",Resources.AdjustmentDate,format:@<text>@item.AdjustedDate.ToShortDateString()</text>, style: "gridColWidthMedium")                           ,
+                          unbilledTransactionGrid.Column("Remarks",Resources.AdjustmentNarration , style: "gridColWidthMedium")             
+                            
+                        ))
+                </div>
+                }
+
+            else if (ViewBag.TransactionType == "CreditAdjustment")
+                { 
+                    <div class="CustomerColumnTitle">@Resources.CreditAdjustment</div>
+                    <div class="standard-table">                
+                        @unbilledTransactionGrid.GetHtml(htmlAttributes: new {  id = "container-body" },
+                        alternatingRowStyle: "alt", 
+                            columns:unbilledTransactionGrid.Columns(  
+                            unbilledTransactionGrid.Column("InvoiceNo",Resources.AuthCode, style: "gridColWidthMedium"),     
+                            unbilledTransactionGrid.Column("TransactionDesc",Resources.Description , style: "gridColWidthMedium"),                                              
+                            unbilledTransactionGrid.Column("TransactionAmount",Resources.TransactionAmount,format:@<text> @String.Format("{0:N0}",item.TransactionAmount)</text>, style: "gridColAmount"),
+                        unbilledTransactionGrid.Column("AmountCancelled",Resources.AdjustedAmount,format:@<text> @String.Format("{0:N0}",item.AmountCancelled)</text>, style: "gridColAmount"),
+                            unbilledTransactionGrid.Column("TransactionDate",Resources.TransactionDate,format:@<text>@item.TransactionDate.ToShortDateString()</text>, style: "gridColWidthMedium")                           ,
+                        unbilledTransactionGrid.Column("AdjustedDate",Resources.AdjustmentDate,format:@<text>@item.AdjustedDate.ToShortDateString()</text>, style: "gridColWidthMedium")    ,                       
+                      
+                          unbilledTransactionGrid.Column("Remarks",Resources.AdjustmentNarration , style: "gridColWidthMedium")                                 
+                            
+                        ))
+                </div>
+                }
+
+            else if (ViewBag.TransactionType == "Fees")
+                { 
+                    <div class="CustomerColumnTitle">@Resources.CreditAdjustment</div>
+                    <div class="standard-table">                
+                        @unbilledTransactionGrid.GetHtml(htmlAttributes: new {  id = "container-body" },
+                        alternatingRowStyle: "alt", 
+                            columns:unbilledTransactionGrid.Columns(  
+                            unbilledTransactionGrid.Column("InvoiceNo",Resources.AuthCode, style: "gridColWidthMedium"),     
+                            unbilledTransactionGrid.Column("TransactionDesc",Resources.Description , style: "gridColWidthMedium"),                                              
+                            unbilledTransactionGrid.Column("TransactionAmount",Resources.TransactionAmount,format:@<text> @String.Format("{0:N0}",item.TransactionAmount)</text>, style: "gridColAmount"),
+                      //  unbilledTransactionGrid.Column("AmountCancelled",Resources.AdjustedAmount,format:@<text> @String.Format("{0:N0}",item.AmountCancelled)</text>, style: "gridColAmount"),
+                            unbilledTransactionGrid.Column("TransactionDate",Resources.TransactionDate,format:@<text>@item.TransactionDate.ToShortDateString()</text>, style: "gridColWidthMedium")                           
+                       // unbilledTransactionGrid.Column("AdjustedDate",Resources.AdjustmentDate,format:@<text>@item.AdjustedDate.ToShortDateString()</text>, style: "gridColWidthMedium")    ,                       
+                      
+                         // unbilledTransactionGrid.Column("Remarks",Resources.AdjustmentNarration , style: "gridColWidthMedium")                                 
+                            
+                        ))
+                </div>
+                }
+
+
+
+
+        </div>
+
+    </div>

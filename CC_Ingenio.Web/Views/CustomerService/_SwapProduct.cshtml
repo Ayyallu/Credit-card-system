@@ -1,0 +1,216 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@model SwapProductDTO  
+@{       
+    List<SelectListItem> currentProductList = new List<SelectListItem>();
+    foreach (var item in ViewBag.CurrentProductList)
+    {
+        currentProductList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    List<SelectListItem> productList = new List<SelectListItem>();
+    foreach (var item in ViewBag.ProductList)
+    {
+        productList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+<link href="~/Content/PopUpStyle.css" rel="stylesheet" />
+<script src="~/Scripts/PopUpScript.js"></script> 
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#NewProductCode').change(function () {
+            
+            if ($('#NewProductCode').val() != '') {
+               
+                $.ajax({
+                    url: '/CustomerService/GetCreditLimitOfProduct/',
+                    type: 'POST',
+                    data: { AProductCode: $('#NewProductCode').val()},
+                    cache: false,
+                    success: function (data) {                        
+                        if (data != 'Undefined') {
+                            $('#NewCreditLimit').val(Globalize(resourceProvider.ResourceCulture).format(data.CreditLimit, resourceProvider.FormatAmountJSn0));
+                            window.actualLimit = data.CreditLimit;
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#Submit').click(function (e) {
+            var errCount = 0;
+            e.preventDefault();
+            
+
+            if ($('#NewProductCode').val() == '') {                
+                $('#NewProduct_Validate').text("@Html.Raw(String.Format(Resources.MsgErrPleaseSelect, Resources.NewProduct))");
+                errCount++;
+            }
+            if ($('#NewCreditLimit').val() == '' || Globalize(resourceProvider.ResourceCulture).parseFloat($('#NewCreditLimit').val().trim()) <= parseFloat(0)) {
+                $('#NewCreditLimit_Validate').text("@Html.Raw(String.Format(Resources.MsgErrValueGreaterThanZero, Resources.NewCreditLimit))");
+                errCount++;
+            }
+
+            if (Globalize(resourceProvider.ResourceCulture).parseFloat($('#NewCreditLimit').val().trim()) > parseFloat(actualLimit)) {
+                $('#NewCreditLimit_Validate').text(String.format(resourceProvider.MsgErrValueShouldBeLessThan, 'Value', actualLimit));
+                errCount++;
+            }
+
+            if (errCount > 0)
+            {
+                return false;
+            }
+
+            $("#dialog").dialog({
+                resizable: false,
+                width: 400,
+                height: 160,
+                modal: true,
+                title: resourceProvider.ApplicationName,
+                buttons: [{
+                    class: "LeftButton",
+                    text: resourceProvider.Yes,
+                    click: function () {
+
+                        $.ajax({
+                            url: '/CustomerService/SaveProductSwappingDetails/',
+                            type: 'POST',
+                            data: $('#frmSwapProduct').serialize(),
+                            cache: false,
+                            success: function (data) {
+
+                                if (data != 'Undefined') {
+                                    $('#partialViewDiv').html(data);
+                                }
+                            }
+                        });
+
+                        $(this).dialog("close");
+                    }
+                },
+                {
+                    text: resourceProvider.No,
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+
+            $("#dialog").text(resourceProvider.MsgConfSubmit);
+            $("#dialog").dialog("open");
+            
+        });
+        
+        $('#NewProductCode').focusin(function () {
+            $('#NewProduct_Validate').text("");
+        });
+
+        $('#NewCreditLimit').focusin(function () {
+            $('#NewCreditLimit_Validate').text("");
+        });
+
+        $('#NewCreditLimit').blur(function () {
+            
+            if ($('#NewCreditLimit_Validate').text().length > 0) {
+                $('#NewCreditLimit_Validate').text('');
+            }
+            if (Globalize(resourceProvider.ResourceCulture).parseFloat($('#NewCreditLimit').val().trim()) > parseFloat(0)) {               
+                FormatOnBlur(event);
+                if (Globalize(resourceProvider.ResourceCulture).parseFloat($('#NewCreditLimit').val().trim()) > parseFloat(999999999)) {
+                    $('#NewCreditLimit_Validate').text(String.format(resourceProvider.MsgErrValueShouldBeLessThan,'Value', 999999999));
+                }
+            }
+        });
+
+        if ('@ViewData["Saved"]' == 'True') {
+            ShowSimpleModalDialog("@Html.Raw(String.Format(Resources.MsgInfoUpdateSuccess, Resources.SwapProduct))", "");
+        }
+
+        $('input[id="New"]').hide();
+        $('input[id="Save"]').hide();
+        $('input[id="Delete"]').hide();
+
+    });
+</script>
+
+    <div class="row" >
+    <div class="BorderColumn"  style="width: 98.6%; height:200px" >
+        <div class="CustomerColumnTitle">@Resources.SwapProduct</div>
+            @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmSwapProduct", Name = "frmSwapProduct", @style = "height: 130px;" }))
+            {
+                
+                <span>
+                    @if (Model.ApprovalStatus == "P" || Model.ApprovalStatus == "R")
+                    {
+                        <text> <b>@String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc })</b> </text>
+                    }
+                </span>
+                                
+                <div class="row"></div>
+                 <div class="row">
+                    <div class="TwoColumn">
+                        <div class="label">@Resources.CurrentProduct</div>
+                        <div class="Field">
+                            @Html.DropDownListFor(x => x.CurrentProductCode, currentProductList, new { id = "CurrentProductCode", name = "CurrentProductCode", @disabled = "disabled" })
+                        </div>
+                    </div>
+                    <div class="TwoColumn">
+                        <div class="label">@Resources.NewProduct</div>
+                        <div class="Field">
+                            @Html.DropDownListFor(x => x.NewProductCode, productList, new { id = "NewProductCode", name = "NewProductCode" })
+                            @Html.ValidationMessageFor(x => x.NewProductCode, "", new { id="Validation_NewProductCode" })
+                              <label id="NewProduct_Validate" class="validationMessage"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="TwoColumn">
+                        <div class="label">@Resources.CurrentCreditLimit</div>
+                        <div class="Field">
+                            @Html.TextBoxFor(x => x.CurrentCreditLimit, String.Format("{0:N0}", Model.CurrentCreditLimit), new { @class = "NumberCommaDot", id = "CurrentCreditLimit", name = "CurrentCreditLimit", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)", @disabled = "disabled" })
+                        </div>
+                    </div>
+                    <div class="TwoColumn">
+                        <div class="label">@Resources.NewCreditLimit</div>
+                        <div class="Field">
+                            @Html.TextBoxFor(x => x.NewCreditLimit, String.Format("{0:N0}", Model.NewCreditLimit), new { onkeypress="return AllowOnlyAmountWithoutDot(event)", id = "NewCreditLimit", name = "NewCreditLimit", maxlength = 11, @style = "text-align:right" })
+                            @Html.ValidationMessageFor(x => x.NewProductCode, "", new { id="Validation_NewCreditLimit" })
+                            <label id="NewCreditLimit_Validate" class="validationMessage"></label>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    @Html.HiddenFor(x => x.CardNumber)
+                    @Html.HiddenFor(x => x.CustomerId)
+                    @Html.HiddenFor(x => x.CurrentProductCode)
+                    @Html.HiddenFor(x => x.CurrentCreditLimit)
+                </div>
+                <div>@Html.Raw(Html.BasicButtons(lstPriv))  </div>
+            }
+    </div>
+    </div>
+
+<script>
+    $(function () {       
+
+        EnableDisableControls('@ViewData["FormStatus"]');
+
+        if ('@ViewData["BlockStatusCode"]' != "00") {            
+             $('input[id="Authorize"]').attr('disabled', 'disabled');
+             $("#Authorize").removeClass('Greenbutton').addClass('BtnDisabled');
+         }
+    })
+</script>

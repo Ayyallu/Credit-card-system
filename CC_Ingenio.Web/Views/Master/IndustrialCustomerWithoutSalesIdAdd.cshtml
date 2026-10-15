@@ -1,0 +1,1509 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using System.Web.Script.Serialization;
+@using CC_Ingenio_Resources;
+
+@model IndustrialCustomerDTO
+@{
+    List<string> lstPrivilege = new List<string>();
+    List<SelectListItem> branchList = new List<SelectListItem>();
+    List<SelectListItem> customerTypeList = new List<SelectListItem>();   
+    List<SelectListItem> bankList = new List<SelectListItem>();
+    List<SelectListItem> residenceTypeList = new List<SelectListItem>();
+    List<SelectListItem> addressTypeList = new List<SelectListItem>();
+    List<SelectListItem> productCategoryList = new List<SelectListItem>();
+    List<SelectListItem> nationalityList = new List<SelectListItem>();
+    List<SelectListItem> productList = new List<SelectListItem>();
+    List<SelectListItem> decisionList = new List<SelectListItem>();
+    List<SelectListItem> decisionReasonList = new List<SelectListItem>();
+    List<SelectListItem> unemploymentList = new List<SelectListItem>();
+    List<SelectListItem> billingCyclesList = new List<SelectListItem>();
+
+    if (ViewBag.Privileges != null)
+    {
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPrivilege.Add(item);
+        }
+    }
+
+    foreach (var item in ViewBag.BranchList)
+    {
+        branchList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.CustomerTypeList)
+    {
+        customerTypeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    } 
+
+    foreach (var item in ViewBag.BankList)
+    {
+        bankList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.ResidenceTypeList)
+    {
+        residenceTypeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.AddressTypeList)
+    {
+        addressTypeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.ProductCategoryList)
+    {
+        productCategoryList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.NationalityList)
+    {
+        nationalityList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    if (Model.ParentCustomerId != 0)
+    {
+        foreach (var item in ViewBag.ProductList)
+        {
+            productList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+        }
+    }
+
+    foreach (var item in ViewBag.DecisionList)
+    {
+        decisionList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    foreach (var item in ViewBag.DecisionReasonList)
+    {
+        decisionReasonList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.UnemploymentList)
+    {
+        unemploymentList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (var item in ViewBag.billingCycleCodes)
+    {
+        billingCyclesList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    } 
+       
+}
+
+<script type="text/javascript">
+    var branchDDL = @Html.Raw(new JavaScriptSerializer().Serialize(branchList));
+    var customerTypeDDL = @Html.Raw(new JavaScriptSerializer().Serialize(customerTypeList));      
+    var bankDDL = @Html.Raw(new JavaScriptSerializer().Serialize(bankList));
+    var residenceTypeDDL = @Html.Raw(new JavaScriptSerializer().Serialize(residenceTypeList));
+    var addressTypeDDL = @Html.Raw(new JavaScriptSerializer().Serialize(addressTypeList));
+    var ProductCategoryDDL = @Html.Raw(new JavaScriptSerializer().Serialize(productCategoryList));
+    var NationalityDDL = @Html.Raw(new JavaScriptSerializer().Serialize(nationalityList));
+    var decisionDDL = @Html.Raw(new JavaScriptSerializer().Serialize(decisionList));
+    var decisionReasonDDL = @Html.Raw(new JavaScriptSerializer().Serialize(decisionReasonList));
+    var contractDDL = @Html.Raw(new JavaScriptSerializer().Serialize(""));
+    var unemploymentDDL = @Html.Raw(new JavaScriptSerializer().Serialize(unemploymentList));
+    var cityDDL = @Html.Raw(new JavaScriptSerializer().Serialize(""));
+    var billingCycleCodesDDL = @Html.Raw(new JavaScriptSerializer().Serialize(billingCyclesList));
+
+    var ProductDDL;
+    if('@Model.ParentCustomerId' != 0){
+        ProductDDL = @Html.Raw(new JavaScriptSerializer().Serialize(productList));
+    }
+    else{
+        ProductDDL = @Html.Raw(new JavaScriptSerializer().Serialize(""));
+    }
+    
+    var CommunaDDL = @Html.Raw(new JavaScriptSerializer().Serialize(""));
+
+    var IndustrialCustomerValue = @Html.Raw(ViewBag.IndustrialCustomerValue);
+
+    function CustomerTypeOnChange(){
+        if($('#CustomerType').val() == 'C'){
+            $('#divFlag').hide();
+            $('#divAge').hide();
+        }
+        else if($('#CustomerType').val() == 'I'){
+            $('#divFlag').show();
+            $('#divAge').show();
+        }
+    };
+
+    function OnChangeBranchFillDSA(){
+        if( $('#CommercialBranch').val() != 0)
+        {
+            $.getJSON('/Master/GetDSAforBranch?ABranchCode=' + $('#CommercialBranch').val(),
+                function (returnData) {
+                    if (returnData) {                
+                        viewModel.IndustrialCustomer.DSACode = ko.observable(returnData.DSACode);
+                        $('#DSACode').val(viewModel.IndustrialCustomer.DSACode());
+                        viewModel.IndustrialCustomer.DSAName = ko.observable(returnData.DSAName);
+                        $('#DSAName').val(viewModel.IndustrialCustomer.DSAName());
+                        viewModel.IndustrialCustomer.UEN = ko.observable(returnData.UEN);
+                        $('#UEN').val(viewModel.IndustrialCustomer.UEN());
+                        viewModel.IndustrialCustomer.DSARUT = ko.observable(returnData.RUT);  
+                        $('#DSARUT').val(viewModel.IndustrialCustomer.DSARUT());
+                    }
+                });
+        }
+    }
+
+    function OnChangeSendStatementTo(){
+        if($('#SendStatementTo').val() == ''){
+            $('#StatementAddrOther').val('');
+            $('#StatementAddrAddress').val('');
+            $('#StatementAddrVillage').val('');
+            $('#StatementAddrCommuna').val('');
+            $('#StatementAddrCity').val('');
+            $('#StatementAddrLandPhone').val('');
+            $('#StatementAddrMobile').val('');
+            $('#StatementAddrEmail').val('');             
+        }
+        else if($('#SendStatementTo').val() == 'C'){        
+            $('#StatementAddrOther').val('');
+            $('#StatementAddrAddress').val($('#CommercialAddress').val());
+            $('#StatementAddrVillage').val($('#Village').val());
+            $('#StatementAddrCommuna').val($('#Communa').val()).change();          
+            $('#StatementAddrLandPhone').val($('#LandPhone').val());
+            $('#StatementAddrMobile').val($('#Mobile').val());
+            $('#StatementAddrEmail').val($('#Email').val());  
+            $('#lblValidateSendStatementTo').text('');
+            $('#lblValidateStatementAddrAddress').text('');          
+        }
+        else if($('#SendStatementTo').val() == 'PR'){           
+            $('#StatementAddrAddress').val($('#ParticularAddress').val());
+            $('#StatementAddrVillage').val($('#ParticularAddrVillage').val());
+            $('#StatementAddrCommuna').val($('#ParticularAddrCommuna').val()).change();            
+            $('#StatementAddrLandPhone').val($('#ParticularAddrLandPhone').val());
+            $('#StatementAddrMobile').val($('#ParticularAddrMobile').val());
+            $('#StatementAddrEmail').val($('#ParticularAddrEmail').val()); 
+            $('#lblValidateSendStatementTo').text('');
+            $('#lblValidateStatementAddrAddress').text('');          
+        }
+
+        if (viewModel.IndustrialCustomer.StatementAddressDet()[0]) {
+            viewModel.IndustrialCustomer.StatementAddressDet()[0].AddressType = ko.observable($('#StatementAddrOther').val());
+            viewModel.IndustrialCustomer.StatementAddressDet()[0].AddressDesc = ko.observable($('#StatementAddrAddress').val());
+            viewModel.IndustrialCustomer.StatementAddressDet()[0].Village = ko.observable($('#StatementAddrVillage').val());
+            viewModel.IndustrialCustomer.StatementAddressDet()[0].CommunaCode = ko.observable($('#StatementAddrCommuna').val());
+            viewModel.IndustrialCustomer.StatementAddressDet()[0].CityCode = ko.observable($('#StatementAddrCity').val());
+            viewModel.IndustrialCustomer.StatementAddressDet()[0].Phone = ko.observable($('#StatementAddrLandPhone').val());
+            viewModel.IndustrialCustomer.StatementAddressDet()[0].Mobile = ko.observable($('#StatementAddrMobile').val());
+            viewModel.IndustrialCustomer.StatementAddressDet()[0].EmailID = ko.observable($('#StatementAddrEmail').val());
+        }
+    };
+
+
+
+
+    function CommunaOnChange (dropDownListId){
+        var objCommunaList = $('[id = ' + dropDownListId + ']');        
+       
+        if(dropDownListId == "Communa"){
+            $('#lblValidateCommuna').text('');                   
+        }
+        else if(dropDownListId == "ParticularAddrCommuna"){
+            $('#lblValidateParticularAddrCommuna').text('');
+        }
+        else if(dropDownListId == "StatementAddrCommuna"){
+            $('#lblValidateStatementAddrCommuna').text('');
+        }            
+
+        var cityDropDownListId;
+        if(dropDownListId == "Communa"){
+            cityDropDownListId = "City";
+        }
+        else if(dropDownListId == "ParticularAddrCommuna"){
+            cityDropDownListId = "ParticularAddrCity";
+        }
+        else if(dropDownListId == "StatementAddrCommuna"){
+            cityDropDownListId = "StatementAddrCity";
+        }
+        if(objCommunaList.val() != '' && (objCommunaList.val())){           
+            SetCityDropDownWithValue(cityDropDownListId,"/Master/GetCityByCommuna?ACommunaCode=" + objCommunaList.val());           
+        }        
+        else{
+            RefreshDropDown(cityDropDownListId);
+        }      
+    };  
+
+    function SetCityDropDownWithValue(cityDropDownId,url){
+        $.ajaxSetup({ cache: false });
+        $.getJSON(url,
+            function (modelData) {
+                var select = $('#'+ cityDropDownId);
+                select.empty();
+                $.each(modelData.cityCodes, function (index, itemData) {
+                    select.append($('<option/>',
+                    {
+                        value: itemData.Value,
+                        text: itemData.Text
+                    }));
+                });
+                select.val(modelData.CityCode);
+                if(cityDropDownId == "City"){
+                    viewModel.IndustrialCustomer.CommercialAddressDet()[0].CityCode = ko.observable($('#City').val());
+                    $('#lblValidateCity').text(''); 
+                }
+                else if(cityDropDownId == "ParticularAddrCity"){
+                    viewModel.IndustrialCustomer.ParticularAddressDet()[0].CityCode = ko.observable($('#ParticularAddrCity').val());
+                    $('#lblValidateParticularAddrCity').text('');
+                }
+                else if(cityDropDownId == "StatementAddrCity"){
+                    viewModel.IndustrialCustomer.StatementAddressDet()[0].CityCode = ko.observable($('#StatementAddrCity').val());
+                    $('#lblValidateStatementAddrCity').text('');
+                }
+            });
+    }
+
+    function AddressOnBlur(elementId){           
+        if($(elementId).val() != ''){
+            if(elementId == "#CommercialAddress"){
+                $('#lblValidateCommercialAddress').text('');                   
+            }
+            else if(elementId == "#ParticularAddress"){
+                $('#lblValidateParticularAddress').text('');
+            }
+            else if(elementId == "#StatementAddrAddress"){
+                $('#lblValidateStatementAddrAddress').text('');
+            }           
+        }
+    };
+
+    function ContractOnChange(){
+        if($('#Contract').val() != ''){
+            if ($('#lblValidateContract').text().length > 0) {
+                $('#lblValidateContract').text('');
+            }
+        }
+    }
+
+    function DecisionOnChange(){
+        if($('#Decision').val() != ''){
+            if ($('#lblValidateDecision').text().length > 0) {
+                $('#lblValidateDecision').text('');
+            }
+        }
+    };
+
+    function ReasonOnChange (){
+        if($('#Reason').val() != ''){
+            if ($('#lblValidateReason').text().length > 0) {
+                $('#lblValidateReason').text('');
+            }
+        }
+    };
+
+    function BillingCycleOnChange (){
+        if($('#BillCycle').val() != ''){
+            if ($('#lblValidateBillCycle').text().length > 0) {
+                $('#lblValidateBillCycle').text('');
+            }
+        }            
+    };
+
+    function RemarksOnBlur (){ 
+        if($('#Remarks').val() != ''){ 
+            if($('#lblValidateRemarks').text().length > 0){ 
+                $('#lblValidateRemarks').text(''); 
+            }
+        }
+    };
+
+    function ValidateCreditLimit(){
+
+        if($('#lblValidateCreditLimit').text().length > 0){ 
+            $('#lblValidateCreditLimit').text(''); 
+        }
+        if(Globalize(resourceProvider.ResourceCulture).parseFloat($('#CreditLimit').val().trim()) > parseFloat(0)){ 
+            FormatOnBlur(event);
+            if( $('input#hidMaxCreditLimitOfProduct').val() != null && 
+            Globalize(resourceProvider.ResourceCulture).parseFloat($('input#hidMaxCreditLimitOfProduct').val().trim()) > parseFloat(0) &&
+            Globalize(resourceProvider.ResourceCulture).parseFloat($('input#hidMaxCreditLimitOfProduct').val()) > parseFloat(0) &&
+            Globalize(resourceProvider.ResourceCulture).parseFloat($('#CreditLimit').val().trim()) > parseFloat($('input#hidMaxCreditLimitOfProduct').val())){
+                $('#lblValidateCreditLimit').text(String.format(resourceProvider.MsgErrValueShouldBeLessThanCreditLimitofProduct,Globalize(resourceProvider.ResourceCulture).format(Globalize(resourceProvider.ResourceCulture).parseFloat($('input#hidMaxCreditLimitOfProduct').val()), resourceProvider.FormatAmountJSn0)));                    
+            }
+        }    
+    };
+
+    function SelectProductProperties(ProductCode, objViewModel, callFromPage) {
+        $.getJSON("/Master/SelectProductProperties?AProductCode=" + ProductCode,
+            function (returnData) {
+                if (returnData) {
+                    if (callFromPage == true) {
+                        objViewModel.IndustrialCustomer.IndustrialCustomerDecisionDet()[0].CreditLimit = ko.observable(returnData.MaxCreditLimit);
+                        objViewModel.IndustrialCustomer.IndustrialCustomerDecisionDet()[0].BillCycleSysParamId = ko.observable(returnData.BillCycleSysParamId);
+                        objViewModel.IndustrialCustomer.IndustrialCustomerDecisionDet()[0].BillingCycleCode = ko.observable(returnData.BillingCycleCode);
+                        $('#CreditLimit').val(Globalize(resourceProvider.ResourceCulture).format(returnData.MaxCreditLimit, resourceProvider.FormatAmountJSn0));
+                        $('#BillCycle').val(returnData.BillCycleSysParamId);
+                        $('#hidMaxCreditLimitOfProduct').val(returnData.MaxCreditLimit);
+                    }
+                    else {
+                        objViewModel.IndustrialCustomerDecisionDet()[0].CreditLimit = ko.observable(returnData.MaxCreditLimit);
+                        objViewModel.IndustrialCustomerDecisionDet()[0].BillCycleSysParamId = ko.observable(returnData.BillCycleSysParamId);
+                        objViewModel.IndustrialCustomerDecisionDet()[0].BillingCycleCode = ko.observable(returnData.BillingCycleCode);
+                        $('#CreditLimit').val(Globalize(resourceProvider.ResourceCulture).format(returnData.MaxCreditLimit, resourceProvider.FormatAmountJSn0));
+                        $('#BillCycle').val(returnData.BillCycleSysParamId);
+                        $('#hidMaxCreditLimitOfProduct').val(returnData.MaxCreditLimit);
+                    }                
+                }
+            });
+    }
+
+    $(document).ready(function(){
+
+        $('#Product').change(function(){
+            if($('#lblValidateCreditLimit').text().length > 0){ 
+                $('#lblValidateCreditLimit').text(''); 
+            }
+            if ($('#lblValidateBillCycle').text().length > 0) {
+                $('#lblValidateBillCycle').text('');
+            }
+            if('@Model.CustomerId' != 0)
+            {
+                if('@Model.ParentCustomerId' == 0){
+                    var productCode = $('#Product').val();
+                    viewModel.IndustrialCustomer.ProductCode = ko.observable(productCode);                
+                    if(productCode == '' && viewModel.IndustrialCustomer.ProductCode() == ''){
+                        $('#lblValidateProduct').text('@Html.Raw(string.Format(Resources.MsgErrPleaseSelect, Resources.Product))');
+                        $('#Contract').empty();
+                        $('#Contract').append($('<option/>',
+                           {
+                               value: "",
+                               text: "@Resources.SelectOne"
+                           }));
+                        $('#BillCycle').val("");
+                    }
+                    else{
+                        $('#lblValidateProduct').text('');
+                        PopulateDropDownViaAjax("#Contract", "/Master/GetContractByProductCode?AProductCode=" + productCode);
+                        if(productCode){                        
+                            GetAutoApprovalOfSelectedProduct(productCode, viewModel, true);
+                            SelectProductProperties(productCode, viewModel, true);                           
+                        }
+                        if($('#Contract').length == 0){
+                            $('#Contract').append($('<option/>',
+                            {
+                                value: "",
+                                text:"@Resources.SelectOne"
+                            }));
+                        }
+                    }
+                }
+            }
+        });
+
+        $('#Nationality').change(function(){
+            if($('#Nationality').val() != ''){
+                $('#lblValidateNationality').text('');
+            }
+        });
+       
+        $('#SubmitKO').click(function (event){
+            viewModel.IndustrialCustomer.IsSubmit = true;
+        });       
+    });
+</script>
+<script src="/Scripts/Master/IndustrialCustomerWithoutSalesId.js"></script>
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                if (ViewBag.FromSearchPage == true)
+                {
+                <li>@Html.ActionLink(Resources.SearchPageHeading, "CustomerList", "Master")</li>
+                }
+            }
+            <li class="active">@Html.ActionLink(CC_Ingenio_Resources.Resources.DetailsPageHeading, "IndustrialCustomerAdd", "Master")</li>
+        </ul>
+        <div id="UnderWriterAuthorizeDiv1"></div>
+        <!-- Tabs Content -->
+
+        <div class="tabs-container">
+            @using (Html.BeginForm())
+            {
+                <div class="tab-content" id="tab1">
+                    <div class="row" style="height:15px">
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatusDesc))
+                            { 
+                                <text>@String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc })</text>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.ParentCustomerName))
+                            { 
+                                @Html.Label("Add On of customer : " + Model.ParentCustomerName, new { style = "color:white; background-color:#62a31a; font-weight:bold; float:right" })           
+                            }
+                            @if (Model.ParentCustomerId == 0)
+                            {
+                                if (ViewData["CreditScoreViolated"] != null)
+                                {
+                                    @Html.Label(ViewData["CreditScoreViolated"].ToString() == "True" ? "Credit Score Violated" : "", new { @class = "validationMessage", style = "float:right" })           
+                                }
+                            }
+                        </span>
+                    </div>
+                    <div id="accordion">
+                        <h3>@Resources.DSAIdentification</h3>                        
+                        <div class="row">
+                             <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.CommercialBranch</div>
+                                    <div class="Field">
+                                         @if (Convert.ToInt32(Model.ParentCustomerId) != 0 || Model.IsCustomerForUnderWriting == true)
+                                         { 
+                                            <select id="CommercialBranch" data-bind="options: branchDDL, optionsText: 'Text', optionsValue: 'Value', value: IndustrialCustomer.BranchCode, event: { change: OnChangeBranchFillDSA }" disabled="disabled" ></select>
+                                            <input type="hidden" id="hidBranchCode" data-bind="value: IndustrialCustomer.BranchCode" />
+                                         }
+                                        else
+                                        {
+                                            <select id="CommercialBranch" data-bind="options: branchDDL, optionsText: 'Text', optionsValue: 'Value', value: IndustrialCustomer.BranchCode, event: { change: OnChangeBranchFillDSA }" ></select>
+                                        }                                        
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="Field">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.Name</div>
+                                    <div class="Field">                                        
+                                        <input type="text" id="DSAName" data-bind="value: IndustrialCustomer.DSAName" maxlength="50" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.UEN</div>
+                                    <div class="Field">
+                                        <input type="text" id="UEN" data-bind="value: IndustrialCustomer.UEN" maxlength="50" readonly="readonly" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.RUT</div>
+                                    <div class="Field">
+                                        <input type="text" id="DSARUT" data-bind="value: IndustrialCustomer.DSARUT" maxlength="13" readonly="readonly" />
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.DSACode</div>
+                                    <div class="Field">
+                                        <input type="text" id="DSACode" data-bind="value: IndustrialCustomer.DSACode" readonly="readonly" />
+                                    </div>
+                                </div>
+                            </div>                           
+                        </div>
+                        <h3>@Resources.CustomerIdentification</h3>
+                        <div class="row">
+
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.CustomerType</div>
+                                    <div class="Field">
+                                        @if (Model.IsCustomerForUnderWriting == true)
+                                        { 
+                                            <select id="CustomerType" data-bind="options: customerTypeDDL, optionsText: 'Text', optionsValue: 'Value', value: IndustrialCustomer.CustomerType, event: { change: CustomerTypeOnChange }" disabled="disabled"></select>
+                                            <input type="hidden" id="hidCustomerType" data-bind="value: IndustrialCustomer.CustomerType" />
+                                        }
+                                        else
+                                        {
+                                            <select id="CustomerType" data-bind="options: customerTypeDDL, optionsText: 'Text', optionsValue: 'Value', value: IndustrialCustomer.CustomerType, event: { change: CustomerTypeOnChange }"></select>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.Name</div>
+                                    <div class="Field">
+                                         @if (Model.IsCustomerForUnderWriting == true)
+                                         {
+                                             <input type="text" id="Name" data-bind="value: IndustrialCustomer.Name" maxlength="50" readonly ="readonly" />
+                                         }
+                                         else
+                                         {
+                                            <input type="text" id="Name" data-bind="value: IndustrialCustomer.Name" maxlength="50" />
+                                         }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="divSirnames">
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.PaternalSurname</div>
+                                    <div class="Field">
+                                         @if (Model.IsCustomerForUnderWriting == true)
+                                         {
+                                             <input type="text" id="PaternalSurname" data-bind="value: IndustrialCustomer.PaternalSurname" maxlength="50" readonly ="readonly" />
+                                         }
+                                         else
+                                         {
+                                            <input type="text" id="PaternalSurname" data-bind="value: IndustrialCustomer.PaternalSurname" maxlength="50" />
+                                         }
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.MaternalSurname</div>
+                                    <div class="Field">
+                                         @if (Model.IsCustomerForUnderWriting == true)
+                                         {
+                                             <input type="text" id="MaternalSurname" data-bind="value: IndustrialCustomer.MaternalSurname" maxlength="50" readonly ="readonly" />
+                                         }
+                                         else
+                                         { 
+                                            <input type="text" id="MaternalSurname" data-bind="value: IndustrialCustomer.MaternalSurname" maxlength="50" />
+                                         }
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.RUT</div>
+                                    <div class="Field">
+                                        <input type="text" id="CustomerRUT" data-bind="value: IndustrialCustomer.RUT" maxlength="13" readonly="readonly" />
+                                    </div>
+                                </div>                              
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.ProductCategory</div>
+                                    <div class="Field">                                        
+                                        @if (Convert.ToInt32(Model.ParentCustomerId) != 0 || Model.IsCustomerForUnderWriting == true)
+                                        { 
+                                            <select data-bind="options: ProductCategoryDDL, optionsText: 'Text', optionsValue: 'Value', value: IndustrialCustomer.ProductCategoryCode" disabled="disabled" ></select>
+                                            <input type="hidden" id="hidProductCategoryCode" data-bind="value: IndustrialCustomer.ProductCategoryCode" />
+                                        }
+                                        else
+                                        {
+                                            <select data-bind="options: ProductCategoryDDL, optionsText: 'Text', optionsValue: 'Value', value: IndustrialCustomer.ProductCategoryCode" ></select>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.Product</div>
+                                    <div class="Field">                                        
+                                        @if (Convert.ToInt32(Model.ParentCustomerId) != 0 || Model.IsCustomerForUnderWriting == true)
+                                        { 
+                                            <select id="Product" data-bind="options: ProductDDL, optionsText: 'Text', optionsValue: 'Value', value: IndustrialCustomer.ProductCode" disabled="disabled"></select>
+                                            <input type="hidden" id="hidProductCode" data-bind="value: IndustrialCustomer.ProductCode" />
+                                        }
+                                        else
+                                        {
+                                            <select id="Product" data-bind="options: ProductDDL, optionsText: 'Text', optionsValue: 'Value', value: IndustrialCustomer.ProductCode" ></select>
+                                        }
+                                        <label id="lblValidateProduct" class="validationMessage" ></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.Nationality</div>
+                                    <div class="Field">
+                                         @if (Model.IsCustomerForUnderWriting == true)
+                                         {
+                                             <select id="Nationality" data-bind="options: NationalityDDL, optionsText: 'Text', optionsValue: 'Value', value: IndustrialCustomer.Nationality" disabled ="disabled"></select>
+                                              <input type="hidden" id="hidNationality" data-bind="value: IndustrialCustomer.Nationality" />
+                                         }
+                                         else
+                                         {
+                                            <select id="Nationality" data-bind="options: NationalityDDL, optionsText: 'Text', optionsValue: 'Value', value: IndustrialCustomer.Nationality"></select>
+                                         }
+                                        <label id="lblValidateNationality" class="validationMessage" ></label>
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.LegacyCardNumber</div>
+                                    <div class="Field">
+                                         @if (Model.IsCustomerForUnderWriting == true)
+                                         {
+                                             <input type="text" id="LegacyCardNumber" class="restrictCutCopyPaste" maxlength="16" onkeypress="return OnlyNumeric(event);" data-bind="value: IndustrialCustomer.LegacyCardNumber" readonly="readonly" />
+                                         }
+                                         else
+                                         {
+                                            <input type="text" id="LegacyCardNumber" class="restrictCutCopyPaste" maxlength="16" onkeypress="return OnlyNumeric(event);" data-bind="value: IndustrialCustomer.LegacyCardNumber" />
+                                         }
+                                        <input type="hidden" id="hidOrganizationCode" data-bind="value: IndustrialCustomer.OrganizationCode">
+                                    </div>
+                                </div>
+                            </div>
+                            <script type="text/html" id="CommercialAddressDetTemplate">
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label">@Resources.CommercialAddress</div>
+                                            <div class="Field">
+                                                 @if (Model.IsCustomerForUnderWriting == true)
+                                                 {
+                                                    <input type="text" id="CommercialAddress" data-bind="value: AddressDesc, event:{ blur: AddressOnBlur('#CommercialAddress') }" maxlength="100" readonly="readonly" />
+                                                 }
+                                                 else
+                                                 {
+                                                    <input type="text" id="CommercialAddress" data-bind="value: AddressDesc, event:{ blur: AddressOnBlur('#CommercialAddress') }" maxlength="100" />
+                                                 }
+                                                <label id="lblValidateCommercialAddress" class="validationMessage" ></label>
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">@Resources.Village</div>
+                                            <div class="Field">
+                                                 @if (Model.IsCustomerForUnderWriting == true)
+                                                 {
+                                                    <input type="text" id="Village" data-bind="value: Village" maxlength="50" readonly="readonly" />
+                                                 }
+                                                 else
+                                                 {
+                                                     <input type="text" id="Village" data-bind="value: Village" maxlength="50" />
+                                                 }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label">@Resources.Communa</div>
+                                            <div class="Field">
+                                                @if (Model.IsCustomerForUnderWriting == true)
+                                                {
+                                                     <select id="Communa" data-bind="options: CommunaDDL, optionsText: 'Text', optionsValue: 'Value', value: CommunaCode,event: { change: CommunaOnChange('Communa') }" disabled ="disabled"></select>
+                                                    <input type="hidden" id="hidCommunaCode" data-bind="value: CommunaCode">
+                                                }
+                                                else
+                                                {
+                                                     <select id="Communa" data-bind="options: CommunaDDL, optionsText: 'Text', optionsValue: 'Value', value: CommunaCode,event: { change: CommunaOnChange('Communa') }"></select>
+                                                }
+                                                <label id="lblValidateCommuna" class="validationMessage" ></label>
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label">@Resources.City</div>
+                                            <div class="Field">
+                                                @if (Model.IsCustomerForUnderWriting == true)
+                                                {
+                                                    <select class="CityDDL" id="City" data-bind="options: cityDDL, optionsText: 'Text', optionsValue: 'Value', value: CityCode" disabled ="disabled"></select>
+                                                    <input type="hidden" id="hidCityCode" data-bind="value: CityCode">
+                                                }
+                                                else
+                                                {
+                                                    <select class="CityDDL" id="City" data-bind="options: cityDDL, optionsText: 'Text', optionsValue: 'Value', value: CityCode"></select>
+                                                }
+                                                <label id="lblValidateCity" class="validationMessage" ></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">@Resources.LandPhone</div>
+                                            <div class="Field">
+                                                 @if (Model.IsCustomerForUnderWriting == true)
+                                                 {
+                                                     <input type="text" id="LandPhone" onkeypress="return OnlyNumeric(event)" data-bind="value: Phone" maxlength="15" readonly="readonly" />
+                                                 }
+                                                 else
+                                                 {
+                                                     <input type="text" id="LandPhone" onkeypress="return OnlyNumeric(event)" data-bind="value: Phone" maxlength="15" />
+                                                 }
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">@Resources.Mobile</div>
+                                            <div class="Field">
+                                                 @if (Model.IsCustomerForUnderWriting == true)
+                                                 {
+                                                     <input type="text" id="Mobile" onkeypress="return OnlyNumeric(event)" data-bind="value: Mobile" maxlength="15" readonly ="readonly" />
+                                                 }
+                                                 else
+                                                 {
+                                                     <input type="text" id="Mobile" onkeypress="return OnlyNumeric(event)" data-bind="value: Mobile" maxlength="15" />
+                                                 }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">@Resources.Email</div>
+                                            <div class="Field">
+                                                @if (Model.IsCustomerForUnderWriting == true)
+                                                {
+                                                     <input type="text" id="Email" data-bind="value: EmailID" maxlength="50" readonly="readonly" />
+                                                }
+                                                else
+                                                {
+                                                     <input type="text" id="Email" data-bind="value: EmailID" maxlength="50" />
+                                                }                                               
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">@Resources.LocalType</div>
+                                            <div class="Field">
+                                                @if (Model.IsCustomerForUnderWriting == true)
+                                                {
+                                                    <select id="LocalType" data-bind="options: residenceTypeDDL, optionsText: 'Text', optionsValue: 'Value', value: ResidenceType" disabled ="disabled"></select>
+                                                      <input type="hidden" id="hidResidenceType" data-bind="value: ResidenceType">
+                                                }
+                                                else
+                                                {
+                                                    <select id="LocalType" data-bind="options: residenceTypeDDL, optionsText: 'Text', optionsValue: 'Value', value: ResidenceType"></select>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </script>
+                            <div id="DivCommercialAddressDet" data-bind="template: { name: 'CommercialAddressDetTemplate', foreach: IndustrialCustomer.CommercialAddressDet }"></div>
+                            <div class="row" id="divAge">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.DateOfBirth</div>
+                                    <div class="Field">
+                                         @if (Model.IsCustomerForUnderWriting == true)
+                                         {
+                                             <input type="text" id="DateOfBirth" readonly="true" data-bind="value: IndustrialCustomer.DateOfBirth" />
+                                         }
+                                         else
+                                         {
+                                             <input type="text" id="DateOfBirth" class="datepicker" readonly="true" data-bind="value: IndustrialCustomer.DateOfBirth" />
+                                         }
+                                        <label id="lblValidateDateOfBirth" class="validationMessage" ></label>
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.Age</div>
+                                    <div class="Field">                                        
+                                        <input style="width: 10%" type="text" id="AgeYears" data-bind="value: IndustrialCustomer.AgeYears" maxlength="2" readonly="readonly" />
+                                        Years
+                                         <input style="width: 10%" type="text" id="AgeMonths" data-bind="value: IndustrialCustomer.AgeMonths" maxlength="2" readonly="readonly" />
+                                        Months
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.CurrentAccountNo</div>
+                                    <div class="Field">
+                                         @if (Model.IsCustomerForUnderWriting == true)
+                                         {
+                                              <input type="text" id="currentAccountNo" onkeypress="return OnlyNumeric(event);" maxlength="16" data-bind="value: IndustrialCustomer.CurrentAccountNo" readonly="readonly" />
+                                         }
+                                         else
+                                         { 
+                                             <input type="text" id="currentAccountNo" onkeypress="return OnlyNumeric(event);" maxlength="16" data-bind="value: IndustrialCustomer.CurrentAccountNo" />
+                                         }
+                                       
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.Bank</div>
+                                    <div class="Field">
+                                         @if (Model.IsCustomerForUnderWriting == true)
+                                         {
+                                             <select id="Bank" data-bind="options: bankDDL, optionsText: 'Text', optionsValue: 'Value', value: IndustrialCustomer.BankCode" disabled="disabled"></select>
+                                              <input type="hidden" id="hidBankCode" data-bind="value: IndustrialCustomer.BankCode">
+                                         }
+                                         else
+                                         {
+                                             <select id="Bank" data-bind="options: bankDDL, optionsText: 'Text', optionsValue: 'Value', value: IndustrialCustomer.BankCode"></select>
+                                         }                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="divFlag">
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.AlcoholLicense</div>
+                                    <div style="width: auto; float: left">
+                                         @if (Model.IsCustomerForUnderWriting == true)
+                                         {
+                                             <input type="checkbox" id="AlcoholFlag" data-bind="checked: IndustrialCustomer.AlcoholLicenseFlag" disabled="disabled" />
+                                         }
+                                         else
+                                         { 
+                                            <input type="checkbox" id="AlcoholFlag" data-bind="checked: IndustrialCustomer.AlcoholLicenseFlag" />
+                                         }
+                                        
+                                    </div>
+                                </div>
+                                <div class="TwoColumn" style="float: left">
+                                    <div class="label fontmandatory">@Resources.CreditLineRequested</div>
+                                    <div style="width: auto; float: left">
+                                        @if (Model.IsCustomerForUnderWriting == true)
+                                        {
+                                            <input type="checkbox" id="CreditLineRequested" data-bind="checked: IndustrialCustomer.CreditLineRequestedFlag" disabled="disabled" />
+                                        }
+                                        else
+                                        { 
+                                            <input type="checkbox" id="CreditLineRequested" data-bind="checked: IndustrialCustomer.CreditLineRequestedFlag" />
+                                        }                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h3>@Resources.ParticularAddress</h3>
+                        <div class="row">
+                            <script type="text/html" id="ParticularAddressDetTemplate">
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label">@Resources.Address</div>
+                                            <div class="Field">
+                                                 @if (Model.IsCustomerForUnderWriting == true)
+                                                 {
+                                                     <input type="text" id="ParticularAddress" data-bind="value: AddressDesc, event:{ blur: AddressOnBlur('#ParticularAddress') }" maxlength="100" readonly ="readonly" />
+                                                 }
+                                                 else
+                                                 { 
+                                                    <input type="text" id="ParticularAddress" data-bind="value: AddressDesc, event:{ blur: AddressOnBlur('#ParticularAddress') }" maxlength="100" />
+                                                 }     
+                                                <label id="lblValidateParticularAddress" class="validationMessage" ></label>                                           
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">@Resources.Village</div>
+                                            <div class="Field">
+                                                 @if (Model.IsCustomerForUnderWriting == true)
+                                                 {
+                                                     <input type="text" id="ParticularAddrVillage" data-bind="value: Village" maxlength="50" readonly="readonly" />
+                                                 }
+                                                 else
+                                                 {
+                                                     <input type="text" id="ParticularAddrVillage" data-bind="value: Village" maxlength="50" />
+                                                 }                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label">@Resources.Communa</div>
+                                            <div class="Field">
+                                                 @if (Model.IsCustomerForUnderWriting == true)
+                                                 {
+                                                     <select id="ParticularAddrCommuna" data-bind="options: CommunaDDL, optionsText: 'Text', optionsValue: 'Value', value: CommunaCode,event: { change: CommunaOnChange('ParticularAddrCommuna') }" disabled="disabled"></select>
+                                                      <input type="hidden" id="hidParticularAddrCommuna" data-bind="value: CommunaCode">
+                                                 }
+                                                 else
+                                                 { 
+                                                    <select id="ParticularAddrCommuna" data-bind="options: CommunaDDL, optionsText: 'Text', optionsValue: 'Value', value: CommunaCode,event: { change: CommunaOnChange('ParticularAddrCommuna') }"></select>
+                                                 }
+                                                 <label id="lblValidateParticularAddrCommuna" class="validationMessage" ></label>          
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label">@Resources.City</div>
+                                            <div class="Field">
+                                                 @if (Model.IsCustomerForUnderWriting == true)
+                                                 {
+                                                     <select class="CityDDL" id="ParticularAddrCity" data-bind="options: cityDDL, optionsText: 'Text', optionsValue: 'Value', value: CityCode" disabled ="disabled"></select>
+                                                    <input type="hidden" id="hidParticularAddrCity" data-bind="value: CityCode">
+                                                 }
+                                                 else
+                                                 {
+                                                     <select class="CityDDL" id="ParticularAddrCity" data-bind="options: cityDDL, optionsText: 'Text', optionsValue: 'Value', value: CityCode"></select>
+                                                 } 
+                                                 <label id="lblValidateParticularAddrCity" class="validationMessage" ></label>                                                 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">@Resources.LandPhone</div>
+                                            <div class="Field">
+                                                 @if (Model.IsCustomerForUnderWriting == true)
+                                                 {
+                                                     <input type="text" maxlength="15" onkeypress="return OnlyNumeric(event);" id="ParticularAddrLandPhone" data-bind="value: Phone" readonly="readonly" />
+                                                 }
+                                                 else
+                                                 {
+                                                     <input type="text" maxlength="15" onkeypress="return OnlyNumeric(event);" id="ParticularAddrLandPhone" data-bind="value: Phone" />
+                                                 }
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">@Resources.Mobile</div>
+                                            <div class="Field">
+                                                 @if (Model.IsCustomerForUnderWriting == true)
+                                                 {
+                                                     <input type="text" maxlength="15" onkeypress="return OnlyNumeric(event);" id="ParticularAddrMobile" data-bind="value: Mobile" readonly ="readonly" />
+                                                 }
+                                                 else
+                                                 { 
+                                                    <input type="text" maxlength="15" onkeypress="return OnlyNumeric(event);" id="ParticularAddrMobile" data-bind="value: Mobile" />
+                                                 }
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">@Resources.Email</div>
+                                            <div class="Field">
+                                                  @if (Model.IsCustomerForUnderWriting == true)
+                                                  {
+                                                      <input type="text" id="ParticularAddrEmail" data-bind="value: EmailID" maxlength="50" readonly="readonly" />
+                                                  }
+                                                  else
+                                                  {
+                                                      <input type="text" id="ParticularAddrEmail" data-bind="value: EmailID" maxlength="50" />
+                                                  }
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">@Resources.ResidenceType</div>
+                                            <div class="Field">
+                                                 @if (Model.IsCustomerForUnderWriting == true)
+                                                 {
+                                                     <select id="ParticularAddrLocalType" data-bind="options: residenceTypeDDL, optionsText: 'Text', optionsValue: 'Value', value: ResidenceType" disabled="disabled"></select>
+                                                     <input type="hidden" id="hidParticularAddrLocalType" data-bind="value: ResidenceType">
+                                                 }
+                                                 else
+                                                 {
+                                                     <select id="ParticularAddrLocalType" data-bind="options: residenceTypeDDL, optionsText: 'Text', optionsValue: 'Value', value: ResidenceType"></select>
+                                                 }
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </script>
+                            <div id="DivParticularAddressDet" data-bind="template: { name: 'ParticularAddressDetTemplate', foreach: IndustrialCustomer.ParticularAddressDet }"></div>
+                        </div>
+                        @*Statement address template will be displayed for parent customer only*@
+                        @if (Model.ParentCustomerId == 0)
+                        {
+                            <h3>@Resources.StatementAddress</h3>
+                            <div class="row">
+                                <script type="text/html" id="StatementAddressDetTemplate">
+                                    <div class="row">
+                                        <div class="row">
+                                            <div class="TwoColumn">
+                                                <div class="label">@Resources.SendStatementTo</div>
+                                                <div class="Field">
+                                                    @if (Model.IsCustomerForUnderWriting == true)
+                                                    {
+                                                        <select id="SendStatementTo" data-bind="options: addressTypeDDL, optionsText: 'Text', optionsValue: 'Value', value: ReferenceAddressTypeCode, event: { change: OnChangeSendStatementTo }" disabled="disabled"></select>
+                                                        <input type="hidden" id="hidSendStatementTo" data-bind="value: ReferenceAddressTypeCode">
+                                                  }
+                                                    else
+                                                    {
+                                                        <select id="SendStatementTo" data-bind="options: addressTypeDDL, optionsText: 'Text', optionsValue: 'Value', value: ReferenceAddressTypeCode, event: { change: OnChangeSendStatementTo }"></select>
+                                                  }
+                                                    <label id="lblValidateSendStatementTo" class="validationMessage"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="TwoColumn">
+                                                <div class="label fontmandatory">@Resources.Other</div>
+                                                <div class="Field">
+                                                    @if (Model.IsCustomerForUnderWriting == true)
+                                                    {
+                                                        <input type="text" id="StatementAddrOther" data-bind="value: Other" maxlength="100" readonly="readonly" />
+                                                 }
+                                                    else
+                                                    {
+                                                        <input type="text" id="StatementAddrOther" data-bind="value: Other" maxlength="100" />
+                                                 }
+                                                </div>
+                                            </div>
+                                            <div class="TwoColumn">
+                                                <div class="label">@Resources.Address</div>
+                                                <div class="Field">
+                                                    @if (Model.IsCustomerForUnderWriting == true)
+                                                    {
+                                                        <input type="text" id="StatementAddrAddress" data-bind="value: AddressDesc, event:{ blur: AddressOnBlur('#StatementAddrAddress') }" maxlength="100" readonly="readonly" />
+                                                   }
+                                                    else
+                                                    {
+                                                        <input type="text" id="StatementAddrAddress" data-bind="value: AddressDesc, event:{ blur: AddressOnBlur('#StatementAddrAddress') }" maxlength="100" />
+                                                   }
+                                                    <label id="lblValidateStatementAddrAddress" class="validationMessage"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="TwoColumn">
+                                                <div class="label fontmandatory">@Resources.Village</div>
+                                                <div class="Field">
+                                                    @if (Model.IsCustomerForUnderWriting == true)
+                                                    {
+                                                        <input type="text" id="StatementAddrVillage" data-bind="value: Village" maxlength="50" readonly="readonly" />
+                                                  }
+                                                    else
+                                                    {
+                                                        <input type="text" id="StatementAddrVillage" data-bind="value: Village" maxlength="50" />
+                                                  }
+
+                                                </div>
+                                            </div>
+                                            <div class="TwoColumn">
+                                                <div class="label">@Resources.Communa</div>
+                                                <div class="Field">
+                                                    @if (Model.IsCustomerForUnderWriting == true)
+                                                    {
+                                                        <select id="StatementAddrCommuna" data-bind="options: CommunaDDL, optionsText: 'Text', optionsValue: 'Value', value: CommunaCode,event: { change: CommunaOnChange('StatementAddrCommuna') }" disabled="disabled"></select>
+                                                        <input type="hidden" id="hidStatementAddrCommuna" data-bind="value: CommunaCode">
+                                                  }
+                                                    else
+                                                    {
+                                                        <select id="StatementAddrCommuna" data-bind="options: CommunaDDL, optionsText: 'Text', optionsValue: 'Value', value: CommunaCode,event: { change: CommunaOnChange('StatementAddrCommuna') }"></select>
+                                                  }
+                                                    <label id="lblValidateStatementAddrCommuna" class="validationMessage"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="TwoColumn">
+                                                <div class="label">@Resources.City</div>
+                                                <div class="Field">
+                                                    @if (Model.IsCustomerForUnderWriting == true)
+                                                    {
+                                                        <select class="CityDDL" id="StatementAddrCity" data-bind="options: cityDDL, optionsText: 'Text', optionsValue: 'Value', value: CityCode" disabled="disabled"></select>
+                                                        <input type="hidden" id="hidStatementAddrCity" data-bind="value: CityCode">
+                                                  }
+                                                    else
+                                                    {
+                                                        <select class="CityDDL" id="StatementAddrCity" data-bind="options: cityDDL, optionsText: 'Text', optionsValue: 'Value', value: CityCode"></select>
+                                                  }
+                                                    <label id="lblValidateStatementAddrCity" class="validationMessage"></label>
+                                                </div>
+                                            </div>
+                                            <div class="TwoColumn">
+                                                <div class="label fontmandatory">@Resources.LandPhone</div>
+                                                <div class="Field">
+                                                    @if (Model.IsCustomerForUnderWriting == true)
+                                                    {
+                                                        <input type="text" maxlength="15" onkeypress="return OnlyNumeric(event);" id="StatementAddrLandPhone" data-bind="value: Phone" readonly="readonly" />
+                                                }
+                                                    else
+                                                    {
+                                                        <input type="text" maxlength="15" onkeypress="return OnlyNumeric(event);" id="StatementAddrLandPhone" data-bind="value: Phone" />
+                                                }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="TwoColumn">
+                                                <div class="label fontmandatory">@Resources.Mobile</div>
+                                                <div class="Field">
+                                                    @if (Model.IsCustomerForUnderWriting == true)
+                                                    {
+                                                        <input type="text" maxlength="15" onkeypress="return OnlyNumeric(event);" id="StatementAddrMobile" data-bind="value: Mobile" readonly="readonly" />
+                                                }
+                                                    else
+                                                    {
+                                                        <input type="text" maxlength="15" onkeypress="return OnlyNumeric(event);" id="StatementAddrMobile" data-bind="value: Mobile" />
+                                                }
+
+                                                </div>
+                                            </div>
+                                            <div class="TwoColumn">
+                                                <div class="label fontmandatory">@Resources.Email</div>
+                                                <div class="Field">
+                                                    @if (Model.IsCustomerForUnderWriting == true)
+                                                    {
+                                                        <input type="text" id="StatementAddrEmail" data-bind="value: EmailID" maxlength="50" readonly="readonly" />
+                                                 }
+                                                    else
+                                                    {
+                                                        <input type="text" id="StatementAddrEmail" data-bind="value: EmailID" maxlength="50" />
+                                                 }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </script>
+                                <div id="DivStatementAddressDet" data-bind="template: { name: 'StatementAddressDetTemplate', foreach: IndustrialCustomer.StatementAddressDet }"></div>
+                            </div>
+                        }
+                        <h3>@Resources.RiskData</h3>
+                        <div class="row">
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.Relevance</div>
+                                    <div class="Field">
+                                         @if (Model.IsCustomerForUnderWriting == true)
+                                         {
+                                             <input type="text" id="Relevance" style="text-align:right;" onkeypress="return OnlyNumeric(event);" data-bind="value: IndustrialCustomer.Relevance" maxlength="2" readonly="readonly"/>
+                                         }
+                                         else
+                                         {
+                                             <input type="text" id="Relevance" style="text-align:right;" onkeypress="return OnlyNumeric(event);" data-bind="value: IndustrialCustomer.Relevance" maxlength="2" />
+                                         }
+                                        
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.GrowthPotentialPercentage</div>
+                                    <div class="Field">
+                                        @if (Model.IsCustomerForUnderWriting == true)
+                                        {
+                                            <input type="text" id="GrowthPotentialPercentage" style="text-align:right;" onkeypress="return validateFloatKeyPress(this,event);" data-bind="value: IndustrialCustomer.GrowthPotentialPercentage" maxlength="6" readonly="readonly"/>
+                                        }
+                                        else
+                                        {
+                                            <input type="text" id="GrowthPotentialPercentage" style="text-align:right;" onkeypress="return validateFloatKeyPress(this,event);" data-bind="value: IndustrialCustomer.GrowthPotentialPercentage" maxlength="6" />
+                                        }
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.PurchaseAndConsumptionOccasion</div>
+                                    <div class="Field">
+                                         @if (Model.IsCustomerForUnderWriting == true)
+                                         {
+                                             <input type="text" id="PurchaseConsumptionOccasion" data-bind="value: IndustrialCustomer.PurchaseConsumptionOccasion" maxlength="50" readonly="readonly"/>
+                                         }
+                                         else
+                                         {
+                                             <input type="text" id="PurchaseConsumptionOccasion" data-bind="value: IndustrialCustomer.PurchaseConsumptionOccasion" maxlength="50" />
+                                         }                                        
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.CreditBureauDicom</div>
+                                    <div style="width: auto; float: left">
+                                           @if (Model.IsCustomerForUnderWriting == true)
+                                           {
+                                               <input type="checkbox" id="CreditBureauDicomFlag" data-bind="checked: IndustrialCustomer.CreditBureauDicomFlag" disabled="disabled"/>
+                                           }
+                                           else
+                                           {
+                                               <input type="checkbox" id="CreditBureauDicomFlag" data-bind="checked: IndustrialCustomer.CreditBureauDicomFlag" />
+                                           }                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.CreditBureauScore</div>
+                                    <div class="Field">
+                                         <input type="text" id="CreditBureauScore" style="text-align:right;" onkeypress="return OnlyNumeric(event);" data-bind="value: IndustrialCustomer.CreditBureauScore" maxlength="3" />
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="Field">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+                       <h3>@Resources.DecisionDetails</h3>
+                        <div class="row">
+                            <script id="IndustrialCustomerDecisionTemplate" type="text/html">                             
+                                <div class="row">                                  
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label">@Resources.Decision</div>
+                                            <div class="Field">
+                                                 @if (Model.ParentCustomerId != 0 || Model.IsCustomerForUnderWriting == true)
+                                                 {
+                                                     <select id="Decision" data-bind="options: decisionDDL,optionsText: 'Text',optionsValue: 'Value',value:DecisionCode, event:{ change: DecisionOnChange }" disabled="disabled"></select>
+                                                     <input type="hidden" data-bind="value:DecisionCode" disabled="disabled"/>
+                                                 }
+                                                 else
+                                                 { 
+                                                    <select id="Decision" data-bind="options: decisionDDL,optionsText: 'Text',optionsValue: 'Value',value:DecisionCode, event:{ change: DecisionOnChange }"></select>
+                                                 }
+                                                 <label id="lblValidateDecision" class="validationMessage"></label>
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label">@Resources.Reason</div>
+                                            <div class="Field">
+                                                 @if (Model.ParentCustomerId != 0 || Model.IsCustomerForUnderWriting == true)
+                                                 {
+                                                      <select id="Reason" data-bind="options:decisionReasonDDL, optionsText:'Text', optionsValue:'Value', value:ReasonCode, event:{ change: ReasonOnChange }" disabled ="disabled"></select>
+                                                      <input type="hidden" id="ReasonCode" name ="ReasonCode" data-bind="value:ReasonCode"/>
+                                                 }
+                                                 else
+                                                 {
+                                                    <select id="Reason" data-bind="options:decisionReasonDDL, optionsText:'Text', optionsValue:'Value', value:ReasonCode, event:{ change: ReasonOnChange }" ></select>
+                                                 }
+                                                 <label id="lblValidateReason" class="validationMessage"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*<----->*@
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label">@Resources.Contract</div>
+                                            <div class="Field">
+                                                @if (Model.ParentCustomerId != 0 || Model.IsCustomerForUnderWriting == true)
+                                                {                                                    
+                                                    <select id="Contract" data-bind="options:contractDDL,optionsText:'Text',optionsValue:'Value',value:ContractCode" disabled="disabled"></select>
+                                                    <input type="hidden" id="hidContractCode" data-bind="value: ContractCode" />                                                    
+                                                }
+                                                else
+                                                {
+                                                    <select id="Contract" data-bind="options:contractDDL,optionsText:'Text',optionsValue:'Value',value:ContractCode, event:{ change: ContractOnChange }"></select>
+                                                }
+                                                <label id="lblValidateContract" class="validationMessage"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="TwoColumn">
+                                            <div class="label">@Resources.BillCycleCode</div>
+                                            <div class="Field">
+                                                @if (Model.ParentCustomerId != 0 || Model.IsCustomerForUnderWriting == true)
+                                                {
+                                                    <select id="BillCycle" data-bind="options:billingCycleCodesDDL, optionsText:'Text', optionsValue:'Value', value: BillCycleSysParamId" disabled="disabled"></select>
+                                                    <input type="hidden" id="BillCycleSysParamId" name="BillCycleSysParamId" data-bind="value: BillCycleSysParamId" />
+                                                }
+                                                else
+                                                {
+                                                    <select id="BillCycle" data-bind="options:billingCycleCodesDDL, optionsText:'Text', optionsValue:'Value', value: BillCycleSysParamId, event:{ change: BillingCycleOnChange }"></select>
+                                                }
+                                                <label id="lblValidateBillCycle" class="validationMessage"></label>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label">@Resources.CreditLimit</div>
+                                            <div class="Field">
+                                                @if (Model.ParentCustomerId != 0)
+                                                     { 
+                                                        <input type="text" id="CreditLimit" onkeypress="return AllowOnlyAmountWithoutDot(event)" data-bind="value: CreditLimit, event:{ blur: ValidateCreditLimit }" style="text-align: right;" maxlength="11" disabled="disabled" />
+                                                     }
+                                                     else
+                                                     {
+                                                        <input type="text" id="CreditLimit" onkeypress="return AllowOnlyAmountWithoutDot(event)" data-bind="value: CreditLimit, event:{ blur: ValidateCreditLimit }" style="text-align: right;" maxlength="11" />
+                                                     }
+                                                    <label id="lblValidateCreditLimit" class="validationMessage"></label>
+                                                    <input type="hidden" id="hidMaxCreditLimitOfProduct" name="MaxCreditLimitOfProduct"/>
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label">@Resources.Remarks</div>
+                                            <div class="Field">
+                                                @if (Model.ParentCustomerId != 0)
+                                                     {
+                                                        <textarea id="Remarks" name="Remarks" maxlength="500" data-bind="value:Remarks, event:{ blur: RemarksOnBlur } " disabled="disabled" />
+                                                     }
+                                                     else
+                                                     {
+                                                        <textarea id="Remarks" name="Remarks" maxlength="500" data-bind="value:Remarks, event:{ blur: RemarksOnBlur }" />
+                                                     }
+                                                <label id="lblValidateRemarks" class="validationMessage"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">@Resources.Unemployment</div>
+                                            <div class="Field">
+                                                @if (Model.ParentCustomerId != 0 || Model.IsCustomerForUnderWriting == true)
+                                                       { 
+                                                            <select data-bind="options:unemploymentDDL,optionsText:'Text',optionsValue:'Value',value:Unemployment" disabled="disabled"></select>
+                                                            <input type="hidden" id="Unemployment" name="Unemployment" data-bind="value:Unemployment" />
+                                                       }
+                                                       else
+                                                       { 
+                                                            <select data-bind="options:unemploymentDDL,optionsText:'Text',optionsValue:'Value',value:Unemployment"></select>
+                                                       }
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn">
+                                            <div class="label fontmandatory">@Resources.ContractAcceptedByCustomer</div>
+                                            <div>
+                                                @if (Model.ParentCustomerId != 0 || Model.IsCustomerForUnderWriting == true)
+                                                       {
+                                                    <input type="checkbox" id="IsContractAcceptedByCustomer" data-bind="checked: IsContractAcceptedByCustomer" disabled="disabled" />
+                                                       }
+                                                       else
+                                                       {
+                                                    <input type="checkbox" id="IsContractAcceptedByCustomer" data-bind="checked: IsContractAcceptedByCustomer" />
+                                                       }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*<----->*@
+
+                                </div>
+                            </script>
+                            <div id="DivDecisionDet" data-bind="template:{ name:'IndustrialCustomerDecisionTemplate', foreach: IndustrialCustomer.IndustrialCustomerDecisionDet }"></div>
+                          
+                        </div>
+                    </div>
+                    <!--Accoredion Ends-->
+                    @if (Model.IsCustomerForUnderWriting == true)
+                    { 
+                         @Html.Raw(Html.OptionalKnockoutButtons(lstPrivilege, false, true, true, false, "UnderwriterAuthorize", "click: UnderwriterAuthorize"))   
+                    }
+                    else
+                    {
+                         @Html.Raw(Html.KnockoutButtons(lstPrivilege, false))
+                    }                        
+                </div>
+            }
+        </div>
+    </div>
+</section>
+<script>
+    var url = window.location.pathname;
+    var customerUrl = GetQueryStrings();
+    var viewModel;
+
+    if (customerUrl["ACustomerId"] && customerUrl["ACustomerId"] != 0) {
+
+        viewModel = new IndustrialCustomerVM(IndustrialCustomerValue);
+    }
+    else {
+        if('@Model.ParentCustomerId' !=  0 ){
+            viewModel = new IndustrialCustomerVM(IndustrialCustomerValue);
+        }
+        else{
+            viewModel = new IndustrialCustomerVM();
+        }
+    }
+
+    $(function () {
+
+        viewModel.IndustrialCustomer.OrganizationCode = ko.observable(IndustrialCustomerValue["OrganizationCode"]);
+        viewModel.IndustrialCustomer.IsCustomerForUnderWriting = ko.observable(IndustrialCustomerValue["IsCustomerForUnderWriting"]);
+        viewModel.IndustrialCustomer.ProductMemberTypeCode = ko.observable(IndustrialCustomerValue["ProductMemberTypeCode"]);
+        viewModel.IndustrialCustomer.DSACode = ko.observable(IndustrialCustomerValue["DSACode"]);
+        viewModel.IndustrialCustomer.DSAName = ko.observable(IndustrialCustomerValue["DSAName"]);  
+       // viewModel.IndustrialCustomer.SalesId = ko.observable(IndustrialCustomerValue["SalesId"]);  
+        viewModel.IndustrialCustomer.UEN = ko.observable(IndustrialCustomerValue["UEN"]);
+        viewModel.IndustrialCustomer.DSARUT = ko.observable(IndustrialCustomerValue["DSARUT"]);
+       // viewModel.IndustrialCustomer.BranchCode = ko.observable(IndustrialCustomerValue["BranchCode"]);
+        viewModel.IndustrialCustomer.BillCycleSysParamId = ko.observable(IndustrialCustomerValue["BillCycleSysParamId"]);
+
+        if(customerUrl["ARUT"] && customerUrl["ARUT"]!="")
+        {
+            $("#CustomerRUT").attr("value", customerUrl["ARUT"]);       
+            viewModel.IndustrialCustomer.RUT = ko.observable(customerUrl["ARUT"]);
+        }    
+        ko.validation.configure({
+            registerExtenders: true,
+            insertMessages: true,
+            messagesOnModified: false
+        });
+
+        ko.applyBindings(viewModel);
+
+        $("[id=Communa]").append($('<option/>',
+        {
+           value: "",
+           text:"@Resources.SelectOne"
+        }));
+        $("[id=ParticularAddrCommuna]").append($('<option/>',
+        {
+            value: "",
+            text:"@Resources.SelectOne"
+        }));
+        $("[id=StatementAddrCommuna]").append($('<option/>',
+        {
+            value: "",
+            text:"@Resources.SelectOne"
+        }));
+        $("[id=City]").append($('<option/>',
+      {
+          value: "",
+          text:"@Resources.SelectOne"
+      }));
+        $("[id=ParticularAddrCity]").append($('<option/>',
+        {
+            value: "",
+            text:"@Resources.SelectOne"
+        }));
+        $("[id=StatementAddrCity]").append($('<option/>',
+        {
+            value: "",
+            text:"@Resources.SelectOne"
+        }));
+        $("[id=Product]").append($('<option/>',
+        {
+            value: "",
+            text:"@Resources.SelectOne"
+        }));
+        $("[id=Contract]").append($('<option/>',
+           {
+               value: "",
+               text:"@Resources.SelectOne"
+           }));
+
+        if (customerUrl["ACustomerId"] && customerUrl["ACustomerId"] != 0){             
+            PopulateCascadeDropDownLists("Communa",IndustrialCustomerValue,viewModel);
+            PopulateCascadeDropDownLists("ParticularAddrCommuna",IndustrialCustomerValue,viewModel);
+            PopulateCascadeDropDownLists("StatementAddrCommuna",IndustrialCustomerValue,viewModel);
+            PopulateCascadeDropDownLists("City",IndustrialCustomerValue,viewModel);
+            PopulateCascadeDropDownLists("ParticularAddrCity",IndustrialCustomerValue,viewModel);
+            PopulateCascadeDropDownLists("StatementAddrCity",IndustrialCustomerValue,viewModel);
+            if('@Model.ParentCustomerId' == 0)
+            {
+                PopulateCascadeDropDownLists("Product",IndustrialCustomerValue,viewModel);
+                PopulateCascadeDropDownLists("Contract",IndustrialCustomerValue,viewModel);
+            }
+        }
+        if('@Model.ParentCustomerId' != 0){
+            PopulateCascadeDropDownLists("Contract",IndustrialCustomerValue,viewModel);
+        }
+
+        var errors = ko.validation.group(viewModel.IndustrialCustomer, { deep: true });
+        errors.showAllMessages(false);
+
+        if($('#CustomerType').val() == 'C'){
+            $('#divFlag').hide();
+            $('#divAge').hide();
+        }
+        else if($('#CustomerType').val() == 'I'){
+            $('#divFlag').show();
+            $('#divAge').show();          
+        }
+        if(viewModel.IndustrialCustomer.DSARUT() != null){
+
+            if( viewModel.IndustrialCustomer.DSARUT().length == 6)
+            {          
+                $('#DSARUT').mask('99999-*');
+            }
+            else  if( viewModel.IndustrialCustomer.DSARUT().length == 7)
+            { 
+                $('#DSARUT').mask('999999-*');
+            }
+            else  if( viewModel.IndustrialCustomer.DSARUT().length == 8)
+            { 
+                $('#DSARUT').mask('9999999-*');
+            }
+            else  if( viewModel.IndustrialCustomer.DSARUT().length == 9)
+            { 
+                $('#DSARUT').mask('99999999-*');
+            }
+            else  if( viewModel.IndustrialCustomer.DSARUT().length == 10)
+            { 
+                $('#DSARUT').mask('999999999-*');
+            }
+        }
+
+        if( viewModel.IndustrialCustomer.RUT().length == 6)
+        {          
+            $('#CustomerRUT').mask('99999-*');
+        }
+        else  if( viewModel.IndustrialCustomer.RUT().length == 7)
+        { 
+            $('#CustomerRUT').mask('999999-*');
+        }
+        else  if( viewModel.IndustrialCustomer.RUT().length == 8)
+        { 
+            $('#CustomerRUT').mask('9999999-*');
+        }
+        else  if( viewModel.IndustrialCustomer.RUT().length == 9)
+        { 
+            $('#CustomerRUT').mask('99999999-*');
+        }
+        else  if( viewModel.IndustrialCustomer.RUT().length == 10)
+        { 
+            $('#CustomerRUT').mask('999999999-*');
+        }
+
+        if('@ViewData["MaxCreditLimitOfProduct"]' != null){
+            $('#hidMaxCreditLimitOfProduct').val(Globalize(resourceProvider.ResourceCulture).parseFloat('@Convert.ToDecimal(ViewData["MaxCreditLimitOfProduct"])'));
+         }
+    });
+
+
+
+</script>

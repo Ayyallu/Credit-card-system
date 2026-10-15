@@ -1,0 +1,27 @@
+﻿using CC_Ingenio.DataTranfer.BillingInfo;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace CC_Ingenio.Web.ViewModel.Billing
+{
+    public class GeneratedStatementSearch
+    {
+
+        public int? Page { get; set; }
+        public string SearchButton { get; set; }
+
+        public string CardNumber { get; set; }
+        public string RUT { get; set; }
+        public int BillMonth { get; set; }
+        public int BillYear { get; set; }
+
+        public List<GeneratedStatementDTO> SearchResults { get; set; }
+
+        public int RecordCount { get; set; }
+
+        public int CurrentPageNumber { get; set; }
+
+    }
+}

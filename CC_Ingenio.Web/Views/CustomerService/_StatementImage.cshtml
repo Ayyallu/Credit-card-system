@@ -1,0 +1,107 @@
+﻿@using CC_Ingenio_Resources;
+@using CC_Ingenio.Web.ViewModel.CustomerService
+
+@model StatementImageSearch
+@{
+    List<SelectListItem> MonthItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Month)
+    {
+        MonthItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> YearItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Year)
+    {
+        YearItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+}
+
+<script type="text/javascript">
+
+ var index = 1;
+ $(document).ready(function () {
+
+     $("#SearchButton").click(function (e) {        
+         if ( $('#BillMonth').val() == "" || $('#BillYear').val() == "") {
+             $('#SearchFilter_Validate').text("@Html.Raw(String.Format(Resources.MsgErrPleaseEnter2, Resources.SearchCriteria))");
+             e.preventDefault;
+             return false;
+         }
+
+         $.ajax({
+             url: '/CustomerService/ShowStatementImage',
+             type: 'POST',           
+             data: { ACardNumber: JSON.stringify(@Model.CardNumber), ABillMonth: $('#BillMonth').val(), ABillYear: $('#BillYear').val() },       
+             cache: false,
+             success: function (returnData) {
+                 if (returnData.StatementGenerated == true) {
+                     $('#frmStatementImage').submit();
+                 }
+                     //window.open("../ReportViewer/ShowStatementImageReport", "myWindow");  
+                 else
+                     ShowSimpleModalDialog("@Html.Raw(String.Format(Resources.MsgInfoNotAvailable,Resources.BillStatement))", "");
+            }           
+         });
+        });
+
+         $(function () {
+             $("#BillMonth").change(function () {
+                 $('#SearchFilter_Validate').text("");
+             });
+         });
+     
+
+     $(function () {
+         $("#BillYear").change(function () {
+             $('#SearchFilter_Validate').text("");
+         });
+     });
+
+     $('#Clear').click(function () {
+
+         $('#BillMonth').val('');
+         $('#BillYear').val('');
+     });
+
+});
+
+</script>
+
+
+<div class="row">
+    <div class=" BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.StatementImage</div>
+        @using (Html.BeginForm("ViewAttachment", "CustomerService", FormMethod.Post, new { id = "frmStatementImage", name = "frmStatementImage", target = "_blank" }))
+        {
+                <div class="row">
+                    <div class="row">
+                        <div class="TwoColumn">
+                            <div class="label">@Resources.CardNumber</div>
+                            <div class="Field" style="width: auto">
+                                @*@Html.Label(string.IsNullOrWhiteSpace(Model.CardNumber) ? "-" : Model.CardNumber)*@
+                                @Html.TextBox("txtCardNO", string.IsNullOrWhiteSpace(Model.CardNumber) ? "-" : Model.CardNumber, new { @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="TwoColumn">
+                            <div class="label">@Resources.BillMonth</div>
+                            <div class="Field">
+                                @Html.DropDownListFor(x => x.BillMonth, MonthItems.AsEnumerable(), new { id = "BillMonth", @class = "inline", style = "width:25%" })
+                                <label class="inline" style="font-size: 100%; padding: 6px 10px 0px 30px;width:20%">@Resources.BillYear </label>
+                                @Html.DropDownListFor(x => x.BillYear, YearItems.AsEnumerable(), new { id = "BillYear", @class = "inline", style = "width:25%" })
+                                <label id="SearchFilter_Validate" class="validationMessage"></label>
+                            </div>
+                        </div>
+                        <input id="SearchButton" name="SearchButton" class="Greenbutton" type="button" value="@Resources.Search" />
+                        <input id="Clear" type="button" name="ClearButton" class="Greenbutton" value="@Resources.Clear" />
+                    </div>
+                </div>
+            <div>@Html.HiddenFor(x => x.CardNumber)</div>                                    
+            <div>@Html.HiddenFor(x => x.BillMonth, new { id = "hidBillMonth" })</div>   
+            <div>@Html.HiddenFor(x => x.BillYear)</div>    
+        }
+    </div>
+</div>
+     

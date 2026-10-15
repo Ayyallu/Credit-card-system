@@ -1,0 +1,159 @@
+﻿@using CC_Ingenio_Resources
+@using CC_Ingenio.Web.ViewModel.Master
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Search, " ", Resources.Fee });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model FeeSearch
+@{
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "FeeCode", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+
+    List<SelectListItem> ProductItems = new List<SelectListItem>();
+    List<SelectListItem> CustomerSegmentItems = new List<SelectListItem>();
+    List<SelectListItem> CustomerSubSegmentItems = new List<SelectListItem>();
+    foreach (var item in ViewBag.ProductList)
+    {
+        ProductItems.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    ProductItems.RemoveAt(0);
+    ProductItems.Insert(0, new SelectListItem() { Text = string.Empty, Value = string.Empty });
+    foreach (var item in ViewBag.CustomerSegmentList)
+    {
+        CustomerSegmentItems.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    CustomerSegmentItems.RemoveAt(0);
+    CustomerSegmentItems.Insert(0, new SelectListItem() { Text = string.Empty, Value = string.Empty });
+    foreach (var item in ViewBag.CustomerSubSegmentList)
+    {
+        CustomerSubSegmentItems.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    CustomerSubSegmentItems.RemoveAt(0);
+    CustomerSubSegmentItems.Insert(0, new SelectListItem() { Text = string.Empty, Value = string.Empty });
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+
+<section class="feature">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+    <div class="PageRow">
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active"><a href="#tab2">@Resources.SearchPageHeading</a></li>
+            <li>@Html.ActionLink(Resources.DetailsPageHeading, "FeeAdd", "Master")</li>
+        </ul>
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("FeeList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.FeeCode</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.FeeCode, new { maxlength = 3 })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.Product</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x => x.ProductCode, ProductItems)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CustomerSegment</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x => x.CustomerSegmentCode, CustomerSegmentItems)
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CustomerSubSegment</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x => x.CustomerSubSegmentCode, CustomerSubSegmentItems)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="SearchColumnbtn">
+                                        <span>
+                                            <input id="SearchButton" type="submit" class="Greenbutton" name="SearchButton" value="@Resources.Search" />
+                                        </span>
+                                        <span>
+                                            <input id="ClearButton" type="submit" class="Greenbutton" name="ClearButton" value="@Resources.Clear" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    }
+                </div>
+                <div class="row">
+                    <div class="standard-table">
+
+                        @grid.GetHtml(columns: grid.Columns(
+                                    grid.Column("FeeCode", Resources.FeeCode),
+                                    grid.Column("ProductName", Resources.Product),
+                                    grid.Column("CustomerSegmentName", Resources.CustomerSegment),
+                                    grid.Column("CustomerSubSegmentName", Resources.CustomerSubSegment),
+                                    grid.Column("ContractDescription", Resources.ContractDescription),
+                                    grid.Column("ApprovalStatusDesc", Resources.Status),
+                                    grid.Column(Resources.Edit, format:
+                                        (item) =>
+                                        {
+                                            if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                            {
+                                                return Html.Raw(Html.ActionLink(Resources.Edit, "FeeAdd", "Master", new { AFeeCode = item.FeeCode,AOrganizationCode = item.OrganizationCode }, null)); 
+                                            }
+                                            else
+                                            {
+                                                return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "FeeView", "Master", new { AFeeCode = item.FeeCode, AOrganizationCode = item.OrganizationCode }, null)));
+                                            }
+                                        }),
+                                    grid.Column(Resources.Delete, format:
+                                         (item) =>
+                                                  {
+                                                      if (lstPriv.Contains("Delete"))
+                                                      {
+                                                          if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                                          {
+                                                              return Html.Raw(Html.ActionLink(Resources.Delete, "FeeDelete", "Master", new { AFeeCode = item.FeeCode, AOrganizationCode = item.OrganizationCode, AIsDeleteCallFromSearchTab = true }, new { @class = "delete-link" }));
+                                                          }
+                                                          else
+                                                          {
+                                                              return Html.Raw("");
+                                                          }
+                                                      }
+                                                      else
+                                                      {
+                                                          return Html.Raw("");
+                                                      }
+                                         })
+                    ))
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

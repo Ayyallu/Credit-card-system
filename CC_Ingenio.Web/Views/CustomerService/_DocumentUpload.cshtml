@@ -1,0 +1,106 @@
+﻿@using CC_Ingenio_Resources;
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $.ajax({
+            url: '/CustomerService/UploadCustomerDocumentLoadGrid',
+            contentType: 'application/html;charset=utf-8',
+            type: 'GET',
+            cache: false,
+            datatype: 'html'
+        })
+        .success(function (result) {
+            $('#UploadDocDiv').html(result);
+        })
+        .error(function (xhr, status) {
+            alert(status);
+        })      
+
+    });
+    //------------------------works for all browsers -----------------
+    function successFunction() {       
+        $.ajax({
+            url: '/CustomerService/UploadCustomerDocumentLoadGrid',
+            contentType: 'application/html;charset=utf-8',
+            type: 'GET',
+            cache: false,
+            datatype: 'html'
+        })
+        .success(function (result) {           
+            $('#UploadDocDiv').html(result);
+            $("#my_file").replaceWith($("#my_file").clone()); // To reset the text            
+        })
+        .error(function (xhr, status) {
+            alert(status);
+        })
+
+       
+    }
+    function redirect() {
+        if ($.trim($('#my_file').val()).length) {
+            document.getElementById('frmDocUpload').target = 'my_iframe'; //'my_iframe' is the name of the iframe
+            var callback = function () {
+                if (successFunction)
+                    successFunction();
+                $('#my_iframe').unbind('load', callback);
+            };
+
+            $('#my_iframe').bind('load', callback);
+            $('#hfParam').val('id:1');
+
+            $('#frmDocUpload').submit();
+        }
+        else {
+            ShowSimpleModalDialog("@Resources.MsgPleaseSelectAFileToUpload", "");
+        }
+
+    }
+    //---------------------------------------------------------------------------
+    
+</script>
+
+
+    @using (Html.BeginForm("UploadCustDocument", "CustomerService", FormMethod.Post, new { id = "frmDocUpload", enctype = "multipart/form-data" }))
+    {  
+         <div class="row">
+            <div class=" BorderColumn" style="width: 98.6%">
+                <div class="CustomerColumnTitle">@Resources.UploadCustomerDocuments</div>
+                <div class="SearchBox">
+                    <div class="row">
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">@Resources.SelectFile</div>
+                                <div class="Field">
+                                    <input name="my_hidden" id="hfParam" type="hidden" />
+                                    <input name="my_files" id="my_file" type="file" />
+                                    <iframe id='my_iframe' name='my_iframe' src="" hidden="hidden"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="TwoColumn" style="padding-top: 5px">
+                            <div>
+                                <input id="UploadButton" name="UploadButton" class="Greenbutton" onclick="redirect();" type="button" value="@Resources.Upload" style="width: 30%">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+         <div id="UploadDocDiv">  
+        <!--Div to load partial view-->
+    </div>
+
+
+ 
+    }
+
+
+
+
+
+
+
+

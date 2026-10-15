@@ -1,0 +1,206 @@
+﻿@using CC_Ingenio.Web.ViewModel.CardBooking 
+@using System.Web.Script.Serialization;
+@using CC_Ingenio_Resources;
+@model PaymnetHolidaySearch
+@{    
+    var grid = new WebGrid(Model.SearchResults, canSort: false, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "CardNumber", ajaxUpdateContainerId: "container-body");
+   
+    grid.Pager(WebGridPagerModes.All);
+
+    List<SelectListItem> ProductList = new List<SelectListItem>();
+    foreach (var item in ViewBag.ProductList)
+    {
+        ProductList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    ProductList.RemoveAt(0);
+    ProductList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+ }
+
+
+
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.MT_PaymentHoliday, " ", Resources.Search });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+
+   
+    function setCalenderDates() {
+        
+        var fromDate = $('#FromDate').val();
+        var toDate = $('#ToDate').val();
+
+        if(toDate == "")
+        {
+            $("#ToDate").datepicker("setDate", fromDate);
+        }
+        
+        if(fromDate == "")
+        {
+            $("#FromDate").datepicker("setDate", toDate);
+        }
+
+        fromDate = $('#FromDate').val();
+        $('#ToDate').datepicker("option", "minDate", fromDate);
+
+    }
+
+
+    $(document).ready(function () {
+        
+        $('#FromDate').datepicker("option", "onSelect", setCalenderDates);
+        $('#ToDate').datepicker("option", "onSelect", setCalenderDates);
+        setCalenderDates();
+
+        var data =  @Html.Raw(new JavaScriptSerializer().Serialize(ViewData["SearchMode"]));
+        if (data == 'Default')
+        {
+            $("#FromDate").datepicker("setDate", "");
+            $("#ToDate").datepicker("setDate", "");
+        }      
+    });
+    
+</script>
+
+<section class="featured">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active"> @Html.ActionLink(Resources.SearchPageHeading,"PaymentHolidayList","CardBooking" )</li>
+            <li> @Html.ActionLink(Resources.DetailsPageHeading,"PaymentHolidayAdd","CardBooking" )</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("PaymentHolidayList", "CardBooking", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.CardNumber</div>
+                                    <div class="Field">
+                                        @Html.TextBoxFor(x => x.CardNumber, new { @class = "NumericOnly", id = "CardNumber", name = "CardNumber", maxlength = 16 })
+                                    </div>
+                                </div>
+          
+
+                                     <div class="TwoColumn">                                
+                                     <div class="label">@Resources.RUT</div>
+                                     <div class="Field">
+                                    @Html.TextBoxFor(x=>x.RUT,new { id = "RUT", name = "RUT"} )
+                         
+
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.FromDate</div>
+                                    <div class="Field">
+                                        @Html.TextBoxFor(x => x.FromDate, new { id = "FromDate", @class = "datepicker", @readonly = "true", Value = Model.FromDate.ToShortDateString() })
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.ToDate</div>
+                                    <div class="Field">
+                                        @Html.TextBoxFor(x => x.ToDate, new { id = "ToDate", @class = "datepicker", @readonly = "true", Value = Model.ToDate.ToShortDateString() })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                               
+                        <div class="row">
+                            <div class="SearchColumnbtn">
+                                <span>
+                                    <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                </span>
+                                <span>
+                                    <input id="ClearButton" name ="ClearButton" class="Greenbutton" type="submit" value="@Resources.Clear" />
+                                </span>
+                            </div>
+                        </div>                              
+                        <div class="clear"></div>
+                    
+
+                </div>
+                <div class="row">
+                   
+                   <div class="standard-table">
+
+                        @grid.GetHtml(alternatingRowStyle:"alt", columns:grid.Columns(
+                        grid.Column("CardNumber",Resources.CardNumber),
+                                    grid.Column("ProductName",Resources.ProductName),   
+                                    grid.Column("FromDate ",Resources.FromDate,format:@<text> @item.FromDate.ToShortDateString()</text>)  ,   
+                                    grid.Column("ToDate ",Resources.ToDate,format:@<text> @item.ToDate.ToShortDateString()</text>),  
+                                    grid.Column("ApprovalStatusDesc",Resources.Status),
+                        grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink(Resources.Edit, "PaymentHolidayAdd", "CardBooking", new { id = item.SlNo }, null))); 
+                                                }
+                                                else
+                                                {
+                                                    return Html.Raw(Html.ActionLink(Resources.View, "PaymentHolidayView", "CardBooking", new { id = item.SlNo }, null));
+                                                }
+                                            }),
+                                    grid.Column(Resources.Delete,   format: 
+                                        (item) =>
+                                                             {
+                                                                 if (lstPriv.Contains("Delete"))
+                                                                 {
+                                                                     if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                                                     {
+                                                                         return Html.Raw(Html.ActionLink(Resources.Delete, "PaymentHolidayDelete", "CardBooking", new { id = item.SlNo }, new { @class = "delete-link" }));
+                                                                     }
+                                                                     else
+                                                                     {
+                                                                         return Html.Raw("");
+                                                                     }
+                                                                 }
+                                                                 else
+                                                                 {
+                                                                     return Html.Raw("");
+                                                                 }
+                                            })                                   
+                                ))              
+
+                    </div>
+
+               
+                </div>
+                    }
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+<script>
+    $(function () {
+        setCalenderDates();
+    })
+</script>

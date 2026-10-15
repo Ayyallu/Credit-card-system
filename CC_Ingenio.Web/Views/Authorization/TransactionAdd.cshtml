@@ -1,0 +1,345 @@
+﻿@using CC_Ingenio_Resources;
+@{
+    ViewBag.Title = "   ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    function getRandomInt(min, max) {
+        // Create byte array and fill with 1 random number
+        var byteArray = new Uint8Array(1);
+        window.crypto.getRandomValues(byteArray);
+
+        var range = max - min + 1;
+        var max_range = 256;
+        if (byteArray[0] >= Math.floor(max_range / range) * range)
+            return getRandomInt(min, max);
+        return min + (byteArray[0] % range);
+    }
+    $(function ()
+    {
+      //  $("#AccountNo").attr("disabled", "true").css("background-color", 'lightgrey');
+       
+        $("#CardNo").blur(function ()
+        {
+            
+            if ($("#CardNo").val() != null && $("#CardNo").val() != "" && $.isNumeric($("#CardNo").val()) ) {
+                
+                $("#AccountNo").val(getRandomInt(1,255)*102323);
+                $("#TransactionNo").val(getRandomInt(1, 255) * 1023234);
+
+            }
+        });
+        $lstMerchant = $('select[id*="MerchantCode"]');
+        $lstMCC = $('select[id*="MCCCode"]');
+
+        $lstMerchant.change(function () {
+         
+            if ($lstMerchant.val() == "MER001") {
+               // $lstMCC.find('option[value=""]').remove();
+               // $lstMCC.find('option[value="MCC002"]').remove();
+              //  $lstMCC.find('option[value="MCC003"]').remove();
+                if ($lstMCC.find('option[value="MCC001"]')==false)
+                {
+                    $('#MCCCode').
+                   append($("<option></option>").
+                   attr("value", "MCC001").
+                   text("Merchant Category 001"));
+                }
+                
+             
+            }
+            else if ($lstMerchant.val() == "MER002") {
+
+                
+               // $lstMCC.find('option[value="MCC001"]').remove();
+                //alert($lstMCC.find('option[value="MCC002"]').val());
+                if ($lstMCC.find('option[value=""]').val() == null) {
+                  
+                    $('#MCCCode').
+                       append($("<option></option>").
+                       attr("value", "").
+                       text("Select"));
+                }
+                if ($lstMCC.find('option[value="MCC002"]').val() == null) {
+                    $('#MCCCode').
+                        append($("<option></option>").
+                        attr("value", "MCC002").
+                        text("Merchant Category 002"));
+                }
+                if ($lstMCC.find('option[value="MCC003"]').val() == null) {
+                    $('#MCCCode').
+                        append($("<option></option>").
+                        attr("value", "MCC003").
+                        text("Merchant Category 003"));
+                }
+
+            }
+            else {
+                if ($lstMCC.find('option[value=""]').val() == null) {
+                    $('#MCCCode').
+                       append($("<option></option>").
+                       attr("value", "").
+                       text("Select"));
+                }
+                if ($lstMCC.find('option[value="MCC001"]').val() == null) {
+                    $('#MCCCode').
+                        append($("<option></option>").
+                        attr("value", "MCC001").
+                        text("Merchant Category 001"));
+                }
+                if ($lstMCC.find('option[value="MCC002"]').val() == null) {
+                    $('#MCCCode').
+                        append($("<option></option>").
+                        attr("value", "MCC002").
+                        text("Merchant Category 002"));
+                }
+                if ($lstMCC.find('option[value="MCC003"]').val() == null) {
+                    $('#MCCCode').
+                        append($("<option></option>").
+                        attr("value", "MCC003").
+                        text("Merchant Category 003"));
+                }
+                
+            }
+        });
+    }
+    )
+
+</script>
+
+@using System.Web.Script.Serialization;
+@using CC_Ingenio.Common.Utils;
+@model Transaction
+@{
+    List<SelectListItem> AuthCodeItems = new List<SelectListItem>();
+    
+    foreach (var itm in ViewBag.AuthCodeList)
+    {
+        AuthCodeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    List<SelectListItem> SegmentCodeItems = new List<SelectListItem>();
+    
+    foreach (var itm in ViewBag.SegmentCodeList)
+    {
+        SegmentCodeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    List<SelectListItem> ResponseCodeItems = new List<SelectListItem>();
+    
+    foreach (var itm in ViewBag.ResponseCodeList)
+    {
+        ResponseCodeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    List<SelectListItem> MerchantCodeItems = new List<SelectListItem>();
+    MerchantCodeItems.Add(new SelectListItem { Text = Resources.SelectOne, Value = String.Empty });
+    foreach (var itm in ViewBag.MerchantCodeList)
+    {
+        MerchantCodeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> MCCCodeItems = new List<SelectListItem>();
+    MCCCodeItems.Add(new SelectListItem { Text = Resources.SelectOne, Value = String.Empty });
+    foreach (var itm in ViewBag.MCCodeList)
+    {
+        MCCCodeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+ }
+
+
+
+<script type="text/javascript">
+$(function () {
+    $("#Add").click(function (e) {
+     
+        e.preventDefault();
+        $("#dialog").dialog({
+            resizable: false,
+            height: 160,
+            modal: true,
+            title: '@Resources.ApplicationName',
+            buttons: {
+                "Yes": function () {
+
+                    $("#dialog").dialog("close");
+
+                    $("#frmAdd").submit();
+                    
+                },
+                "No": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+        $("#dialog").text("@Html.Raw(string.Format(Resources.MsgConfSave))");
+
+        $("#dialog").dialog("open");
+
+    });
+});
+</script>
+
+
+
+
+@*<script type="text/javascript">
+    var authCodeDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(AuthCodeItems))
+        
+    function Submit()
+    {
+        var transactions = { "ACNo": "", "CardNo": "", "TxnDate": "", "Amount": "", "ResponseCode": "", "AuthCode": "" };
+        alert("hai")
+        var transactionlist = { "Transactions": [] }
+
+        transactions.ACNo = $("#AccountNo").val();
+        transactions.CardNo = $("#CardNo").val();
+        transactions.TxnDate = $("#TxnDate").val();
+        transactions.Amount = $("#Amount").val();
+        transactions.ResponseCode = $("#ResponseCode").val();
+        transactions.AuthCode = $("#AuthCode").val();
+        
+        transactionlist.Transactions.push(transactions);
+
+        var transactions = { "ACNo": "", "CardNo": "", "TxnDate": "", "Amount": "", "ResponseCode": "", "AuthCode": "" };
+        
+        $.ajax({
+            url: '/Authorization/Submit',
+            data: JSON.stringify(transactionlist),
+            type: 'POST',
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (result) {
+
+                if (result.Success == "1") {
+                    window.location.href = "/Authorization/TransactionAdd";
+                }
+                else {
+                    alert(result.ex);
+                }
+            }
+        });
+
+    }
+
+</script>*@
+
+
+<section class="featured">
+     <div class="PageTitle">@ViewBag.Title</div>
+     <div class="PageRow">
+
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                
+               @using (Html.BeginForm("Submit", "Authorization", FormMethod.Post, new { id = "frmAdd", name = "frmAdd" }))
+                {
+                <div class="tab-content" id="tab1">
+
+                    <div class="row">
+                            
+                        <fieldset class="double">
+                            <legend></legend>
+                            <div class="row">
+                                <div class="label">@Resources.CardNumber</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CardNo, new { id = "CardNo", name = "CardNo", maxlength = 16 })
+                                     @Html.ValidationMessageFor(x => x.CardNo)
+                                </div>
+                            </div>    
+                            <div class="row">
+                                <div class="label">@Resources.TransactionDate</div>
+                                <div class="Field">
+                                  @Html.TextBoxFor(x => x.TxnDate, new { id="txnDate1", @class = "datepicker", @readonly = "true",Value = Model.TxnDate.ToShortDateString()})
+                                    @* @Html.TextBoxFor(x => x.TxnDate,  "{0:dd/MM/yyyy}", new { id="txnDate1", @readonly = "true"})*@
+                                   @Html.ValidationMessageFor(x => x.TxnDate)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">@Resources.Amount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Amount, new { id = "Amount", name = "Amount" })
+                                    @Html.ValidationMessageFor(x => x.Amount)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">@Resources.AuthCode</div>
+                                   <div class="Field">
+                                    @Html.DropDownListFor(x => x.AuthCode, AuthCodeItems.AsEnumerable(), new { id = "AuthCode", name = "AuthCode" })
+                                    @Html.ValidationMessageFor(x => x.AuthCode)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">@Resources.SegmentCode</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.SegmentCode, SegmentCodeItems.AsEnumerable(), new { id = "SegmentCode", name = "SegmentCode" })
+                                    @Html.ValidationMessageFor(x => x.SegmentCode)
+                                </div>
+                            </div>       
+                                                        
+                             <div  class="row" visible ="false">
+                                <div class="label">@Resources.TransactionNo</div>
+                                <div class="Field">
+                                   @Html.TextBoxFor(x => x.TransactionNo, new { id = "TransactionNo", name = "TransactionNo",style="background-color: lightgrey" })
+                                   @*// @Html.ValidationMessageFor(x => x.TransactionNo)*@
+                                </div>
+                            </div>      
+                                              
+                        </fieldset>
+                        
+                        <fieldset class="double">
+                            <legend></legend>
+                            <div class="row">
+                                <div class="label">@Resources.AccountNumber</div>
+                                <div class="Field" >
+                                    @Html.TextBoxFor(x => x.AccountNo, new { id = "AccountNo", name = "AccountNo",style="background-color: lightgrey" })
+                                  @*  @Html.ValidationMessageFor(x => x.AccountNo)*@
+                                </div>
+                            </div>    
+                            <div class="row">
+                                <div class="label">@Resources.TransactionTime</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TxnTime, new { id = "TxnTime", name = "TxnTime", placeholder="hh:mm:ss" })
+                                    @Html.ValidationMessageFor(x => x.TxnTime)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">@Resources.ResponseCode</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.ResponseCode, ResponseCodeItems.AsEnumerable(), new { id = "ResponseCode", name = "ResponseCode" })
+                                    @Html.ValidationMessageFor(x => x.ResponseCode)
+                                </div>
+                            </div>        
+                            <div class="row">
+                                <div class="label">@Resources.MerchantCode</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.MerchantCode, MerchantCodeItems.AsEnumerable(), new { id = "MerchantCode", name = "MerchantCode" })
+                                    @Html.ValidationMessageFor(x => x.MerchantCode)
+                                </div>
+                            </div>       
+                             <div class="row">
+                                <div class="label">@Resources.MCCCode</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.MCCCode, MCCCodeItems.AsEnumerable(), new { id = "MCCCode", name = "MCCCode" })
+                                    @Html.ValidationMessageFor(x => x.MCCCode)
+                                </div>
+                            </div>         
+                        </fieldset>
+
+
+                        <div class="rowbtn">
+                            <span>
+                                
+                                <input id="Add" class="Greenbutton" name="Command" value="Submit"   type="@Resources.Submit"/></span>
+                            <span>
+                                <input id="Cancel" class="Greenbutton" type="reset" value="@Resources.Cancel" /></span>
+                        </div> 
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>

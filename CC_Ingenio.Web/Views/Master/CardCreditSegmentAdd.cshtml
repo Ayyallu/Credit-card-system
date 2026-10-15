@@ -1,0 +1,296 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@model CardCreditSegmentDTO
+@{
+    List<SelectListItem> OrganizationCodeList = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+
+    foreach (var itm in ViewBag.OrganizationCodeList)
+    {
+        OrganizationCodeList.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> ProductCodeList = new List<SelectListItem>();
+
+    foreach (var itm in ViewBag.ProductCodeList)
+    {
+        ProductCodeList.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> CustomerSegmentCodeList = new List<SelectListItem>();
+
+
+    foreach (var itm in ViewBag.CustomerSegmentCodeList)
+    {
+        CustomerSegmentCodeList.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> CustomerSubSegmentCodeList = new List<SelectListItem>();
+
+    foreach (var itm in ViewBag.CustomerSubSegmentCodeList)
+    {
+        CustomerSubSegmentCodeList.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    List<SelectListItem> CreditSegmentList = new List<SelectListItem>();
+
+    foreach (var itm in ViewBag.CreditSegmentList)
+    {
+        CreditSegmentList.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+    
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+    
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.CardCreditSegment });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/PopUpStyle.css" rel="stylesheet" />
+    <script src="~/Scripts/PopUpScript.js"></script>  
+<script>
+    
+    $("div.close").hover(
+					function () {
+					    $('span.ecs_tooltip').show();
+					},
+					function () {
+					    $('span.ecs_tooltip').hide();
+					}
+				);
+
+    $("div.close").click(function () {
+        disablePopup();  // function close pop up
+    });
+
+    $(this).keyup(function (event) {
+        if (event.which == 27) { // 27 is 'Ecs' in the keyboard
+            disablePopup();  // function close pop up
+        }
+    });
+
+
+    /************** start: functions. **************/
+    function loading() {
+        $("div.loader").show();
+    }
+    function closeloading() {
+        $("div.loader").fadeOut('normal');
+    }
+
+    var popupStatus = 0; // set value
+
+    function loadPopup() {
+        if (popupStatus == 0) { // if value is 0, show popup
+            closeloading(); // fadeout loading
+            $("#divPopup").fadeIn(0500); // fadein popup div
+            $("#backgroundPopup").css("opacity", "0.7"); // css opacity, supports IE7, IE8
+            $("#backgroundPopup").fadeIn(0001);
+            popupStatus = 1; // and set value to 1
+        }
+    }
+
+    function disablePopup() {
+        if (popupStatus == 1) { // if value is 1, close popup
+            $("#divPopup").fadeOut("normal");
+            $("#backgroundPopup").fadeOut("normal");
+            popupStatus = 0;  // and set value to 0
+        }
+    }
+
+    $(document).ready(function () {
+       @* alert('@ViewData["FormStatus"]')*@
+
+
+        $('#zoomButton').click(function (event) {
+
+            //event.preventDefault();
+            var RUT = $('#RUT').val();
+
+            RUT = RUT.replace("-", "");
+            RUT = "";
+            var CardNumber = $('#CardNumber').val();
+            CardNumber = "";
+            $.ajax({
+                url: '/Master/RUTCardNumberSearchList/',
+                type: 'GET',
+                data: { ARUT: RUT, ACardnumber: CardNumber, ACustomername: "", Isloading: false },
+                dataType: 'html',
+                success: function (data) {
+                    if (data.length > 0) {
+                        $('#RUTCardNumberSearchDiv').html(data);
+                    }
+                }
+            });
+            loading(); // loading
+            setTimeout(function () { // then show popup, deley in .5 second
+                loadPopup(); // function show popup
+            }, 500); // .5 second
+        });
+        
+
+    });
+</script>
+    
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"CardCreditSegmentList","Master" )</li>
+            }
+            <li class="active"><a href="#tab1">@Resources.DetailsPageHeading</a></li>
+        </ul>
+
+         @*@Html.Partial("~/Views/Shared/_RUTCardNumberSearchList.cshtml",new List<RUTCardNumberSearchDTO>())*@
+        <div id="RUTCardNumberSearchDiv">
+       
+    </div>
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                  @using (Html.BeginForm("CardCreditSegmentSave", "Master", new { ACardNumber = Model.CardNumber, ACreditSegmentCode = Model.CreditSegmentCode }, FormMethod.Post, new { id = "frmcardCreditSegment" }))
+                  {
+                <div class="tab-content" id="tab1">
+                     <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text> 
+                            }
+                        </span>
+                    </div>                  
+                    <div class="row">
+                         <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.RUT</div>
+                                <div class="Field">                                    
+                                    @Html.TextBoxFor(x => x.RUT, new { id = "RUT", name = "RUT", maxlength = 9, @class = "AlphaNumericOnly zoombtn", @readonly = "readonly"})
+                                    <input type="button" id="zoomButton" class="searchbutton" style="width:8%; border: none" />
+                                    @Html.ValidationMessageFor(x => x.RUT)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.CardNumber</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CardNumber, new { id = "CardNumber", name = "CardNumber", maxlength = 16, @class = "NumericOnly", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(x => x.CardNumber)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Organization</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.OrganizationCode, OrganizationCodeList.AsEnumerable(), new { id="OrganizationCode",name="OrganizationCode"})
+                                    @Html.ValidationMessageFor(x => x.OrganizationCode)
+                                     @Html.HiddenFor(x => x.OrganizationCode, new { id="hidOrganizationCode",name="hidOrganizationCode"})
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Product</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.ProductCode, ProductCodeList.AsEnumerable(), new { id="ProductCode",name="ProductCode",@disabled = "disabled" })
+                                    @Html.ValidationMessageFor(x => x.ProductCode)
+                                     @Html.HiddenFor(x => x.ProductCode, new { id="hidProductCode",name="hidProductCode"})
+                                </div>
+                            </div>                            
+                        </div>
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.CustomerSegment</div>
+                                <div class="Field">
+                                   @Html.DropDownListFor(x => x.CustomerSegmentCode, CustomerSegmentCodeList.AsEnumerable(), new { id="CustomerSegmentCode",name="CustomerSegmentCode",@disabled = "disabled" })
+                                   @Html.ValidationMessageFor(x => x.CustomerSegmentCode)
+                                   @Html.HiddenFor(x => x.CustomerSegmentCode, new { id="hidCustomerSegmentCode",name="hidCustomerSegmentCode"})
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.CustomerSubSegment</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.CustomerSubSegmentCode, CustomerSubSegmentCodeList.AsEnumerable(), new { id="CustomerSubSegmentCode",name="CustomerSubSegmentCode",@disabled = "disabled" })
+                                    @Html.ValidationMessageFor(x => x.CustomerSubSegmentCode)
+                                    @Html.HiddenFor(x => x.CustomerSubSegmentCode, new { id="hidCustomerSubSegmentCode",name="hidCustomerSubSegmentCode"})
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.CreditSegment</div>
+                                <div class="Field">
+                                   @Html.DropDownListFor(x => x.CreditSegmentCode, CreditSegmentList.AsEnumerable())
+                                    @Html.ValidationMessageFor(x => x.CreditSegmentCode)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.CreditValue</div>
+                                <div class="Field">
+                                   @Html.TextBoxFor(x => x.CreditValue, "{0:N2}", new { id = "CreditValue", name = "CreditValue", maxlength = 9, @class = "NumericOnly Number", @style = "text-align:right" })
+                                    @Html.ValidationMessageFor(x => x.CreditValue)
+                                </div>
+                            </div>                           
+                        </div>
+                        <div class="row">
+                             <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.OTB</div>
+                                <div class="Field">
+                                   @Html.TextBoxFor(x => x.OTB, "{0:N2}", new { id = "OTB", name = "OTB", maxlength = 9, @readonly = "readonly", @style = "text-align:right" })
+                                    @Html.ValidationMessageFor(x => x.OTB)
+                                </div>
+                            </div>
+                             <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.Paid</div>
+                                <div class="Field">
+                                   @Html.TextBoxFor(x => x.Paid, "{0:N2}", new { id = "Paid", name = "Paid", maxlength = 9, @readonly = "readonly", @style = "text-align:right" })
+                                    @Html.ValidationMessageFor(x => x.Paid)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.ValidFrom</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ValidFrom, new {@class ="datepicker", @readonly="true", Value = Model.ValidFrom.ToShortDateString() })
+                                    @Html.ValidationMessageFor(x => x.ValidFrom)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.ValidTo</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ValidTo, new {@class ="datepicker", @readonly="true", Value = Model.ValidTo.ToShortDateString() })
+                                    @Html.ValidationMessageFor(x => x.ValidTo)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">&nbsp;</div>
+                                <div class="Field">&nbsp;</div>
+                            </div>
+                        </div>
+                    </div>
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+                    </div>
+                  }
+            </div>
+    </div>
+    
+   
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>

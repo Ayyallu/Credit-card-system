@@ -1,0 +1,126 @@
+﻿@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = Resources.GeneratedStatementSearch;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using CC_Ingenio.Web.ViewModel.Billing
+@model GeneratedStatementSearch
+@{     
+
+    var grid = new WebGrid(Model.SearchResults, canSort: false, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "", ajaxUpdateContainerId: "container-body");
+   
+    grid.Pager(WebGridPagerModes.All);
+
+
+    List<SelectListItem> MonthItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Month)
+    {
+        MonthItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> YearItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Year)
+    {
+        YearItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+    
+    }
+
+<section class="featured">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+    
+    <div class="PageRow">
+
+        
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">   
+                    @using (Html.BeginForm("GeneratedStatementSearchList", "Billing", FormMethod.Get))   
+                    {      
+                        
+                        <div class="SearchBox">
+                            <div class="row">
+
+
+                                <div class="row">
+                                     <div class="TwoColumn">
+                                        <div class="label">@Resources.CardNumber</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.CardNumber, new { name = "CardNumber", id = "CardNumber", maxlength = 16 })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.RUT</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.RUT, new { name = "RUT", id = "RUT", @class="NumberHyphen", maxlength = 10 })
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                          <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.BillMonth</div>
+                                 <div class="Field">
+                                     <span>@Html.DropDownListFor(x => x.BillMonth, MonthItems.AsEnumerable(), new {id="BillMonth", @class = "inline", style="width:30%"})</span>
+                                     <span><label class="inline" style="font-size:100%; padding:6% 6% 0% 4%"> @Resources.BillYear </label></span>
+                                     <span>@Html.DropDownListFor(x => x.BillYear, YearItems.AsEnumerable(), new {id ="BillYear", @class = "inline", style="width:30%; float:right"})</span>
+                                    @*<span class="Field">
+                                        @Html.ValidationMessageFor(x => x.BillMonth,string.Empty, new { style="font-size:1.2em"})
+                                        @Html.ValidationMessageFor(x => x.BillYear,string.Empty, new { style="font-size:1.2em"})
+                                    </span>*@
+                                     <label id="SearchFilter_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                        </div>
+                                <div class="row">
+                                    <div class="SearchColumnbtn">
+                                        <span>
+                                            <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                        </span>
+                                        <span>
+                                            <input id="ClearButton" type="submit" name="ClearButton" class="Greenbutton" value="@Resources.Clear" />
+                                        </span>
+                                    </div>  
+                                </div>                              
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                                                     
+                    }
+                </div>
+                <div class="row">
+                   
+                     <div class="standard-table">
+                        @grid.GetHtml(alternatingRowStyle: "alt", columns:grid.Columns(
+                            grid.Column("CustomerCardName", Resources.CustomerName),            
+                            grid.Column("CardNumber", Resources.CardNumber,format: @<text><label id="CardNumber" style="font-size: .95em;font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.CardNumber</label> </text>) ,                       
+                            grid.Column("RUT", Resources.RUT),     
+                            grid.Column("BillDate", Resources.BillDate, format: @<text> @item.BillDate.ToShortDateString()</text>),
+                            grid.Column("Outstanding Balance", Resources.ClosingRevBalance, format: @<text>@string.Format("{0:N0}", item.ClosingRevolvingBalance)</text>, style: "gridAmountRightAlign"),
+                            grid.Column("PaymentDueDate", Resources.PaymentDueDate, format: @<text> @item.PaymentDueDate.ToShortDateString()</text>),
+                            grid.Column(Resources.View, format: 
+                            (item) =>
+                                {
+                                    return Html.Raw(Html.ActionLink(Resources.View, "ViewAttachment", "Billing", new { AFileName = item.StatementFileName, AType = "pdf", ABillMonth = item.BillMonth, ABillYear = item.BillYear }, new { @style ="color:blue", target = "_blank" }));
+                                })
+                         ))
+ 
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+

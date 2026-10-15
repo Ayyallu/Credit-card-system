@@ -1,0 +1,110 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@model NotepadEntryDTO  
+@{
+    List<SelectListItem> notepadMessageTypeList = new List<SelectListItem>();
+    foreach (var item in ViewBag.NotepadMessageType)
+    {
+        notepadMessageTypeList.Add(new SelectListItem() {
+            Text = item.Text,
+            Value = item.Value 
+        });
+    }
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+<script type="text/javascript">
+    $(document).ready(function ()
+    {
+
+        $('#Save').click(function (e) {
+            e.preventDefault();
+       
+            $.ajax({
+                url: '/CustomerService/SaveNotepadEntry/',
+                type:'POST',
+                data: $('#frmNotepadEntry').serialize(),
+                cache:false,
+                success: function (data) {
+                    @*//alert('@Model.IsSaved')*@
+                    if (data != 'Undefined')
+                    {
+                        $('#partialViewDiv').html(data);
+                        @*//alert('@Model.IsSaved')*@
+                    }
+                }
+            });
+            
+        });
+
+        if ('@Model.IsSaved' == 'True') { 
+            ShowSimpleModalDialog("@Html.Raw(string.Format(Resources.MsgInfoSaveSuccess,Resources.Message))", "");
+        }
+
+        $('#MessageType').focusin(function () {
+            
+            $('#Validation_MessageType').text('');
+        });
+        $('#MessageDescription').focusin(function () {
+
+            $('#Validation_MessageDescription').text('');
+        });
+
+        //$('#Reset').click(function () {
+            
+        //    $('#MessageType').val('');
+        //    $('#MessageDescription').val('');
+        //});
+
+        $('input[id="New"]').hide();
+        $('input[id="Submit"]').hide();
+        $('input[id="Delete"]').hide();
+       
+        if ($('#Save').length) { $('#Save').css({ 'width': '10%' }); }
+        if ($('#Reset').length) { $('#Reset').css({ 'width': '10%' }); }
+    });
+</script>
+<div class="row" style="width: 98.6%">
+        <div class="BorderColumn">
+            <div class="CustomerColumnTitle">@Resources.NotepadEntry</div>
+            @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmNotepadEntry", Name = "frmNotepadEntry", @style = "height: 200px;"  }))
+            {
+            <div class="row"  style="width:auto"> 
+                     <div class="row">
+                        <div class="TwoColumn">
+                            <div class="label">@Resources.MessageType</div>
+                            <div class="Field">
+                                @Html.DropDownListFor(x => x.MessageType, notepadMessageTypeList, new { id="MessageType", @class="entryControls"})
+                                @Html.ValidationMessageFor(x => x.MessageType, "", new { id="Validation_MessageType" })
+                            </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="TwoColumn">
+                            <div class="label">@Resources.Message</div>
+                            <div class="Field">
+                                @Html.TextAreaFor(x => x.MessageDescription, new { id="MessageDescription", @class="entryControls", maxlength = 500})
+                                @Html.ValidationMessageFor(x => x.MessageDescription, "", new { id="Validation_MessageDescription" })
+                            </div>
+                        </div>
+                     </div>
+                    <div>
+                        @Html.HiddenFor(x => x.CardNumber)
+                        @Html.HiddenFor(x => x.CustomerId)
+                    </div>
+                    <div style="width:60%;float:left">@Html.Raw(Html.BasicButtons(lstPriv))  </div>
+                </div>
+            }
+        </div>
+
+    </div>
+
+

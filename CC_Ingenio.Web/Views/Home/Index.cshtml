@@ -1,0 +1,107 @@
+﻿@{
+    ViewBag.Title = "Contacts";
+    
+} 
+
+@using PagedList
+@using PagedList.Mvc
+@using CC_Ingenio.DataTranfer.ContactInfo
+@model IQueryable<ContactDTO>
+
+
+@section featured {
+    }
+    <section class="featured">
+         <div class="PageTitle">Add Page Title</div>
+    <div class="row">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active"><a href="#tab1">Details</a></li>
+            <li><a href="#tab2">Search</a></li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <a href="#" onclick="ShowAuthorizationDiv(1);" >Click me</a>
+                <div class="row">
+                    <fieldset class="double">
+                        <legend></legend>
+                        <div class="row">
+                            <div class="label">Label 1</div>
+                            <div class="Field">
+                                <select id="Select3">
+                                    <option>03145</option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="label">Label 2</div>
+                            <div class="Field">
+                                <select id="Select2">
+                                    <option>021</option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="label">Label 4</div>
+                            <div class="Field">
+                                <select id="Select4">
+                                    <option>325</option>
+
+                                </select>
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+                    <fieldset class="double">
+                        <legend></legend>
+                        <div class="row">
+                            <div class="label">Label 5</div>
+                            <div class="Field">
+                                <select id="Select5">
+                                    <option>084</option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="label">Label 6</div>
+                            <div class="Field">
+                                <select id="Select6">
+                                    <option>10/09/2014</option>
+
+                                </select>
+                            </div>
+                        </div>
+
+
+                    </fieldset>
+
+                    <div class="rowbtn">
+                        <span>
+
+                            <input id="Button1" type="button" class="Greenbutton" value="Add" /></span>
+                        <span>
+                            <input id="Button2" type="button" class="Greenbutton" value="Save" /></span>
+                        <span>
+                            <input id="Button3" type="button" class="Greenbutton" value="Delete" /></span>
+                        <span>
+                            <input id="Button4" type="button" class="Greenbutton" value="Authorize" /></span>
+                        <span>
+                            <input id="Button5" type="button" class="Greenbutton" value="Cancel" /></span>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+    </section>
+

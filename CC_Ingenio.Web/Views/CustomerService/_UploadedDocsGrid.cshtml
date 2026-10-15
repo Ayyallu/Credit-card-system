@@ -1,0 +1,33 @@
+﻿@using CC_Ingenio_Resources;
+@using CC_Ingenio.DataTranfer.CustomerServiceInfo
+@model List<UploadDocumentDTO> 
+
+@{
+    var uploadedDocsGrid = new WebGrid(Model, canPage: true, rowsPerPage: 10, ajaxUpdateContainerId: "container-body");
+    uploadedDocsGrid.Pager(WebGridPagerModes.All);
+}
+
+
+            <div class="row">
+    <div class=" BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.UploadedDocumentsList</div>
+        <div style="width: 100%; overflow: scroll">
+            <div class="standard-table">
+                @uploadedDocsGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+             alternatingRowStyle: "alt",
+             columns: uploadedDocsGrid.Columns(
+                    uploadedDocsGrid.Column("DocumentName", Resources.DocumentName),
+                    uploadedDocsGrid.Column("UploadDate", Resources.UploadedOn),
+                    uploadedDocsGrid.Column("UploadedBy", Resources.UploadedBy),
+                    uploadedDocsGrid.Column(Resources.View, format:
+                         (item) =>
+                         {
+                             return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "ViewDocument", "CustomerService", new { AFileName = item.DocumentName }, null)));
+                         })
+
+                ))
+            </div>
+        </div>
+    </div>
+
+</div>

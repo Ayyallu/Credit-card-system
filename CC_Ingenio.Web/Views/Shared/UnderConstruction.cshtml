@@ -1,0 +1,19 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    ViewBag.Title = "Error";
+    if ((CC_Ingenio.Common.Utils.SessionErrorType)ViewBag.ErrorType == CC_Ingenio.Common.Utils.SessionErrorType.UnAuthorized)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    if ((CC_Ingenio.Common.Utils.SessionErrorType)ViewBag.ErrorType == CC_Ingenio.Common.Utils.SessionErrorType.SessionEnded)
+    {
+        Layout = "~/Views/Shared/_LayoutSimple.cshtml";
+    }
+}
+
+@if ((CC_Ingenio.Common.Utils.SessionErrorType)ViewBag.ErrorType == CC_Ingenio.Common.Utils.SessionErrorType.UnAuthorized)
+{
+    <label class="warningMessage" style="height:25em">@ViewBag.ErrorMessage</label>
+}
+

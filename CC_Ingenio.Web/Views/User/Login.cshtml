@@ -1,0 +1,72 @@
+﻿@{
+    ViewBag.Title = Resources.Login;
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+@using CC_Ingenio_Resources;
+@model CC_Ingenio.Web.ViewModel.User.Login
+@{
+    List<SelectListItem> OrganizationList = new List<SelectListItem>();
+    foreach (var item in ViewBag.OrganizationList)
+    {
+        OrganizationList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    
+    }
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#Username').focus();
+    });
+
+</script>
+
+<style>
+    input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+}
+
+</style>
+
+<div id="loginBg">
+    <div class="loginArea"> <h2>@ViewBag.Title</h2>
+        @if (ViewBag.ErrorMessage != null)
+        {                    
+            <p style="color:#a10e5f;"> @ViewBag.ErrorMessage </p>    
+        }
+       
+
+        @using (Html.BeginForm("Validate", "User", FormMethod.Post, new { id = "frmLogin", name = "frmLogin" }))
+        {
+            <div >
+                @Html.AntiForgeryToken()
+                @Html.LabelFor(x => x.Username, new { @class = "labelLogin" })
+            </div>
+   
+            <div>
+                @Html.TextBoxFor(x => x.Username, new { id = "Username" })
+                @Html.ValidationMessageFor(x => x.Username)
+            </div>
+            
+            @Html.LabelFor(x => x.Password, new { @class = "labelLogin" })
+            @Html.PasswordFor(x => x.Password)
+            @Html.ValidationMessageFor(x => x.Password)
+
+            <div>
+                @Html.LabelFor(x => x.OrganizationCode, new { @class = "labelLogin" })
+            </div>
+            
+            <div class ="row" >
+                @Html.DropDownListFor(x => x.OrganizationCode, OrganizationList, new { id = "OrganizationCode", @class= "DropdownLogin" })
+            </div>
+            @Html.ValidationMessageFor(x => x.OrganizationCode)
+            
+            <div class ="row">
+                <input id="Login" name="Command" value="@Resources.Login" class="Greenbutton" type="submit" />
+            </div>
+
+            @Html.ValidationSummary(true);
+        }
+    </div>
+</div>

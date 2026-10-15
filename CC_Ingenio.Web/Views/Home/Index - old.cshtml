@@ -1,0 +1,89 @@
+﻿@{
+    ViewBag.Title = "Contacts";
+    
+}
+
+@using PagedList
+@using PagedList.Mvc
+@model IPagedList<Contact.Models.Contact>
+@{
+    var grid = new WebGrid(Model, canPage: false, rowsPerPage: 2, selectionFieldName: "ContactId", ajaxUpdateContainerId: "container-body");
+        
+        
+    }
+
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper"   >
+            <hgroup class="title">
+                <h1>@ViewBag.Title.</h1>
+                
+            </hgroup>
+            <div>
+                <div>
+                    @Html.ActionLink("Add New", "Add");
+                </div>
+                <div>
+                    
+                    @grid.GetHtml(columns:grid.Columns(
+                                    grid.Column("FirstName","First Name"),
+                                    grid.Column("LastName", " Last Name"),
+                                    grid.Column("MobileNo", "Mobile No"),
+                                    grid.Column("Edit", format:@<text> @Html.ActionLink("Edit", "Add","Home", new {item.ContactId},null)</text>),
+                                    grid.Column("Delete", format:@<text> @Html.ActionLink("Delete", "Delete","Home", new {item.ContactId},null)</text>))
+                    )
+                                
+                    @if (grid.HasSelection)
+                    {
+                        var ct = (Contact.Models.Contact)grid.Rows[grid.SelectedIndex].Value;
+                        <b>First Name </b> @ct.FirstName <br />
+                        <b>Last Name </b> @ct.LastName <br />
+                        <b>Mobile </b> @ct.MobileNo<br />
+                    
+                    }
+
+                   @* @foreach(var item in Model)
+                    {
+                        @Html.ActionLink(item.FirstName, "Add", "Home", new {item.ContactId},null);
+                        <text> &nbsp; &nbsp; &nbsp; </text>     
+                        @Html.DisplayFor(x => item.LastName);
+                        <text>&nbsp; &nbsp; &nbsp;</text>
+                        @Html.DisplayFor(x => item.MobileNo); 
+                        <div>
+                           Contact Address<br />
+                            @foreach(var add in item.Address)
+                            {
+                                @Html.DisplayFor(x => add.Line1);
+                                <text> &nbsp; &nbsp; &nbsp; </text>
+                                @Html.DisplayFor(x => add.Line2);
+                               
+                            }
+                            
+                           
+                        </div>
+                       <br />
+                    }*@
+                </div>
+                 <div id="my-pager" class="pagedList">
+        @Html.PagedListPager(Model, APage => Url.Action("Index", new { APage }), PagedListRenderOptions.Classic)
+    </div>  
+            </div>
+        </div>
+    </section>
+}
+<script type="text/javascript">
+    $(function() {
+        $('#my-pager').on('click', 'a', function () {
+        $.ajax({
+            url: this.href,
+            type: 'GET',
+            cache: false,
+            success: function(result) {
+                $('#container-body').html(result);
+            }
+        });
+        return false;
+    });
+});
+
+</script>

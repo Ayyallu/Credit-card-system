@@ -1,0 +1,27 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo
+@using CC_Ingenio_Resources;
+@model List<CardCreditSegmentDTO>
+@{
+    var cardCreditSegmentGrid = new WebGrid(Model, canPage: true, rowsPerPage: 5, ajaxUpdateContainerId: "container-body");
+    cardCreditSegmentGrid.Pager(WebGridPagerModes.All);
+}   
+<div class="row">
+    <div class=" BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.AvailableSegmentDetailsList</div>
+        <div style="width: 100%;" class="VerticalScrollBar">
+            <div class="standard-table">
+                @cardCreditSegmentGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+                 alternatingRowStyle: "alt",
+                 columns: cardCreditSegmentGrid.Columns(
+                    cardCreditSegmentGrid.Column("CreditsegmentName", Resources.CreditSegment),
+                    cardCreditSegmentGrid.Column("RUT", Resources.RUT),
+                    cardCreditSegmentGrid.Column("CreditValue", Resources.CreditLimit, format: (item) => string.Format("{0:N0}", item.CreditValue)),
+                    cardCreditSegmentGrid.Column("(CreditValue-OTB)", Resources.AmountUtilized, format: (item) => string.Format("{0:N0}", (Convert.ToDecimal(item.CreditValue) - item.OTB))),
+                    cardCreditSegmentGrid.Column("OTB", Resources.SegmentOTB, format: (item) => string.Format("{0:N0}", item.OTB)),
+                    cardCreditSegmentGrid.Column("ValidFrom", Resources.ValidFrom, format: (item) => item.ValidFrom.ToShortDateString()),
+                    cardCreditSegmentGrid.Column("ValidTo", Resources.ValidTo, format: (item) => item.ValidTo.ToShortDateString())
+                ))
+            </div>
+        </div>
+    </div> 
+</div>

@@ -1,0 +1,99 @@
+﻿@{
+    ViewBag.Title = "CardEmbossing";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section featured
+{
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#Search").click(function () {
+            var RUTNumber = document.getElementById("RUT").value + '-' + document.getElementById("CheckDegit").value;        
+            $.ajax({
+                type: 'POST',
+                url: '/Master/CheckIfValidCard',
+                data: { Id: RUTNumber },
+                success: function (returnData) {                 
+                    if (returnData.RedirectUrl.length > 0)
+                    {
+                        window.location.href = json.RedirectUrl;
+                    }
+                    else {
+                        if (returnData.Isvalid) {
+                            var RUTNumber = document.getElementById("RUT").value + '' + document.getElementById("CheckDegit").value;
+                         
+                            $.ajax({
+                                type: 'GET',
+                                url: '/CardBooking/CardEmbossingData',
+                                data: { ARUTNumber: RUTNumber },
+                                success: function (returnData) {                              
+                                 
+                                    if (returnData.RedirectUrl.length > 0) {
+                                        //ShowSimpleModalDialog(returnData.Message, "");
+                                        window.location.href = returnData.RedirectUrl;
+                                        return true;                                       
+                                    }
+                                    else if (returnData.CardNumber != '') {       
+                                        alert ("File Generated Successfully")
+                                        return true;
+                                    }
+                                }                                
+
+                            });
+                            return;
+                        }
+                            //    alert(returnData.CardNumber);
+                        else {
+                            alert("Invalid RUT")
+                        }
+                    }
+                    return false;
+                }
+            });
+
+        });
+    });
+
+</script>
+<section class="featured">
+    <div class="PageTitle">Card Embossing File Generation</div>
+    <div class="PageRow">
+
+        <div class="tabs-container">
+  
+                <div class="tab-content" id="tab1">
+                    <div class="row">
+                        <fieldset class="double">
+                            <legend></legend>
+
+                            <div class="row">
+                                <div class="label">RUT</div>
+                                <div class="Field">
+                                    @Html.TextBox("RUT")
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="label">Check Degit</div>
+                                <div class="Field">
+                                    @Html.TextBox("CheckDegit")
+                                </div>
+                            </div>
+                 
+
+                        </fieldset>
+                        <span>
+                            <input id="Search" name="" value="Submit" type="submit" class="Greenbutton" />
+                        </span>
+                    </div>
+                    <div class="row">
+                    </div>
+                </div>
+
+        </div>
+
+
+
+    </div>
+</section>

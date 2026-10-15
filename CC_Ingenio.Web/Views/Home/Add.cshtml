@@ -1,0 +1,77 @@
+﻿
+
+@{
+    ViewBag.Title = "Add";
+    
+
+    
+}
+@{Html.EnableClientValidation(true);}
+@{Html.EnableUnobtrusiveJavaScript(true);}
+@model CC_Ingenio.DataTranfer.ContactInfo.ContactDTO
+<section id="AddForm">
+    <h2>Add</h2>
+
+    @using (Html.BeginForm("Save","Home", new{ ContactId = Model.ContactId}, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+       <fieldset>
+            <legend></legend>
+            <ol>
+                <li>
+
+                    @Html.LabelFor(x => Model.FirstName)
+                    @Html.TextBoxFor(x => Model.FirstName)
+                    @Html.ValidationMessageFor(x => Model.FirstName)
+                </li>
+                <li>
+                    @Html.LabelFor(x => Model.LastName)
+                    @Html.TextBoxFor(x => Model.LastName)
+                    @Html.ValidationMessageFor(x => Model.LastName)
+                </li>
+                <li>
+                    @Html.LabelFor(x => Model.MobileNo)
+                    @Html.TextBoxFor(x => Model.MobileNo)
+                    @Html.ValidationMessageFor(x => Model.MobileNo)
+                </li>
+
+                <li>
+                    <div id="Itm">
+                        <ol>
+                            @if (Model != null)
+                            {
+                                foreach (var itm in Model.AddressDTO)
+                                {
+
+                                <li>
+
+                                    @Html.LabelFor(x => itm.Line1)
+                                    @Html.TextBoxFor(x => itm.Line1)
+                                    @Html.ValidationMessageFor(x => itm.Line1)
+                                </li>
+                                <li>
+                                    @Html.LabelFor(x => itm.Line2)
+                                    @Html.TextBoxFor(x => itm.Line2)
+                                    @Html.ValidationMessageFor(x => itm.Line2)
+                                </li>
+                
+
+                                }
+                            }
+                            else
+                            {
+                                <li>Add New
+                                </li>
+                            }
+                        </ol>
+                    </div>
+                </li>
+               
+            </ol>
+        </fieldset>
+        <input type="submit" value="Save" />
+
+    }
+</section>
+

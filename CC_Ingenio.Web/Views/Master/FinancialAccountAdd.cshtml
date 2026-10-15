@@ -1,0 +1,235 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.MT_FINANCIAL_ACCOUNT });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model FinancialAccountDTO
+@{
+    List<SelectListItem> ProductItems = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+
+    foreach (var itm in ViewBag.ProductList)
+    {
+        ProductItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    ProductItems.Add(new SelectListItem { Text = "ALL", Value = "ALL" });
+
+    List<SelectListItem> BranchItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Branch)
+    {
+        BranchItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    BranchItems.Add(new SelectListItem { Text = "ALL", Value = "ALL" });
+    
+    List<SelectListItem> FinancialActivityItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.FinancialActivity)
+    {
+        FinancialActivityItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> DelPortFolioItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.DelPortFolio)
+    {
+        DelPortFolioItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+    
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"FinancialAccountList","Master" )</li>
+            }
+            <li class="active"><a href="#tab1">@Resources.DetailsPageHeading</a></li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("FinancialAccountSave", "Master", new { Id = Convert.ToString(Model.FinancialAccountId), }, FormMethod.Post, new { id = "frmFinancialAccountSave", name = "frmFinancialAccountSave" }))
+                 {
+                <div class="tab-content" id="tab1">
+                     <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Branch</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.BranchCode, BranchItems.AsEnumerable())
+                                    @Html.ValidationMessageFor(x => x.BranchCode)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.ModuleName</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ModuleName, new { id = "ModuleName", name = "ModuleName", maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.ModuleName)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Product</div>
+                                <div class="Field">
+                                      @Html.DropDownListFor(x => x.ProductCode, ProductItems.AsEnumerable())
+                                    @Html.ValidationMessageFor(x => x.ProductCode)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.FinancialActivity</div>
+                                <div class="Field">
+                                      @Html.DropDownListFor(x => x.TransactionSubCodeId, FinancialActivityItems.AsEnumerable())
+                                    @Html.ValidationMessageFor(x => x.TransactionSubCodeId)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.DebitAccountNumber</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DebitAccountNr, new { id = "DebitAccountNr", name = "DebitAccountNr", maxlength = 25, onkeypress="return OnlyNumeric(event);" })
+                                    @Html.ValidationMessageFor(x => x.DebitAccountNr)
+                                </div>
+                            </div>
+                             <div class="TwoColumn">
+                                <div class="label">@Resources.CreditAccountNumber</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CreditAccountNr, new { id = "CreditAccountNr", name = "CreditAccountNr", maxlength = 25, onkeypress="return OnlyNumeric(event);" })
+                                    @Html.ValidationMessageFor(x => x.CreditAccountNr)
+                                </div>
+                            </div>                           
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.ConsolidatedDebitFlag</div>
+                                <div>
+                                    @Html.CheckBoxFor(x => x.IsDebitConsolidated)
+                                    @Html.ValidationMessageFor(x => x.IsDebitConsolidated)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.ConsolidatedCreditFlag</div>
+                                <div>
+                                    @Html.CheckBoxFor(x => x.IsCreditConsolidated)
+                                    @Html.ValidationMessageFor(x => x.IsCreditConsolidated)
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                             <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.DebitTransactionCode</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DebitAccountCode, new { id = "DebitAccountCode", name = "DebitAccountCode", maxlength = 5 })
+                                    @Html.ValidationMessageFor(x => x.DebitAccountCode)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.CreditTransactionCode</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CreditAccountCode, new { id = "CreditAccountCode", name = "CreditAccountCode", maxlength = 5 })
+                                    @Html.ValidationMessageFor(x => x.CreditAccountCode)
+                                </div>
+                            </div>                           
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.DebitSubTransactionCode</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DebitSubTransactionCode, new { id = "DebitSubTransactionCode", name = "DebitSubTransactionCode", maxlength = 5 })
+                                    @Html.ValidationMessageFor(x => x.DebitSubTransactionCode)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.CreditSubTransactionCode</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CreditSubTransactionCode, new { id = "CreditSubTransactionCode", name = "CreditSubTransactionCode", maxlength = 5 })
+                                    @Html.ValidationMessageFor(x => x.CreditSubTransactionCode)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">                           
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.DebitNarration</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DebitNarration, new { id = "DebitNarration", name = "DebitNarration", maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.DebitNarration)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.CreditNarration</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CreditNarration, new { id = "CreditNarration", name = "CreditNarration", maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.CreditNarration)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                             <div class="TwoColumn">
+                                <div class="label">@Resources.EffectiveDate</div>
+                                   <div class="Field">
+                                    @Html.TextBoxFor(x => x.EffectiveDate,new { @class ="datepicker", @readonly="true" ,Value = Model.EffectiveDate.Value.ToShortDateString()})
+                                    @Html.ValidationMessageFor(x => x.EffectiveDate)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.PortFolio</div>
+                                <div class="Field">
+                                      @Html.DropDownListFor(x => x.Portfolio, DelPortFolioItems.AsEnumerable())
+                                    @Html.ValidationMessageFor(x => x.Portfolio)
+                                </div>
+                            </div>
+                        </div>
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>

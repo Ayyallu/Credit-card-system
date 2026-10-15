@@ -1,0 +1,225 @@
+﻿
+@using CC_Ingenio.Web.ViewModel.Master;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Merchant, " ", Resources.Search });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model MerchantSearch
+@{
+    
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+
+    List<SelectListItem> CountryItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Countries)
+    {
+        CountryItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    CountryItems.RemoveAt(0);
+    CountryItems.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty }); List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //    var control = "#CountryCode";
+    //    $("#CountryCode").change(function () {
+
+    //        var countryCode = $(this).val();
+    //        bindRegionValue();
+    //       var selectcity = $("[id = CityCode]");
+    //       selectcity.empty();
+    //    });
+
+    //    var Rgncontrol = "#RegionCode";
+    //    $("#RegionCode").change(function () {
+    //        var regionCode = $(this).val();
+    //        bindCityValue();
+           
+    //    });
+
+    //});
+
+
+    //function bindRegionValue() {
+    //    var countryCode = $("#CountryCode").val();
+    //    if (countryCode != "") {
+    //        $.getJSON("/Master/GetRegions?Id=" + countryCode,
+    //            function (modeldata) {
+    //                var select = $("[id = RegionCode]");
+    //                select.empty();
+    //                $.each(modeldata, function (index, itemData) {
+
+    //                    if (itemData.Text != "Select One") {
+    //                        select.append($('<option/>', {
+    //                            value: itemData.Value,
+    //                            text: itemData.Text
+    //                        }));
+    //                    }
+    //                    else {
+    //                        select.append($('<option/>', {
+    //                            value: null,
+    //                            text: "",
+    //                        }));
+    //                    }
+
+    //                });
+    //            });
+    //    }
+    //};
+
+
+
+    //function bindCityValue() {
+    //    var RegionCode = $("#RegionCode").val();
+    //    if (RegionCode != "") {
+    //       $.getJSON("/Master/GetCityByRegionCode?Id=" + RegionCode,
+    //            function (modeldata) {
+    //                var select = $("[id = CityCode]");
+    //                select.empty();
+    //                $.each(modeldata, function (index, itemData) {
+    //                    if (itemData.Text != "Select One") {
+    //                        select.append($('<option/>', {
+    //                            value: itemData.Value,
+    //                            text: itemData.Text
+    //                        }));
+    //                    }
+    //                    else {
+    //                        select.append($('<option/>', {
+
+    //                            value: null,
+    //                            text: "",
+    //                        }));
+    //                    }
+    //                });
+    //            });
+    //    }
+
+    //};
+    </script>
+<section class="feature">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+          <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active">@Html.ActionLink(Resources.SearchPageHeading,"MerchantList","Master" )</li>
+            <li> @Html.ActionLink(Resources.DetailsPageHeading,"MerchantsAdd","Master" )</li>
+            
+        </ul>
+
+
+              <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                      @using (Html.BeginForm("MerchantList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.MerchantCode</div>
+                                        <div class="Field">
+                                                @Html.TextBoxFor(x => x.MerchantCode, new { maxlength = 11 })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.MerchantName</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x=>x.MerchantName, new { maxlength = 50 })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">                                   
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.Country</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x=>x.CountryCode,CountryItems)
+                                        </div>
+                                    </div>
+                                     <div class="TwoColumn">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="Field">&nbsp;</div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="SearchColumnbtn">
+                                        <span>
+                                            <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                        </span>
+
+                                        <span>
+                                            <input id="Button2" type="submit" name="ClearButton" class="Greenbutton" value="@Resources.Clear" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+
+                        </div>
+                    }
+
+                    </div>
+
+                  <div class="row">
+                   
+                    <div class="standard-table">
+                        @grid.GetHtml(columns:grid.Columns(
+                                    grid.Column("MerchantCode",Resources.MerchantCode),
+                                    grid.Column("MerchantName",Resources.MerchantName),
+                                    grid.Column("CountryDesc",Resources.Country),
+                                    //grid.Column("RegionDesc", Resources.Region),
+                                    //grid.Column("CityDesc", Resources.City),
+                                    //grid.Column("CommunaDesc",Resources.Communa),
+                                    grid.Column("ApprovalStatusDesc", Resources.Status),                                    
+                                    grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink(Resources.Edit, "MerchantsAdd", "Master", new { id = item.MerchantCode }, null));
+                                                   
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "MerchantView", "Master", new { id = item.MerchantCode }, null))); 
+                                                }
+                                            }),
+                                    grid.Column(Resources.Delete,   format: 
+                                        (item) =>
+                                                 {
+                                                     if (lstPriv.Contains("Delete"))
+                                                     {
+                                                         if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A") || item.ApprovalStatus.Equals("EXP"))
+                                                         {
+                                                             return Html.Raw(Html.ActionLink(Resources.Delete, "MerchantDelete", "Master", new { id = item.MerchantCode }, new { @class = "delete-link" }));
+                                                         }
+                                                         else
+                                                         {
+                                                             return Html.Raw("");
+                                                         }
+                                                     }
+                                                     else
+                                                     {
+                                                         return Html.Raw("");
+                                                     }
+                                            })
+                                   ))
+                    </div>
+                </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>

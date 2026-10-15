@@ -1,0 +1,186 @@
+﻿@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.StatementGrouping});
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+
+@model StatementGroupingDTO
+@{
+    List<SelectListItem> ProductItems = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+    
+    foreach (var itm in ViewBag.ProductList)
+    {
+        ProductItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> NetworkItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.NetworkList)
+    {
+        NetworkItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> TransactionItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.TransactionList)
+    {
+        TransactionItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        
+        $("#frmStatementGroupingSave").submit(function (e) {
+
+            if (parseFloat($('#GroupCode').val().trim()) <= parseFloat(0)) {
+                $('#GroupCode_Validate').text("@Html.Raw(string.Format(Resources.MsgErrValueNotZero,Resources.GroupCode))");
+                e.preventDefault();
+            }
+            if (parseFloat($('#SubGroupCode').val().trim()) <= parseFloat(0)) {
+                $('#SubGroupCode_Validate').text("@Html.Raw(string.Format(Resources.MsgErrValueNotZero,Resources.SubGroupCode))");
+                e.preventDefault();
+            }
+        })
+
+        $('#GroupCode').focusin(function () {
+            $('#GroupCode_Validate').text("");
+        });
+
+        $('#SubGroupCode').focusin(function () {
+            $('#SubGroupCode_Validate').text("");
+        });
+
+    });
+</script>
+    
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"StatementGroupingList","Master" )</li>
+            }
+            <li class="active">@Html.ActionLink(Resources.DetailsPageHeading,"StatementGroupingAdd","Master" )</li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("StatementGroupingSave", "Master", new { Id = Convert.ToString(Model.StatementGroupingId) }, FormMethod.Post, new { id = "frmStatementGroupingSave", name = "frmStatementGroupingSave" }))
+                 {
+                <div class="tab-content" id="tab1">
+                     <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text>@String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>                  
+                    <div class="row">
+                                               
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Product</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.ProductCode, ProductItems.AsEnumerable())
+                                    @Html.ValidationMessageFor(x => x.ProductCode)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Network</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.NetworkCode, NetworkItems.AsEnumerable())
+                                    @Html.ValidationMessageFor(x => x.NetworkCode)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.TransactionCode</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.TransactionCode, TransactionItems.AsEnumerable())
+                                    @Html.ValidationMessageFor(x => x.TransactionCode)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.GroupCode</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.GroupCode, new { id = "GroupCode", name="GroupCode", maxlength = "5" })
+                                    @Html.ValidationMessageFor(x => x.GroupCode)
+                                    <label id="GroupCode_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.GroupCodeDescription</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.GroupCodeDescription, new { id = "GroupCodeDescription", name="GroupCodeDescription" , maxlength = "50"})
+                                    @Html.ValidationMessageFor(x => x.GroupCodeDescription)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.SubGroupCode</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.SubGroupCode, new { id = "SubGroupCode", name="SubGroupCode", maxlength = "5" })
+                                    @Html.ValidationMessageFor(x => x.SubGroupCode)
+                                    <label id="SubGroupCode_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.SubGroupCodeDescription</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.SubGroupCodeDescription, new { id = "SubGroupCodeDescription", name="SubGroupCodeDescription" , maxlength = "50"})
+                                    @Html.ValidationMessageFor(x => x.SubGroupCodeDescription)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">&nbsp;</div>
+                                <div class="Field">
+                                    &nbsp;
+                                    <div class="row">
+                                        &nbsp;
+                                    </div></div>
+                            </div>
+                        </div>
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>

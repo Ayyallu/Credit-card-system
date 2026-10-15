@@ -1,0 +1,133 @@
+﻿
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.PaymentAllocationType, " ", Resources.Search });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.Web.ViewModel.Master
+@model PaymentAllocationTypeSearch
+@{
+    var grid = new WebGrid(Model.SearchResults, canSort: false, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "PaymentAllocationTypeId", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+
+    List<SelectListItem> PaymentAllocationTypeItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.PaymentAllocationTypeList)
+    {
+        PaymentAllocationTypeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    PaymentAllocationTypeItems.RemoveAt(0);
+    PaymentAllocationTypeItems.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+<section class="featured">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active">@Html.ActionLink(Resources.SearchPageHeading,"PaymentAllocationTypeList","Master" )</li>
+           @* <li> @Html.ActionLink(Resources.DetailsPageHeading,"PaymentAllocationTypeAdd","Master" )</li>*@
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("PaymentAllocationTypeList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CardType</div>
+                                        <div class="Field">
+                                             @Html.DropDownListFor(x => x.CardType, PaymentAllocationTypeItems.AsEnumerable())
+                                           @* @Html.TextBoxFor(x => x.CardType)*@
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CardOrRUTNo</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.SeqNr)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="SearchColumnbtn">
+                                    <span>
+                                        <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                    </span>
+                                    <span>
+                                        <input id="Button2" type="submit" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    }
+
+                </div>
+                <div class="row">
+                   
+                    <div class="standard-table">
+                        @grid.GetHtml(alternatingRowStyle: "alt", columns:grid.Columns(
+                                    grid.Column("CardTypeDesc",Resources.CardType), 
+                                    grid.Column("SeqNr", Resources.CardOrRUTNo),
+                                    grid.Column("ApprovalStatusDesc",Resources.Status),
+                                    grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink(Resources.Edit, "PaymentAllocationTypeAdd", "Master", new { id = Convert.ToString(item.PaymentAllocationTypeId) }, null));
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "PaymentAllocationTypeView", "Master", new { id = item.PaymentAllocationTypeId }, null)));  
+                                                }
+                                            }),
+                                    grid.Column(Resources.Delete,   format: 
+                                        (item) =>
+                                                 {
+                                                     if (lstPriv.Contains("Delete"))
+                                                     {
+                                                         if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                                         {
+                                                             return Html.Raw(Html.ActionLink(Resources.Delete, "PaymentAllocationTypeDelete", "Master", new { id = item.PaymentAllocationTypeId }, new { @class = "delete-link" }));
+                                                         }
+                                                         else
+                                                         {
+                                                             return Html.Raw("");
+                                                         }
+                                                     }
+                                                     else
+                                                     {
+                                                         return Html.Raw("");
+                                                     }
+                                            })))
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

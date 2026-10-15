@@ -1,0 +1,142 @@
+﻿@using CC_Ingenio_Resources;
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.CommissionCode });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@model CommissionDTO
+@{
+    List<string> lstPriv = new List<string>();
+    
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+ }
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        
+        $("#frmCommissionSave").submit(function (e) {
+
+            //var Array = ['00000', '0000', '000', '00', '0'];
+            //var userinput = $('#CommissionCode').val().trim();
+
+            //if (jQuery.inArray(userinput, Array) != -1)
+            //{
+            //    $('#MaximumCardAdvance_Validate').text("Min card advance should be less than Max card advance");
+            //    e.preventDefault();
+            //}
+            if ($('#CommissionCode').val().trim() <= 0) {
+                $('#CommissionCode_Validate').text("@Html.Raw(String.Format(Resources.MsgErrValueGreaterThanZero, Resources.CommissionCode))");
+                e.preventDefault();
+            }
+
+
+        })
+
+        $('#CommissionCode').focusin(function () {
+            $('#CommissionCode_Validate').text("");
+        });
+
+    });
+</script>
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"CommissionList","Master" )</li>
+            }
+            <li class="active">@Html.ActionLink(Resources.DetailsPageHeading,"CommissionAdd","Master" )</li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("CommissionSave", "Master", new { Id = Model.CommissionCode, }, FormMethod.Post, new { id = "frmCommissionSave", name = "frmCommissionSave" }))
+                {
+                <div class="tab-content" id="tab1">
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.CommissionCode</div>
+                                <div class="Field">
+                                    @if (!string.IsNullOrWhiteSpace(Model.CommissionCode))
+                                    {
+                                        @Html.TextBoxFor(x => x.CommissionCode, new { id = "CommissionCode", name = "CommissionCode", maxlength = 5, @readonly = "readonly" })
+                                    }
+                                    else
+                                    { 
+                                        @Html.TextBoxFor(x => x.CommissionCode, new { id = "CommissionCode", name = "CommissionCode", maxlength = 5 })
+                                    }
+                                    @Html.ValidationMessageFor(x => x.CommissionCode)
+                                    <label id="CommissionCode_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Description</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Description, new { id = "Description", name="Description",maxlength = 50  })
+                                    @Html.ValidationMessageFor(x => x.Description)
+                                </div>
+                            </div>
+                        </div>
+
+@*                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.CommissionAmount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CommissionAmount, String.Format("{0:0}", Model.CommissionAmount), new { id = "CommissionAmount", @class = "NumericWithDecimalPlace", maxlength = 9 })
+                                    @Html.ValidationMessageFor(x => x.CommissionAmount)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">&nbsp;</div>
+                                <div class="Field">
+                                    &nbsp;
+                                    <div class="row">
+                                        &nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>

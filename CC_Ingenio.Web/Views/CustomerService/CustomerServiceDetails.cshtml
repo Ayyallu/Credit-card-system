@@ -1,0 +1,875 @@
+﻿@using CC_Ingenio_Resources;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var strROI = string.Format("{0:N2}", Model.CreditLimit);
+}
+
+
+@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@model CustomerServiceDetailsDTO
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+       @* alert('@Model.CreditLimit')*@
+
+        $('.custServiceSubMenu').click(function () {
+            
+            var obj = $(this);
+            $.ajax({
+                url: '/CustomerService/CheckIfValidSession/',
+                type: 'GET',
+                dataType: 'json',
+                cache: false,
+                success: function (retData) {
+                    if (retData) {
+                        if (retData.Message) {
+                            //If session ended, redirect to login
+                            window.location = retData.RedirectUrl;
+                        }
+                        else {
+                            //Partial View loading..
+                            $('#partialViewDiv').html('');
+                            $.ajax({
+                                url: '/CustomerService/LoadPartialView/',
+                                type: 'GET',
+                                data: { ACardNumber: '@Model.CardNumber', ACustomerId: JSON.stringify(@Model.CustomerId), APartialViewType: obj.attr('id'), ARUT: '@Model.RUT', AAccountNumber: JSON.stringify(@Model.AccountNumber), ACountryCode: '@Model.CountryCode', AContractDesc: '@Model.ContractDescription' },
+                                dataType: 'html',
+                                cache: false,
+                                success: function (retData) {
+                                    if (retData.length > 0) {
+                                       $('#partialViewDiv').html(retData);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        });
+
+        $('#RUT').mask('000000000-*');
+
+        //if ViewBag.OpenCustAddressForApproval is true, then open AddressChange Partialview for Approval
+        if ("@ViewBag.OpenCustAddressForApproval" == "True")
+        {
+            //$('#addressChange').click();  
+            var obj = $(this);
+            $('#partialViewDiv').html('');
+            $.ajax({
+                url: '/CustomerService/FillCustomerAddressAfterApproval/',
+                type: 'GET',
+                data:{ACustomerId: JSON.stringify(@Model.CustomerId), ACardNumber: JSON.stringify(@Model.CardNumber), ACountryCode: '@Model.CountryCode', AAddressType: "@ViewBag.UpdateAddressType",AApprovalStatus:"@ViewBag.ApprovalStatus" },
+                dataType: 'html',
+                cache: false,
+                success: function (data) {
+                    if (data.length > 0) {
+                        $('#partialViewDiv').html(data);
+                    }
+                }
+            });
+        }
+
+        if ("@ViewBag.OpenCardReactivationForApproval" == "True") {
+            //$('#addressChange').click();  
+            var obj = $(this);
+            $('#partialViewDiv').html('');
+            $.ajax({
+                url: '/CustomerService/PopulateCardReactivationDetails/',
+                type: 'GET',
+                data: { ACustomerId: JSON.stringify(@Model.CustomerId), ACardNumber: JSON.stringify(@Model.CardNumber)},
+                dataType: 'html',
+                cache: false,
+                success: function (data) {
+                    if (data.length > 0) {
+                        $('#partialViewDiv').html(data);
+                    }
+                }
+            });
+        }
+
+        if ("@ViewBag.OpenLostStolenCardReissueRequestForApproval" == "True") {
+            //$('#addressChange').click();  
+            var Id = '@ViewBag.ReIssueReqId'
+            var obj = $(this);
+            $('#partialViewDiv').html('');
+            $.ajax({
+                url: '/CustomerService/FillLostStolenCardReissueRequestForApproval/',
+                type: 'GET',
+                data: { ALostStolenCardReissueRequestId: Id, AContractDesc: '@Model.ContractDescription' },
+                dataType: 'html',
+                cache: false,
+                success: function (data) {
+                    if (data.length > 0) {
+                        $('#partialViewDiv').html(data);
+                    }
+                }
+            });
+        }
+
+        //if ViewBag.BillingCycleChangeApproval is true, then open BillingCycleChange Partialview for Approval
+        if ("@ViewBag.BillingCycleChangeApproval" == "True") {
+            var obj = $(this);
+            $('#partialViewDiv').html('');
+            $.ajax({
+                url: '/CustomerService/FillBillingCycleOnApproval/',
+                type: 'GET',
+                data: { ACustomerId: JSON.stringify(@Model.CustomerId), ACardNumber: JSON.stringify(@Model.CardNumber), ABillingCycleCode: "@ViewBag.BillingCycleCode", AApprovalStatus: "@ViewBag.ApprovalStatus" },
+                dataType: 'html',
+                cache: false,
+                success: function (data) {
+                    if (data.length > 0) {
+                        $('#partialViewDiv').html(data);
+                    }
+                }
+            });
+        }
+
+        if ("@ViewBag.ChangeCreditLimitForApproval" == "True") {
+            //$('#addressChange').click();  
+            var Id = '@ViewBag.ChangeCreditLimitId'
+                    var obj = $(this);
+                    $('#partialViewDiv').html('');
+                    $.ajax({
+                        url: '/CustomerService/FillChangeCreditLimitForApproval/',
+                        type: 'GET',
+                        data: { AId: Id },
+                dataType: 'html',
+                cache: false,
+                success: function (data) {
+                    if (data.length > 0) {
+                        $('#partialViewDiv').html(data);
+                    }
+                }
+            });
+        }
+
+        if ("@ViewBag.SwapProductForApproval" == "True") {
+            
+            var Id = '@ViewBag.SwapProductId'
+             var obj = $(this);
+             $('#partialViewDiv').html('');
+             $.ajax({
+                 url: '/CustomerService/FillSwapProductForApproval/',
+                 type: 'GET',
+                 data: { AId: Id },
+                 dataType: 'html',
+                 cache: false,
+                 success: function (data) {
+                     if (data.length > 0) {
+                         $('#partialViewDiv').html(data);
+                     }
+                 }
+             });
+         }
+
+    });
+</script>
+
+
+<aside class="landing">
+    <ul>
+        <li>@Resources.Information
+            <ul>
+                @*<li><a href="#" class="custServiceSubMenu" id="unMatchedAuthorizationDetails" >@Resources.UnmatchedAuthorizationDetails</a></li> *@
+                <li><a href="#" class="custServiceSubMenu" id="unBilledTransactions" >@Resources.UnbilledTransactions</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="adjustments" >@Resources.Adjustments</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="availableSegmentDetails" >@Resources.AvailableSegmentDetails</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="blockCodeStatusDetails" >@Resources.BlockCodeStatusDetails</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="lineUtilization" >@Resources.LineUtilization</a></li>              
+                <li><a href="#" class="custServiceSubMenu" id="installmentSchedule" >@Resources.InstallmentSchedule</a></li>
+@*                <li><a href="#" class="custServiceSubMenu" id="pendingAdjustments" >@Resources.PendingAdjustment</a></li>*@
+                <li><a href="#" class="custServiceSubMenu" id="refinanceDetails" >@Resources.RefinanceDetails</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="renegotiationDetails" >@Resources.RenegotiationDetails</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="statementImage" >@Resources.StatementImage</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="notepadDetails" >@Resources.NotepadDetails</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="notepadHistoryDetails" >@Resources.NotepadHistoryDetails</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="allTransactions" >@Resources.AllTransactions</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="disputedTransactions" >@Resources.DisputedTransactions</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="viewConversionTable" >@Resources.ViewConversionTable</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="financialSummary" >@Resources.FinancialSummary</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="overdueSummary" >@Resources.OverdueSummary</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="UserDetails" >@Resources.UserStatus</a></li>
+
+               @*<li><a href="#" class="custServiceSubMenu" id="availableCreditLine" >Available Credit Line</a></li> 
+                <li><a href="#" class="custServiceSubMenu" id="feeDetails" >Fee Details</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="photoDetails" >Photo Details</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="swapDetails" >Swap Details</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="viewAddress" >View Address</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="securitizationDetails" >Securitization Details</a></li>*@
+            </ul>
+        </li>
+
+        <li>@Resources.Transaction
+            <ul>
+                <li><a href="#" class="custServiceSubMenu" id="addressChange" >@Resources.AddressChange</a></li> 
+                <li><a href="#" class="custServiceSubMenu" id="alertRegistration" >@Resources.AlertRegistration</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="cardClosureInitiation" >@Resources.CardClosureInitiation</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="closedCardActivation" >@Resources.ClosedCardActivation</a></li>
+               @* <li><a href="#" class="custServiceSubMenu" id="nonFinancialDetailsUpdation" >NonFinancial Details Updation</a></li>*@
+                <li><a href="#" class="custServiceSubMenu" id="notepadEntry" >@Resources.NotepadEntry</a></li>
+                <li class="SubMenuHead">@Resources.BlockOrUnblock
+                    <ul>
+                        <li><a href="#" class="custServiceSubMenu" id="segmentBlockUnblock" >@Resources.CardOrSegmentBlock</a></li>
+                             <li><a href="#" class="custServiceSubMenu" id="segmentUnblock" >@Resources.CardOrSegmentUnBlock</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" class="custServiceSubMenu" id="lostStolenCardBlock" >@Resources.LostOrStolenCardBlock</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="lostStolenCardReissue" >@Resources.LostOrStolenCardReissue</a></li>
+                @*<li><a href="#" class="custServiceSubMenu" id="damagedCardReissue" >Damaged Card Reissue</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="alertMessageInitiation" >Alert Message Initiation</a></li>*@
+                <li><a href="#" class="custServiceSubMenu" id="billingCycleChange" >@Resources.ChangeBillingCycle</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="uploadDocuments" >@Resources.UploadDocuments</a></li>
+                @*<li>@Html.ActionLink("Upload Documents", "UploadCustomerDocumentLoad", "CustomerService",new { ACustomerId = Model.CustomerId,ACardNumber = Model.CardNumber }, new { @class = "openDialog", data_dialog_id = "popuplDialog", data_dialog_title = "Upload Documents"}) </li>*@
+
+                <li><a href="#" class="custServiceSubMenu" id="activateCard" >@Resources.ActivateCard</a></li>
+                <li><a href="#" class="custServiceSubMenu" id="changeCreditLimit" >@Resources.ChangeCreditLimit</a></li>
+                @if (Model.CardMemberTypeCode == "P" && Model.BlockStatusCode == "00")
+                {
+                    <li><a href="#" class="custServiceSubMenu" id="swapProduct" >@Resources.SwapProduct</a></li>
+                }
+            </ul>
+        </li>
+    </ul>
+</aside>
+<article class="CutomerDetails">
+    @Html.Label(string.IsNullOrWhiteSpace(Model.CustomerStatus) ? string.Empty : Model.CustomerStatus, new { style="color:white; background-color:red; font-weight:bold; width:auto" })  
+    @*," / ",Resources.CardType@Html.Label(string.IsNullOrWhiteSpace(Model.ExcessCredit) ? string.Empty : Model.ExcessCredit, new { style="color:white; background-color:red; font-weight:bold; width:auto;float:right" })   *@
+    <div class="row">
+        <div class="CustomerTwoColumn BorderColumn">
+            <div class="CustomerColumnTitle">@Resources.CustomerDetails</div>
+            <div class ="CustomerColumnScroll">
+                <div class="row">
+                    <div class="cs_label">@string.Concat(Resources.CardNumber)</div> 
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.CardNumber) ? "-" : Model.CardNumber)
+                        @Html.Label("/")
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.CardTypeDesc) ? "-" : Model.CardTypeDesc)
+                    </div>
+                </div>              
+                <div class="row">
+                    <div class="cs_label">@Resources.Name</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.CustomerName) ? "-" : Model.CustomerName)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">@string.Concat(Resources.DateOfBirth," / ",Resources.Gender)</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(Model.DateOfBirth == null ? "-" : Model.DateOfBirth.Value.ToString("dd-MMM-yyyy"))
+                        @Html.Label("/")
+                        @Html.Label(string.IsNullOrEmpty(Model.Gender) ? "-" : Model.Gender)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">@Resources.RUT</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrEmpty(Model.RUT) ? "-" : Model.RUT, new { id = "RUT", name = "SCN" })
+                    </div>
+                </div>               
+                 <div class="row">
+                     @if (Model.ReferenceAddressTypeCode == "1")
+                            {
+                                 <div class="cs_label">@Resources.ParticularAddress</div>
+                            }
+                     else
+                     { 
+                                <div class="cs_label">@Resources.CommercialAddress</div>
+                     }
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.AddressDescription) ? "-" : Model.AddressDescription)
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="cs_label">@Resources.Village</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.Village) ? "-" : Model.Village)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">@Resources.City</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.CityName) ? "-" : Model.CityName)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">@Resources.Communa</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.CommunaName) ? "-" : Model.CommunaName)
+                    </div>
+                </div>       
+                 <div class="row">
+                    <div class="cs_label">@Resources.Nationality</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.Nationality) ? "-" : Model.Nationality)
+                    </div>
+                </div>         
+                <div class="row">
+                    <div class="cs_label">@string.Concat(Resources.Phone," / ",Resources.Mobile)</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.Phone) ? "-" : Model.Phone)
+                        @Html.Label("/")
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.Mobile) ? "-" : Model.Mobile)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">@Resources.Email</div>
+                    <div class="label" style="display: inline; width: auto">
+                        <text>@(string.IsNullOrWhiteSpace(Model.EmailID) ? "-" : Model.EmailID.ToString())</text>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="CustomerTwoColumn BorderColumn">
+            <div class="CustomerColumnTitle">@Resources.CardDetails</div>
+            <div class="CustomerColumnScroll">
+                <div class="row">
+                    <div class="cs_label">@Resources.Product</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.ProductCode) ? "-" : Model.ProductCode + " - " + Model.ProductName )
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">@Resources.CardStatus</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.CardStatus) ? "-" : Model.CardStatus)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">@Resources.CardGeneratedDate</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(Model.CardGeneratedDate == null ? "-" : Model.CardGeneratedDate.Value.ToString("dd-MMM-yyyy"))
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">@Resources.CardActivatedDate</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(Model.CardActivatedDate == null ? "-" : Model.CardActivatedDate.Value.ToString("dd-MMM-yyyy"))
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">@Resources.StatusChangeDate</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(Model.StatusChangeDate == null ? "-" : Model.StatusChangeDate.Value.ToString("dd-MMM-yyyy"))
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">@Resources.ParentCard</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.ParentCard) ? "-" : Model.ParentCard)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">@Resources.CardExpiryDate</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(Model.CardExpiryDate == null ? "-" : Model.CardExpiryDate.Value.ToString("dd-MMM-yyyy"))
+                    </div>
+                </div>
+                @*<div class="row">
+                    <div class="cs_label">Emboss Date</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(Model.CardEmbossedDate == null ? "-" : Model.CardEmbossedDate.Value.ToString("dd-MMM-yyyy"))
+                    </div>
+
+                </div>
+                   <div class="row">
+                    <div class="cs_label">Embossed Branch</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(Model.EmbossedBranch == null ? "-" : Model.EmbossedBranch )
+                    </div>
+
+                </div>*@
+                <div class="row">
+                    <div class="cs_label">@Resources.CycleCode</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.BillingCycleCode) ? "-" : Model.BillingCycleCode)
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="cs_label">@Resources.CustomerSegment</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.CustomerSegmentName) ? "-" : Model.CustomerSegmentName)
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="cs_label">@Resources.CustomerSubSegment</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.CustomerSubSegmentName) ? "-" : Model.CustomerSubSegmentName)
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="cs_label">@Resources.Contract</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.ContractDescription) ? "-" : Model.ContractDescription)
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="cs_label">&nbsp;</div>
+                    <div class="label" style="display: inline; width: auto">&nbsp;</div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">&nbsp;</div>
+                    <div class="label" style="display: inline; width: auto">&nbsp;</div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">&nbsp;</div>
+                    <div class="label" style="display: inline; width: auto">&nbsp;</div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">&nbsp;</div>
+                    <div class="label" style="display: inline; width: auto">&nbsp;</div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">&nbsp;</div>
+                    <div class="label" style="display: inline; width: auto">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    <div class="row">
+        <div class="CustomerTwoColumn BorderColumn">
+            <div class="CustomerColumnTitle">@Resources.FinancialDetails</div>
+            <div class="CustomerColumnScroll">
+                <div class="row">
+                    <div class="cs_label">@string.Concat(Resources.CreditLimit," / ",Resources.CashLimit)</div>
+                    <div class="label" style="display: inline; width: auto">
+
+                        @* @Html.Label(string.IsNullOrWhiteSpace(Model.CreditLimit.ToString("N")) ? "-" : String.Format("{0:N0}", Model.CreditLimit))*@
+                        @* @Html.TextBoxFor(x => x.CreditLimit, String.Format("{0:N0}", Model.CreditLimit) +  , new { id = "CreditLimit", maxlength = 9 })
+                                    @Html.ValidationMessageFor(x => x.CreditLimit)*@
+                        @(Model.CreditLimit.ToString("N0"))
+                        @Html.Label("/")
+                        @(Model.CashLimit.ToString("N0"))
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="cs_label">@string.Concat(Resources.CreditOTB," / ",Resources.CashOTB)</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @* @Html.Label(string.IsNullOrWhiteSpace(Model.CreditOTB.ToString("#.##0")) ? "-" : Model.CreditOTB.ToString("#.##0"))
+                        @Html.Label("/")
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.CashOTB.ToString("#,##0")) ? "-" : Model.CashOTB.ToString("#,##0"))*@
+                        @(Model.CreditOTB.ToString("N0"))
+                        @Html.Label("/")
+                        @(Model.CashOTB.ToString("N0"))
+                    </div>
+                </div>                
+                <div class="row">
+                    <div class="cs_label">@string.Concat(Resources.CurrentBalance," / ",Resources.UMAuth)</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @(Model.CurrentBalance.ToString("N0"))
+                        @Html.Label("/")
+                        @(Model.UnMatchedAuthAmount.ToString("N0"))
+                    </div>
+                </div>
+                   <div class="row">
+                    <div class="cs_label">@string.Concat(Resources.BillDate," / ",Resources.Amount)</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(Model.BillDate == null ? "-" : Model.BillDate.Value.ToString("dd-MMM-yyyy"))
+                        @Html.Label("/")
+                        @(Model.TotalBillAmount.ToString("N0"))
+                      
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="cs_label">@Resources.OpeningRevBalance</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @(Model.OpeningRevolvingBalance.ToString("N0"))                  
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="cs_label">@string.Concat(Resources.MinDueAmount," / ",Resources.DelinquencyAmount)</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @(Model.MindueAmount.ToString("N0"))
+                        @Html.Label("/")
+                        @(Model.DelinquencyAmount.ToString("N0"))             
+                    </div>
+                </div> 
+                @*  <div class="row">commented for demo
+                    <div class="cs_label">Current Delinquent Month</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.CurrentDelinquentMonth.ToString()) ? "-" : Model.CurrentDelinquentMonth.ToString())
+                    </div>
+                </div>*@
+                <div class="row">
+                    <div class="cs_label">@string.Concat(Resources.HighBilled," / ",Resources.HighCleared)</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @(Model.HighestBilledAmount.ToString("N0"))
+                        @Html.Label("/")
+                        @(Model.HighestClearedAmount.ToString("N0")) 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">@string.Concat(Resources.BounceCount," / ",Resources.Date)</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.BounceCount.ToString()) ? "-" : Model.BounceCount.ToString())
+                        @Html.Label("/")
+                        @Html.Label(Model.BounceDate == null ? "-" : Model.BounceDate.Value.ToString("dd-MMM-yyyy"))
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cs_label">@Resources.DaysPastDue</div>
+                    <div class="label" style="display: inline; width: auto">
+                        @Html.Label(string.IsNullOrWhiteSpace(Model.DPDCount.ToString()) ? "-" : Model.DPDCount.ToString())
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="CustomerTwoColumn BorderColumn">
+            <div class="CustomerColumnTitle">@Resources.UnbilledDetails</div>
+            <div class="CustomerColumnScroll">
+                <table>
+                    <tr>
+                        <th style="font-weight: bold; font-size: .85em">&nbsp;</th>
+                        <th style="font-weight: bold; font-size: .85em">@Resources.Count</th>
+                        <th style="font-weight: bold; font-size: .85em">@Resources.TransactionAmount</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            @if (Convert.ToInt32(Model.UnbilledPurchaseCount) > 0)
+                            {
+                                <a href="#" class="custServiceSubMenu" id="UnbilledPurchase" >@Resources.Purchases</a>
+                            }
+                            else
+                            {
+                                @Resources.Purchases
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.UnbilledPurchaseCount.ToString()) ? "-" : Model.UnbilledPurchaseCount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>                               
+                                @(Model.UnbilledPurchaseAmount.ToString("N0")) 
+                            </div>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>
+                            @if (Convert.ToInt32(Model.UnbilledCreditNoteCount) > 0)
+                            {
+                                <a href="#" class="custServiceSubMenu" id="UnbilledCreditNote" >@Resources.CreditNote</a>
+                            }
+                            else
+                            {
+                                @Resources.CreditNote
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.UnbilledCreditNoteCount.ToString()) ? "-" : Model.UnbilledCreditNoteCount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>                               
+                                @(Model.UnbilledCreditNoteAmount.ToString("N0")) 
+                            </div>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>
+                            @if (Convert.ToInt32(Model.UnBilledFinancialCreditCount) > 0)
+                            {
+                                <a href="#" class="custServiceSubMenu" id="UnbilledFinancialCreditNote" >@Resources.FinancialCreditNote</a>
+                            }
+                            else
+                            {
+                                @Resources.FinancialCreditNote
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.UnBilledFinancialCreditCount.ToString()) ? "-" : Model.UnBilledFinancialCreditCount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>                               
+                                @(Model.UnBilledFinancialCreditAmount.ToString("N0")) 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @if (Convert.ToInt32(Model.UnbilledServiceTaxCount) > 0)
+                            {
+                                 <a href="#" class="custServiceSubMenu" id="UnBilledServiceTax" >@Resources.ServiceTax</a>
+                            }
+                            else
+                            { 
+                                @Resources.ServiceTax
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.UnbilledServiceTaxCount.ToString()) ? "-" : Model.UnbilledServiceTaxCount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>                               
+                                 @(Model.UnbilledServiceTaxAmount.ToString("N0")) 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @if (Convert.ToInt32(Model.UnbilledFeeCount) > 0)
+                            {
+                                <a href="#" class="custServiceSubMenu" id="UnbilledFees" >@Resources.Fees</a>
+                            }
+                            else
+                            { 
+                                @Resources.Fees
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.UnbilledFeeCount.ToString()) ? "-" : Model.UnbilledFeeCount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>                               
+                                @(Model.UnbilledFeeAmount.ToString("N0"))
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @if (Convert.ToInt32(Model.UnbilledOtherChargesCount) > 0)
+                            {
+                                <a href="#" class="custServiceSubMenu" id="UnbilledOtherCharges" >@Resources.OtherCharges</a>
+                            }
+                            else
+                            { 
+                                @Resources.OtherCharges
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.UnbilledOtherChargesCount.ToString()) ? "-" : Model.UnbilledOtherChargesCount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>                               
+                                 @(Model.UnbilledOtherChargesAmount.ToString("N0"))
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @if (Convert.ToInt32(Model.InterestCount) > 0)
+                            {
+                                <a href="#" class="custServiceSubMenu" id="UnbilledInterest" >@Resources.Interest</a>
+                            }
+                            else
+                            { 
+                                @Resources.Interest
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.InterestCount.ToString()) ? "-" : Model.InterestCount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>                               
+                                 @(Model.InterestAmount.ToString("N0"))
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                         <td>
+                            @if (Convert.ToInt32(Model.UnbilledDebitAdjustmentCount) > 0)
+                            {
+                                <a href="#" class="custServiceSubMenu" id="DebitAdjustment" >@Resources.DebitAdjustment</a>
+                            }
+                            else
+                            { 
+                                @Resources.DebitAdjustment
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.UnbilledDebitAdjustmentCount.ToString()) ? "-" : Model.UnbilledDebitAdjustmentCount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.UnbilledDebitAdjustmentAmount.ToString()) ? "-" : Model.UnbilledDebitAdjustmentAmount.ToString())
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @if (Convert.ToInt32(Model.UnbilledCreditAdjustmentCount) > 0)
+                            {
+                                <a href="#" class="custServiceSubMenu" id="CreditAdjustment" >@Resources.CreditAdjustment</a>
+                            }
+                            else
+                            { 
+                                @Resources.CreditAdjustment 
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.UnbilledCreditAdjustmentCount.ToString()) ? "-" : Model.UnbilledCreditAdjustmentCount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.UnbilledCreditAdjustmentAmount.ToString()) ? "-" : Model.UnbilledCreditAdjustmentAmount.ToString())
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @if (Convert.ToInt32(Model.UnbilledPaymentCount) > 0)
+                            {
+                                <a href="#" class="custServiceSubMenu" id="UnbilledPayments" >@Resources.Payments</a>
+                            }
+                            else
+                            { 
+                                @Resources.Payments
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.UnbilledPaymentCount.ToString()) ? "-" : Model.UnbilledPaymentCount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>                                
+                                @(Model.UnbilledPayments.ToString("N0"))
+                            </div>
+                        </td>
+                    </tr>
+
+                         <tr>
+                        <td>
+                            @if (Convert.ToInt32(Model.UnbilledPaymentRevCount) > 0)
+                            {
+                                <a href="#" class="custServiceSubMenu" id="PaymentReversal" >@Resources.PaymentReversal</a>
+                            }
+                            else
+                            { 
+                                @Resources.PaymentReversal
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.UnbilledPaymentRevCount .ToString()) ? "-" : Model.UnbilledPaymentRevCount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>                                
+                                @(Model.UnbilledPaymentRevAmount.ToString("N0"))
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @if (Convert.ToInt32(Model.UnbilledEMICount) > 0)
+                            { 
+                                 <a href="#" class="custServiceSubMenu" id="UnbilledEMI" >@Resources.EMI</a>
+                            }
+                            else
+                            {
+                                @Resources.EMI
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.UnbilledEMICount.ToString()) ? "-" : Model.UnbilledEMICount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>                                
+                                @(Model.UnbilledEMIAmount.ToString("N0"))
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @if (Convert.ToInt32(Model.PaymentAgainstRefinanceCount) > 0)
+                            { 
+                                 <a href="#" class="custServiceSubMenu" id="PaymentAgainstRefinance" >@Resources.PaymentAgainstRefinance</a>
+                            }
+                            else
+                            {
+                                @Resources.PaymentAgainstRefinance
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.PaymentAgainstRefinanceCount.ToString()) ? "-" : Model.PaymentAgainstRefinanceCount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>                            
+                                 @(Model.PaymentAgainstRefinanceAmount.ToString("N0"))
+                            </div>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>
+                            @if (Convert.ToInt32(Model.PaymentAgainstRenegotiationCount) > 0)
+                            { 
+                                 <a href="#" class="custServiceSubMenu" id="PaymentAgainstRenegotiation" >@Resources.PaymentAgainstRenegotiation</a>
+                            }
+                            else
+                            {
+                                @Resources.PaymentAgainstRenegotiation
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.PaymentAgainstRenegotiationCount.ToString()) ? "-" : Model.PaymentAgainstRenegotiationCount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>                               
+                                @(Model.PaymentAgainstRenegotiationAmount.ToString("N0"))
+                            </div>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>
+                            @if (Convert.ToInt32(Model.UnPostedCount) > 0)
+                            {
+                                <a href="#" class="custServiceSubMenu" id="UnPosted" >@Resources.UnPosted</a>
+                            }
+                            else
+                            {
+                                @Resources.UnPosted
+                            }
+                        </td>
+                        <td>
+                            <div>
+                                @Html.Label(string.IsNullOrWhiteSpace(Model.UnPostedCount .ToString()) ? "-" : Model.UnPostedCount.ToString())
+                            </div>
+                        </td>
+                        <td>
+                            <div>                               
+                                @(Model.UnPostedAmount.ToString("N0")) 
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="row">
+                    <div class="cs_label">&nbsp;</div>
+                    <div class="label" style="display: inline; width: auto">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="partialViewDiv">  
+        <!--Div to load partial view-->
+    </div>
+
+</article>

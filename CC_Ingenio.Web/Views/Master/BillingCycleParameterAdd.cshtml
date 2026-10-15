@@ -1,0 +1,350 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.MT_BILLING_CYCLE_PARAMETER });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model BillingCycleParameterDTO
+@{
+    List<SelectListItem> MonthItems = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+    
+    foreach (var itm in ViewBag.Month)
+    {
+        MonthItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> BillingCycleItems = new List<SelectListItem>();
+
+    foreach (var itm in ViewBag.BillingCycle)
+    {
+        BillingCycleItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> YearItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Year)
+    {
+        YearItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+
+
+<style>
+
+    .inline
+    {
+        text-align:left;
+	    display:inline;
+	    float:left;
+	    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+    }
+
+</style>
+    
+
+<script type="text/javascript">
+
+    function setCalenderDates() {
+
+        var fromDate = $('#FromDate').val();
+        var toDate = $('#ToDate').val();
+
+        $('#FromDate').datepicker("option", "maxDate", toDate);
+        $('#ToDate').datepicker("option", "minDate", fromDate);
+
+
+    }
+
+
+    function setCalenderDates2() {
+
+        var fromDate = $('#BillDate').val();
+        var toDate = $('#StatementDate').val();
+
+        //$('#BillDate').datepicker("option", "maxDate", toDate);
+        $('#StatementDate').datepicker("option", "minDate", fromDate);
+        $('#PaymentDueDate').datepicker("option", "minDate", fromDate);
+
+    }
+
+    $(document).ready(function () {
+     
+       $('#FromDate').datepicker("option", "onSelect", setCalenderDates);
+       $('#ToDate').datepicker("option", "onSelect", setCalenderDates);       
+
+       $('#BillDate').datepicker("option", "onSelect", setCalenderDates2);
+       $('#StatementDate').datepicker("option", "onSelect", setCalenderDates2);     
+
+        function DateChange() {
+
+            $('#BillDate_Validate').text("");
+
+            $.ajax({
+                url: '/Master/GetDates/',
+                type: 'POST',
+                data: $('#frmBillingCycleParameterSave').serialize(),
+                cache: false,
+                success: function (data) {
+
+                    var date1 = new Date(parseInt(data.BillDate.substr(6)));
+                    var date2 = new Date(parseInt(data.StatementDate.substr(6)));
+                    var date3 = new Date(parseInt(data.PaymentDate.substr(6)));
+
+                    $('#BillDate').datepicker("setDate", date1);
+                    $('#StatementDate').val($.datepicker.formatDate('dd/mm/yy', date2));
+                    $('#PaymentDueDate').val($.datepicker.formatDate('dd/mm/yy', date3));
+                    setCalenderDates();
+                    setCalenderDates2();
+                }
+            });
+            
+        }
+
+
+        $("#BillMonth").change(function (evt) {
+             DateChange();
+        });
+        
+
+        $("#BillYear").change(function (evt) {
+            DateChange();
+        });
+
+        
+        $('#frmBillingCycleParameterSave').submit(function (e) {
+
+            $('#BillYear_Validate').text("");
+            var BillDate = $("#BillDate").datepicker('getDate')
+            
+            if ($("#BillMonth option:selected").val() != BillDate.getMonth() + 1)
+            {
+                $('#BillDate_Validate').text("@Html.Raw(string.Format(Resources.MsgErrInvalid,Resources.BillDate))");
+                e.preventDefault();
+            }
+
+        });
+
+        $('#BillDate').focusin(function () {
+            $('#BillDate_Validate').text("");
+        });
+
+        //$("#StatementDate").rules('add', { greaterThan: "#BillDate",messages: {
+        //    greaterThan: "Statement Date must be greater than Bill Date"
+        //} });
+
+        //$("#PaymentDueDate").rules('add', {
+        //    greaterThan: "#BillDate", messages: {
+        //        greaterThan: "Payment Due Date must be greater than Bill Date"
+        //    }
+        //});
+
+    });
+
+
+
+//    jQuery.validator.addMethod("greaterThan",
+//function (value, element, params) {
+
+//    if (!/Invalid|NaN/.test(new Date(value))) {
+//        // GET CURRENT DATE
+
+//        //return new Date(value) > new Date($(params).val());
+//        return secondDate > firstDate;
+//    }
+
+//    return isNaN(value) && isNaN($(params).val())
+//        || (Number(value) > Number($(params).val()));
+//}, 'Must be greater than {0}.');
+
+
+</script>
+
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"BillingCycleParameterList","Master" )</li>
+            }
+            <li class="active"><a href="#tab1">@Resources.DetailsPageHeading</a></li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("BillingCycleParameterSave", "Master", new { Id = Convert.ToString(Model.BillingCycleParameterId), }, FormMethod.Post, new { id = "frmBillingCycleParameterSave", name = "frmBillingCycleParameterSave" }))
+                 {
+                <div class="tab-content" id="tab1">
+                     <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>                  
+                    <div class="row">
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.BillMonth</div>
+@*                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.BillMonth, MonthItems.AsEnumerable())
+                                    @Html.ValidationMessageFor(x => x.BillMonth)
+                                </div>*@
+                                 <div class="Field">
+                                     <span>@Html.DropDownListFor(x => x.BillMonth, MonthItems.AsEnumerable(), new { id = "BillMonth", @class = "inline", style="width:30%"})</span>
+                                     <span><label class="inline" style="font-size:100%; padding:6px 20px 0px 40px"> @Resources.BillYear </label></span>
+                                     <span>@Html.DropDownListFor(x => x.BillYear, YearItems.AsEnumerable(), new { id = "BillYear", @class = "inline", style="width:30%; float:right"})</span>
+                                    <span class="Field">
+                                        @Html.ValidationMessageFor(x => x.BillMonth,string.Empty, new { style="font-size:1.2em"})
+                                        @Html.ValidationMessageFor(x => x.BillYear,string.Empty, new { style="font-size:1.2em"})
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.CycleCode</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.BillCycleSysParamId, BillingCycleItems.AsEnumerable(), new { id = "BillCycleSysParamId"})
+                                    @Html.ValidationMessageFor(x => x.BillCycleSysParamId)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.BillDate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.BillDate, new {id = "BillDate", @class ="datepicker", @readonly="true", Value = Model.BillDate.ToShortDateString() })
+                                    @Html.ValidationMessageFor(x => x.BillDate)
+                                    <label id="BillDate_Validate" class="validationMessage" ></label>
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.StatementDate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.StatementDate, new {id = "StatementDate", @class ="datepicker", @readonly="true", Value = Model.StatementDate.ToShortDateString() })
+                                    @Html.ValidationMessageFor(x => x.StatementDate)
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.PaymentDueDate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.PaymentDueDate, new {id = "PaymentDueDate", @class ="datepicker", @readonly="true", Value = Model.PaymentDueDate.ToShortDateString() })
+                                    @Html.ValidationMessageFor(x => x.PaymentDueDate)
+                                </div>
+                            </div>
+@*                            <div class="TwoColumn">
+                                <div class="label">Bill From Date</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.BillFrom, "{0:dd/MM/yyyy}", new { id = "FromDate", @readonly = "true" })
+                                    @Html.ValidationMessageFor(x => x.BillFrom)
+                                </div>
+                            </div>*@
+
+
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.BillFromDate</div>
+                                 <div class="Field">
+                                     <span>
+                                         @Html.TextBoxFor(x => x.BillFrom, new {id = "FromDate", @class ="datepicker inline", @readonly="true", style="width:24%", Value = Model.BillFrom.Value.ToShortDateString() })
+                                     </span>
+                                     <span><label class="inline" style="font-size:100%; width:33%; padding:2% 2% 0% 4%"> @Resources.BillToDate </label></span>
+                                     <span>
+                                         @Html.TextBoxFor(x => x.BillTo, new {id = "ToDate", @class ="datepicker inline", @readonly="true", style="width:22%; float:right", Value = Model.BillTo.Value.ToShortDateString() })
+                                     </span>
+                                    <span class="Field">
+                                        @Html.ValidationMessageFor(x => x.BillMonth,string.Empty, new { style="font-size:1.2em"})
+                                        @Html.ValidationMessageFor(x => x.BillYear,string.Empty, new { style="font-size:1.2em"})
+                                    </span>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+@*                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">Bill To Date</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.BillTo, "{0:dd/MM/yyyy}", new { id = "ToDate", @readonly = "true" })
+                                    @Html.ValidationMessageFor(x => x.BillTo)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">&nbsp;</div>
+                                <div class="Field">&nbsp;</div>
+                            </div>
+                        </div>*@
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                        @Html.HiddenFor(x => x.BillMonth)
+                        @Html.HiddenFor(x => x.BillYear)
+                        @Html.HiddenFor(x => x.BillCycleSysParamId, new { id = "hidBillCycleSysParamId"})
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>
+<script>
+    $(function () {
+        setCalenderDates();
+        setCalenderDates2();
+
+        if (!'@ViewData["FormStatus"]') {
+            var drpBillMonth = $('select[name="BillMonth"]');
+            drpBillMonth.prop('disabled', false);
+            var drpBillYear = $('select[name="BillYear"]');
+            drpBillYear.prop('disabled', false);
+            var drpCycleCode = $('select[name="BillCycleSysParamId"]');
+            drpCycleCode.prop('disabled', false);
+        }
+        else {
+            var drpBillMonth = $('select[name="BillMonth"]');
+            drpBillMonth.prop('disabled', true);
+            var drpBillYear = $('select[name="BillYear"]');
+            drpBillYear.prop('disabled', true);
+            var drpCycleCode = $('select[name="BillCycleSysParamId"]');
+            drpCycleCode.prop('disabled', true);
+        }
+
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+
+        if ('@ViewData["FormStatus"]' == "A") {
+            if ($("#Submit").length) { $("#Submit").removeClass('BtnDisabled').addClass('Greenbutton'); }
+            $("#Submit").attr('disabled', false);
+
+            if ($("#Delete").length) { $("#Delete").removeClass('Greenbutton').addClass('BtnDisabled'); }
+            $("#Delete").attr('disabled', true);
+        }
+
+    })
+</script>

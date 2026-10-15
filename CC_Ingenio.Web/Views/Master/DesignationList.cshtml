@@ -1,0 +1,159 @@
+﻿@using CC_Ingenio.Web.ViewModel.Master;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = "Designation Search";
+    ViewBag.Title = String.Concat(new object[] { Resources.Search, " ", Resources.Designation });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model DesignationSearch
+@{
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+
+    List<SelectListItem> Position = new List<SelectListItem>();
+    foreach (var item in ViewBag.Position)
+    {
+        Position.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    Position.RemoveAt(0);
+    Position.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+
+<section class="feature">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active">@Html.ActionLink(Resources.SearchPageHeading,"DesignationList","Master" )</li>
+            <li> @Html.ActionLink(Resources.DetailsPageHeading,"DesignationAdd","Master" )</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("DesignationList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.DesignationCode</div>
+                                        <div class="Field">
+                                                @Html.TextBoxFor(x => x.DesignationCode, new { maxlength = 5})
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.DesignationDescription</div>
+                                        <div class="Field" >
+                                            @Html.TextBoxFor(x=>x.DesignationDescription, new { maxlength = 50 })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                     <div class="TwoColumn">
+                                        <div class="label">@Resources.Position</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x => x.Position,Position)
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.Rank</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.Rank, new { maxlength = 50 })
+                                        </div>
+                                    </div>
+                                </div>
+                                
+
+                                <div class="SearchColumnbtn">
+                                        <span>
+                                            <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                        </span>
+                                        <span>
+                                            <input id="Button2" type="submit" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                        </span>
+                                </div>                                
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    }
+
+                </div>
+                <div class="row">
+                   
+                    <div class="standard-table">
+
+                        @grid.GetHtml(columns:grid.Columns(
+                                    grid.Column("DesignationCode",Resources.DesignationCode),
+                                    grid.Column("DesignationDescription",Resources.DesignationDescription),   
+                                    grid.Column("PositionDesc",Resources.Position), 
+                                    grid.Column("Rank",Resources.Rank),                                  
+                                    grid.Column("ApprovalStatusDesc", Resources.Status),
+                                    grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink(Resources.Edit, "DesignationAdd", "Master", new { ADesignationCode = item.DesignationCode, AOrganizationCode = item.OrganizationCode }, null));
+                                                    
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "DesignationView", "Master", new { ADesignationCode = item.DesignationCode, AOrganizationCode = item.OrganizationCode }, null)));  
+                                                }
+                                            }),
+                                    grid.Column(Resources.Delete, format: 
+                                        (item) =>
+                                                 {
+                                                     if (lstPriv.Contains("Delete"))
+                                                     {
+                                                         if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                                         {
+                                                             return Html.Raw(Html.ActionLink(Resources.Delete, "DesignationDelete", "Master", new { ADesignationCode = item.DesignationCode, AOrganizationCode = item.OrganizationCode }, new { @class = "delete-link" }));
+                                                         }
+                                                         else
+                                                         {
+                                                             return Html.Raw("");
+                                                         }
+                                                     }
+                                                     else
+                                                     {
+                                                         return Html.Raw("");
+                                                     }
+                                            })
+                    ))
+                                
+                  
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+

@@ -1,0 +1,218 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo
+@using System.Web.Script.Serialization;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@model LostStolenReissueRequestDTO
+@{    
+    List<SelectListItem> newContractList = new List<SelectListItem>();
+
+    foreach (var item in ViewBag.NewContractList)
+    {
+        newContractList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+<link href="~/Content/PopUpStyle.css" rel="stylesheet" />
+<script src="~/Scripts/PopUpScript.js"></script> 
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+        $("#ExpiryDate").datepicker({
+            changeYear: true,
+            changeMonth: true,
+            yearRange: '2000:2020',
+            dateFormat: "@Resources.FormatDateJS",
+            numberOfMonths: 1
+        });
+
+        $('#Save').click(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/CustomerService/SaveLostStolenCardReissueRequest/',
+                type: 'POST',
+                data: $('#frmLostStolenReissue').serialize(),
+                cache: false,
+                success: function (data) {                   
+                    if (data != 'Undefined') {
+                        $('#partialViewDiv').html(data);                       
+                    }
+                }
+            });
+
+        });
+
+        if ('@Model.IsSaved' == 'True') {
+                $("#Save").attr('disabled', true);
+                $("#Save").removeClass('Greenbutton').addClass('BtnDisabled');
+                ShowSimpleModalDialog("@Html.Raw(string.Format(Resources.MsgInfoSaveSuccess,""))", "");
+            }      
+        
+        if ('@Model.IsBlocked' == 'False') {
+            $("#Save").attr('disabled', true);
+            $("#Save").removeClass('Greenbutton').addClass('BtnDisabled');
+        }
+
+        $('input[id="New"]').hide();
+        $('input[id="Submit"]').hide();
+        $('input[id="Delete"]').hide();
+
+    });
+        
+</script>
+ 
+<style>
+
+    /*input[type="text"][readonly],
+    select[readonly]
+    {
+        background-color:#e8e7e3;
+        color:#100c0c;
+    }*/
+
+    input[type="text"][disabled],
+    select[disabled]
+    {
+        background-color:#e8e7e3;
+        color:#100c0c;
+    }
+
+</style>
+
+
+<div class="row"  style="width:auto"> 
+    @{Html.EnableClientValidation(true);}
+      @*<div class="BorderColumn" style="height:100%; width:99%">*@
+    <div class="BorderColumn" style="width:98.6%">
+          @*<div class="CustomerColumnTitle" style ="height:18px">Lost/stolen Reissue Request</div>*@
+            <div class="CustomerColumnTitle" >@Resources.LostOrStolenReissueRequest</div>
+         @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmLostStolenReissue", Name = "frmLostStolenReissue", @style = "height: 240px" }))
+         {
+
+                <span>
+                    @if (Model.ApprovalStatus == "P" || Model.ApprovalStatus == "R")
+                    {
+                        <text> <b>@String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusdesc })</b> </text>
+                    }
+                        @*@if (Model.ApprovalStatus == "P")
+                        {
+                        <text> Status :<b> @Html.Raw(Model.ApprovalStatusdesc)</b> </text>   
+                        <script>
+                            $("#Save").attr('disabled', true);
+                            $("#Save").removeClass('Greenbutton').addClass('BtnDisabled');
+                        </script>  }
+                        else if (Model.ApprovalStatus == "R")
+                        {
+                        <text> Status :<b> @Html.Raw(Model.ApprovalStatusdesc)</b> </text>   
+                        <script>
+                            $("#Save").attr('disabled', false);
+                            $("#Save").removeClass('BtnDisabled').addClass('Greenbutton');
+                        </script>  }
+                        else
+                        {
+                        <script>
+                            $("#Save").attr('disabled', false);
+                            $("#Save").removeClass('BtnDisabled').addClass('Greenbutton');
+                        </script>  }*@
+                </span>
+             
+            <div class="row">
+                <div class="TwoColumn" style="width: 28%; float: left">
+                    <div class="label" style="width: 40%">@Resources.RUT</div>
+                    <div class="Field" style="width: 50%">
+                        @Html.TextBoxFor(x => x.RUT, new { id = "RUT", name = "RUT", @disabled = "true" })
+                    </div>
+                </div>
+                <div class="TwoColumn" style="width: 28%; float: left">
+                    <div class="label" style="width: 40%">@Resources.CardNumber</div>
+                    <div class="Field" style="width: 50%">
+                         @Html.TextBoxFor(x => x.CardNumber, new { id = "CardNumber", name = "CardNumber", @disabled = "true" })
+                    </div>
+                </div>
+                <div class="TwoColumn" style="width: 28%; float: left">
+                    <div class="label" style="width: 40%">@Resources.Contract</div>
+                    <div class="Field" style="width: 50%">
+                        @Html.TextBoxFor(x => x.ContractCode, new { id = "ContractCode", name = "readonly", @disabled = "true" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+               @* <div class="TwoColumn" style="width: 28%; float: left">
+                    <div class="label" style="width: 40%">RUT Verification Digit</div>
+                    <div class="Field" style="width: 50%">
+                        @Html.TextBoxFor(x => x.RUTVerificationDigit, new { id = "RUTVerificationDigit", name = "RUTVerificationDigit", maxlength = 5 })
+                        @Html.ValidationMessageFor(x => x.RUTVerificationDigit)
+                    </div>
+                </div>*@
+                 <div class="TwoColumn" style="width: 28%; float: left">
+                    <div class="label" style="width: 40%">@Resources.NewContract</div>
+                    <div class="Field" style="width: 50%">
+                        @Html.DropDownListFor(x => x.NewContractCode, newContractList, new { id = "NewContractCode" })
+                        @Html.ValidationMessageFor(x => x.NewContractCode)
+                    </div>
+                </div>
+                <div class="TwoColumn" style="width: 28%; float: left">
+                    <div class="label" style="width: 40%">@Resources.SerialNumber</div>
+                    <div class="Field" style="width: 50%">
+                        @Html.TextBoxFor(x => x.SerialNumber, new { id = "SerialNumber", name = "SerialNumber", maxlength = 15 })
+                        @Html.ValidationMessageFor(x => x.SerialNumber)
+                    </div>
+                </div>
+                <div class="TwoColumn" style="width: 28%; float: left">
+                    <div class="label" style="width: 40%">@Resources.ExpiryDate</div>
+                    <div class="Field" style="width: 50%">
+                         @Html.TextBoxFor(x => x.ExpiryDate, new {id = "ExpiryDate", @class ="datepicker", @readonly="true", Value = Model.ExpiryDate.ToShortDateString() })
+                        @Html.ValidationMessageFor(x => x.ExpiryDate)
+                    </div>
+                </div>
+            </div>
+
+             <div class="row" style ="padding-left : 1.7em; padding-top: 15px">
+                    @{
+                        <text> @String.Concat(new object[] { Resources.LostOrStolenStatus, " : ", Model.CardStatus }) </text>
+                    }
+                       
+             </div>
+@*            <div class="row" style ="padding-left : 1.5em">
+                @Html.Raw(Html.BasicButtons(lstPriv))  
+            </div>*@
+                     
+                @Html.Raw(Html.BasicButtons(lstPriv)) 
+                                 
+            <div>
+                @Html.HiddenFor(x => x.CardNumber)
+                @Html.HiddenFor(x => x.RUT)
+                @Html.HiddenFor(x => x.ContractCode)
+                @Html.HiddenFor(x => x.IsBlocked)
+                @Html.HiddenFor(x => x.CardStatus)
+            </div>
+            
+         }
+         
+          </div>
+          
+    </div>
+
+
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+
+        EnableDisableControls('@ViewData["FormStatus"]');
+    })
+</script>

@@ -1,0 +1,68 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@model CC_Ingenio.Web.ViewModel.CardBooking.RenewalCardSearch 
+
+<script type="text/javascript">
+
+    function setCalenderDates() {
+
+        var fromDate = $('#ValidFrom').val();
+        var toDate = $('#ValidTo').val();
+
+        //$('#ValidFrom').datepicker("option", "maxDate", toDate);
+        $('#ValidTo').datepicker("option", "minDate", fromDate);
+
+    }
+
+    $(document).ready(function () {
+
+        $('#ValidFrom').datepicker("option", "onSelect", setCalenderDates);
+        $('#ValidTo').datepicker("option", "onSelect", setCalenderDates);
+
+    });
+</script>
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row" >
+
+                        @using (Html.BeginForm("ShowRenewalCardsReport", "CardBooking", FormMethod.Post, new { id = "frmRenewalCardList", Name = "frmRenewalCardList", @style = "height: 117px;", target = "_blank" }))
+                        {
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.ValidFrom</div>
+                                    <div class="Field">
+                                        <span>
+                                            @Html.TextBoxFor(x => x.ValidFrom, new {id = "ValidFrom", @class ="datepicker", style="width:24%", @readonly="true", Value = Model.ValidFrom.ToShortDateString() })
+                                        </span>
+                                        <span><label class="inline" style="font-size:100%; padding:6px 20px 0px 40px">@Resources.ValidTo  </label></span>
+                                        <span>
+                                            @Html.TextBoxFor(x => x.ValidTo, new { id = "ValidTo", @class ="datepicker",style="width:24%; float:right", @readonly="true", Value = Model.ValidTo.ToShortDateString() })
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                <div class="SearchColumnbtn">
+                                    <span>
+                                        <input style="width:auto" id="ShowReportButton" name="ShowReportButton" class="Greenbutton" type="submit" value="@Resources.ShowReport"/>
+                                    </span>
+                                </div>
+                                </div>
+                            </div>
+                        }
+                </div>
+            </div>
+        </div>
+   </div>
+</section>
+
+<script>
+    $(function () {
+        setCalenderDates();
+    })
+</script>

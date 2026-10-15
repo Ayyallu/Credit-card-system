@@ -1,0 +1,150 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo
+@using System.Web.Script.Serialization;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@model LostStolenCardBlockDTO
+@{
+    
+    List<SelectListItem> CardTypeList = new List<SelectListItem>();
+    List<SelectListItem> CardStatusList = new List<SelectListItem>();
+    List<SelectListItem> ProductMemberTypeList = new List<SelectListItem>();
+
+    foreach (var itm in ViewBag.CardMemberTypeItems)
+    {
+        ProductMemberTypeList.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    foreach (var itm in ViewBag.CardTypeItems)
+    {
+        CardTypeList.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    foreach (var itm in ViewBag.CardStatusTypeItems)
+    {
+        CardStatusList.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        $('#Save').click(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/CustomerService/SaveLostStolenCardBlock/',
+                type: 'POST',
+                data: $('#frmLostStolenCardBlock').serialize(),
+                cache: false,
+                success: function (data) {                   
+                    if (data != 'Undefined') {
+                        $('#partialViewDiv').html(data);                       
+                    }
+                }
+            });
+
+        });
+
+        if ('@Model.IsSaved' == 'True') {
+            $("#Save").attr('disabled', true);
+            $("#Save").removeClass('Greenbutton').addClass('BtnDisabled');
+                ShowSimpleModalDialog("@Resources.MsgInfoCardBlockedSuccessfully", "");
+            }      
+
+            if ('@Model.IsBlocked' == 'True')
+            {
+                $("#Save").attr('disabled', true);
+                $("#Save").removeClass('Greenbutton').addClass('BtnDisabled');
+            }
+
+            $('input[id="New"]').hide();
+            $('input[id="Submit"]').hide();
+            $('input[id="Delete"]').hide();
+            $('input[id="Reset"]').hide();
+
+        }); 
+</script>
+
+
+<style>
+
+    /*input[type="text"][readonly],
+    select[readonly]
+    {
+        background-color:#e8e7e3;
+        color:#100c0c;
+    }
+
+    input[type="text"][disabled],
+    select[disabled]
+    {
+        background-color:#e8e7e3;
+        color:#100c0c;
+    }*/
+
+</style>
+ 
+<div class="row">
+    <div class="BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.LostOrStolenCardBlock</div>
+        @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmLostStolenCardBlock", Name = "frmLostStolenCardBlock", @style = "height: 170px" }))
+        {
+            <div class="row">
+                <div class="row">
+                    <div class="TwoColumn" style="width: 28%; float: left">
+                        <div class="label" style="width: 40%">@Resources.RUT</div>
+                        <div class="Field" style="width: 50%">
+                            @Html.TextBoxFor(x => x.RUT, new { id = "RUT", name = "RUT", @readonly = "true" })
+                        </div>
+                    </div>
+                    <div class="TwoColumn" style="width: 28%; float: left">
+                        <div class="label" style="width: 40%">@Resources.CardNumber</div>
+                        <div class="Field" style="width: 50%">
+                            @Html.TextBoxFor(x => x.CardNumber, new { id = "CardNumber", name = "CardNumber", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="TwoColumn" style="width: 28%; float: left">
+                        <div class="label" style="width: 40%">@Resources.CardType</div>
+                        <div class="Field" style="width: 52.5%">
+                            @Html.DropDownListFor(x => x.CardType, CardTypeList, new { id = "CardType", @disabled = "true" })
+                        </div>
+                    </div>
+                    <div class="TwoColumn" style="width: 28%; float: left">
+                        <div class="label" style="width: 40%">@Resources.CardStatus</div>
+                        <div class="Field" style="width: 52.5%">
+                            @Html.DropDownListFor(x => x.CardStatus, CardStatusList, new { id = "CardStatus", @disabled = "true" })
+                        </div>
+                    </div>
+                    <div class="TwoColumn" style="width: 28%; float: left">
+                        <div class="label" style="width: 40%">@Resources.CardMemberType</div>
+                        <div class="Field" style="width: 52.5%">
+                            @Html.DropDownListFor(x => x.CardMemberType, ProductMemberTypeList, new { id = "CardMemberType", @disabled = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    @Html.HiddenFor(x => x.CardNumber)
+                    @Html.HiddenFor(x => x.CardType)
+                    @Html.HiddenFor(x => x.CardStatus)
+                    @Html.HiddenFor(x => x.CardMemberType)
+                </div>
+                @Html.Raw(Html.BasicButtons(lstPriv))
+            </div>                                   
+        }
+    </div>
+</div>

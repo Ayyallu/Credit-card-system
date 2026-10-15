@@ -1,0 +1,463 @@
+﻿@using CC_Ingenio_Resources;
+@{
+    ViewBag.Title = Resources.StatementGeneration ;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.Web.ViewModel.Billing
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/spin.js/1.2.7/spin.min.js"></script>
+
+@model StatementGenerationSearch
+@{
+    var grid = new WebGrid(Model.SearchResult, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE);
+    grid.Pager(WebGridPagerModes.All);
+
+    List<SelectListItem> MonthItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Month)
+    {
+        MonthItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> YearItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Year)
+    {
+        YearItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    if (TempData.ContainsKey("RecCount"))
+    {
+        TempData["RecCount"] = ((List<CC_Ingenio.DataTranfer.BillingInfo.StatementGenerationDTO>)Session["StatementGeneration"]).Where(x => x.IsChecked == true).ToList().Count;
+    }
+    else
+    {
+        TempData.Add("RecCount", ((List<CC_Ingenio.DataTranfer.BillingInfo.StatementGenerationDTO>)Session["StatementGeneration"]).Where(x => x.IsChecked == true).ToList().Count);
+    }
+}
+
+<script type="text/javascript">
+
+    var index = 1;
+
+    $(document).ready(function () {
+
+        // Hide the "busy" Gif at load:
+        //$("#divProcessing").hide();
+
+        //// Attach click handler to the submit button:
+        //$('#StatementGenerateButton').click(function () {
+        //    $('#frmStatement').submit();
+        //});
+
+
+        //$("#frmStatement").on("submit", function (event) {
+        //    event.preventDefault();
+
+        //    // Show the "busy" Gif:
+        //    $("#divProcessing").show();
+        //    var url = $(this).attr("action");
+        //    var formData = $(this).serialize();
+        //    $.ajax({
+        //        url: url,
+        //        type: "POST",
+        //        data: formData,
+        //        dataType: "json",
+        //        success: function (returnData) {
+
+        //            // Hide the "busy" gif:
+        //            $("#divProcessing").hide();
+
+        //            ShowSimpleModalDialog(returnData.Message, returnData.RedirectUrl);
+
+        //        }
+        //    })
+        //});
+
+
+        //$("#allBox").click(function () {
+   
+        //    var all = $("#allBox").attr("checked") ? true : false;
+
+        //    $(".select").attr("checked", $(this).attr("checked") ? true : false);
+        //    $.ajax({
+        //        url: '/Billing/UpdatingStatementGenerationSessionAll/',
+        //        data: { ischecked: all },
+        //        type: 'get',
+        //        cache: false,
+        //        contentType: 'application/json; charset=utf-8',
+        //        success: function (data) {
+
+        //        }
+        //    });
+        //});
+
+
+        $("#allBox").click(function () {
+
+            var pageno = $("#page").val() == "" ? 0 : $("#page").val();
+
+            var all = $("#allBox").attr("checked") ? true : false;
+            $(".select").attr("checked", $(this).attr("checked") ? true : false);
+
+            $.ajax({
+                url: '/Billing/UpdatingStatementGenerationSessionAll/',
+                data: { isChecked: all, Apage: pageno },
+                type: 'get',
+                cache: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $('input:hidden[name="Count"]').val(data.Count);
+                    $('#SelectedCount_Validate').text("");
+                }
+            });
+        });
+
+
+        $("input.select").each(function () {
+            $(this).data('row', index);
+            $(this).click(function () {
+
+                var tr = $(this).parents('tr:first');
+                var CardNumber = tr.find("#CardNumber").text();
+
+                var BillMonth = tr.find("#BillMonth").text();
+                var BillYear = tr.find("#BillYear").text();
+
+                var Isprinted = tr.find('#IsChecked').attr('checked') ? "True" : "False";
+                             
+                $.ajax({
+                    url: '/Billing/UpdatingStatementGenerationSession/',
+                    //data: { ACardNumber: CardNumber, ABillMonth: BillMonth, ABillYear:BillYear, ischecked: Isprinted },
+                    data: { ACardNumber: CardNumber, IsChecked: Isprinted },
+                    type: 'get',
+                    cache: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $('input:hidden[name="Count"]').val(data.Count);
+                        $('#SelectedCount_Validate').text("");
+                    }
+                });
+            });
+            index++;
+        });
+
+
+
+        $("#SearchButton").click(function (e) {
+            
+            if ($('#CardNumber').val() == "" && $('#BillMonth').val() == "" && $('#BillYear').val() == "") {
+                $('#SearchFilter_Validate').text("@Html.Raw(String.Format(Resources.MsgErrPleaseSelect, Resources.SearchCriteria))");
+                            e.preventDefault;
+                            return false;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/Billing/DeletingSessionData',
+                success: function (returnData) {
+
+                    if (returnData.RedirectUrl.length > 0) {
+
+                        window.location.href = returnData.RedirectUrl;
+                        return true;
+                    }
+                }
+            });
+        });
+        
+        $(function () {
+            $("#BillMonth").change(function () {
+                $('#SearchFilter_Validate').text("");
+            });
+        });
+
+        $(function () {
+            $("#BillYear").change(function () {
+                $('#SearchFilter_Validate').text("");
+            });
+        });
+        
+        $('#CardNumber').focusin(function () {
+            $('#SearchFilter_Validate').text("");
+        });
+        
+        $("#StatementGenerateButton").click(function (e) {
+                        
+            var RecCount = $('input:hidden[name="Count"]').val();
+            if (!RecCount)
+                RecCount = '@TempData["RecCount"]';
+
+            if (!RecCount || RecCount == 0) {
+@*                $('#SelectedCount_Validate').text("@Html.Raw(string.Format(Resources.MsgErrPleaseSelect,Resources.AtleastOneRecord))");*@
+                ShowSimpleModalDialog("@Html.Raw(string.Format(Resources.MsgErrPleaseSelect,Resources.AtleastOneRecord))", "");
+                return false;
+            };
+
+            $("#dialog").dialog({
+                resizable: false,
+                width: 400,
+                height: 160,
+                modal: true,
+                title: resourceProvider.ApplicationName,
+                buttons: [{
+                    class: "LeftButton",
+                    text: resourceProvider.Yes,
+                    click: function () {
+
+                        $("#loading").fadeIn(0500);
+                        var opts = {
+                            lines: 12, // The number of lines to draw
+                            length: 7, // The length of each line
+                            width: 4, // The line thickness
+                            radius: 10, // The radius of the inner circle
+                            color: '#FFFFFF', // #rgb or #rrggbb
+                            speed: 1, // Rounds per second
+                            trail: 60, // Afterglow percentage
+                            shadow: false, // Whether to render a shadow
+                            hwaccel: false // Whether to use hardware acceleration
+                        };
+                        var target = document.getElementById('loading');
+                        var spinner = new Spinner(opts).spin(target);
+
+                        $.ajax({
+                            url: '/Billing/GenerateReport/',
+                            type: 'POST',
+                            data: $('#frmList').serialize(),
+                            cache: false,
+                            success: function (data) {
+                                //$("#SearchButton").click();
+                                $("#loading").fadeOut(0500);
+                                ShowSimpleModalDialog("@Html.Raw(String.Format(Resources.MsgInfoStatementGenSuccess,Resources.Statement))", "/Billing/StatementGenerationList/");
+                }
+            });
+
+                        $(this).dialog("close");
+                    }
+                },
+                {
+                    text: resourceProvider.No,
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+
+            $("#dialog").text(resourceProvider.MsgConfGenerate);
+
+            $("#dialog").dialog("open");
+
+                        
+
+        });
+        
+    });
+
+</script>
+
+
+
+
+<style type="text/css">
+    #loading
+    {
+        z-index: 9998;
+        position: fixed;
+        display: none;
+        height: 100%;
+        width: 100%;
+        background: #000000;
+        background-color: rgba(0,0,0,0.9);
+        color: white;
+        opacity : 0.9;
+        top: 0px;
+        left: 0px;
+    }
+  
+    #loadingcontent
+    {
+        display:table;
+        position:fixed;
+        left:0;
+        top:0;
+        width:100%;
+        height:100%;
+    }
+  
+    #loadingspinner
+    {
+        display: table-cell;
+        vertical-align:middle;
+        width: 50%;
+        text-align: center;
+        font-size:larger;
+        padding-top:80px;
+        opacity : 10;
+    }
+</style>
+
+<style>
+        input[type=checkbox] {
+        border:none;
+    }
+    .gridSelectCol
+    {
+        width: 4px;
+    }
+</style>
+
+<section class="featured">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("StatementGenerationList", "Billing", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+
+                                <div class="row">
+                                     <div class="TwoColumn">
+                                        <div class="label">@Resources.CardNumber</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.CardNumber, new { name = "CardNumber", id = "CardNumber", maxlength = 16 })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.RUT</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.RUT, new { name = "RUT", id = "RUT", @class="NumberHyphen", maxlength = 10 })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.BillMonth</div>
+                                         <div class="Field">
+                                             <span>@Html.DropDownListFor(x => x.BillMonth, MonthItems.AsEnumerable(), new {id="BillMonth", @class = "inline", style="width:30%"})</span>
+                                             <span><label class="inline" style="font-size:100%; padding:6% 6% 0% 4%"> @Resources.BillYear </label></span>
+                                             <span>@Html.DropDownListFor(x => x.BillYear, YearItems.AsEnumerable(), new {id ="BillYear", @class = "inline", style="width:30%; float:right"})</span>
+                                             <label id="SearchFilter_Validate" class="validationMessage"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                                @Html.HiddenFor(x => x.Page, new { id = "page" })
+                                @Html.Hidden("Count")
+
+                                <div class="row">                                                                                                                      
+                                    <div class="SearchColumnbtn">
+                                        <span>
+                                            <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                        </span>
+
+                                        <span>
+                                            <input id="Button2" type="submit" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                        </span>
+                                    </div>
+                                    <label id="SelectedCount_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        
+                        
+                        // We want to show this while the server process is running:
+                        //<div id="divProcessing">
+                            //<p>Processing, please wait . . . <img src="../Images/loading.gif"></p>
+                        //</div>
+                        
+                        <div id="loading">
+                            <div id="loadingcontent">
+                            <p id="loadingspinner">
+                                @Resources.MsgWaitStatementGen
+                            </p>
+                        </div>
+                        </div>
+                        
+                    }
+
+                </div>
+
+
+@*                @using (Html.BeginForm("GenerateReport", "Billing", new { AStatementGenerationSearch = Model }, FormMethod.Get, new { id="frmStatement" }))
+                {
+                    <div class="row" >
+                        <div class="standard-table">
+
+                        @MvcHtmlString.Create(grid.GetHtml(htmlAttributes: new { id = "container-body" },
+                            alternatingRowStyle: "alt",
+                            columns: grid.Columns(
+                                    grid.Column(columnName: "IsCheck", header: "{CheckBoxHeading}", format: (item) =>
+                                        {
+                                            return @Html.Raw("<input type='checkbox' class = 'select' id='IsChecked'  " + (((item.Value).IsChecked == true) ? "checked" : "") + " />");
+                                        },canSort: false),
+                                    grid.Column("CardNumber", Resources.CardNumber, format: @<text><label id="CardNumber" style="font-size: .95em;font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.CardNumber</label> </text>),
+                                    grid.Column("CustomerCardName", Resources.CustomerName),
+                                    grid.Column("RUT", Resources.RUT), 
+                                    grid.Column("BillDate", Resources.BillDate, format: @<text> @item.BillDate.ToShortDateString()</text>),
+                                    grid.Column("BillMonth", Resources.BillMonth, format: @<text><label id="BillMonth" style="font-size: .95em;font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.BillMonth</label> </text>),
+                                    grid.Column("BillYear", Resources.BillYear, format: @<text><label id="BillYear" style="font-size: .95em;font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.BillYear</label> </text>),
+                                    grid.Column("MinDueAmount", Resources.MinDue, format: @<text>@string.Format("{0:0}", item.MinDueAmount)</text>),
+                                    grid.Column("OpeningRevolvingBalance", Resources.OpeningRevBalance, format: @<text>@string.Format("{0:N0}", item.OpeningRevolvingBalance)</text>),
+                                    grid.Column("ClosingRevolvingBalance", Resources.ClosingRevBalance, format: @<text>@string.Format("{0:N0}", item.ClosingRevolvingBalance)</text>),
+                                    grid.Column("PaymentDueDate", Resources.PaymentDueDate, format: @<text> @item.PaymentDueDate.ToShortDateString()</text>)
+                            )).ToString().Replace("{CheckBoxHeading}", "<input type='checkbox' id='allBox'/>"))
+
+
+                        </div>
+                        
+                        <div style="float:right;">
+                            <input style="width:auto" id="StatementGenerateButton" name="StatementGenerateButton" class="Greenbutton" type="button" value = '@Resources.GenerateStatement'/>
+                        </div>  
+                                               
+                    </div>
+                }*@
+
+                <div class="row" >
+                        <div class="standard-table">
+
+                        @MvcHtmlString.Create(grid.GetHtml(alternatingRowStyle: "alt",
+                            columns: grid.Columns(
+                                    grid.Column(columnName: "IsCheck", header: "{CheckBoxHeading}", format: (item) =>
+                                    {
+                                        return @Html.Raw("<input type='checkbox' class = 'select' id='IsChecked'  " + (((item.Value).IsChecked == true) ? "checked" : "") + " />");
+                                    }, canSort: false),
+                                    grid.Column("CardNumber", Resources.CardNumber, format: @<text><label id="CardNumber" style="font-size: .95em;font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.CardNumber</label> </text>),
+                                    grid.Column("CustomerCardName", Resources.CustomerName),
+                                    grid.Column("RUT", Resources.RUT),
+                                    grid.Column("BillDate", Resources.BillDate, format: @<text> @item.BillDate.ToShortDateString()</text>),
+                                    grid.Column("BillMonth", Resources.BillMonth, format: @<text><label id="BillMonth" style="font-size: .95em;font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.BillMonth</label> </text>),
+                                    grid.Column("BillYear", Resources.BillYear, format: @<text><label id="BillYear" style="font-size: .95em;font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.BillYear</label> </text>),
+                                    grid.Column("MinDueAmount", Resources.MinDue, format: @<text>@string.Format("{0:N0}", item.MinDueAmount)</text>, style: "gridAmountRightAlign"),
+                                    grid.Column("OpeningRevolvingBalance", Resources.OpeningRevBalance, format: @<text>@string.Format("{0:N0}", item.OpeningRevolvingBalance)</text>, style: "gridAmountRightAlign"),
+                                    grid.Column("ClosingRevolvingBalance", Resources.ClosingRevBalance, format: @<text>@string.Format("{0:N0}", item.ClosingRevolvingBalance)</text>, style: "gridAmountRightAlign"),
+                                    grid.Column("PaymentDueDate", Resources.PaymentDueDate, format: @<text> @item.PaymentDueDate.ToShortDateString()</text>)
+                            )).ToString().Replace("{CheckBoxHeading}", "<input type='checkbox' id='allBox'/>"))
+
+
+                        </div>
+                        
+                        <div style="float:right;">
+                            <input style="width:auto" id="StatementGenerateButton" name="StatementGenerateButton" class="Greenbutton" type="button" value = '@Resources.GenerateStatement'/>
+                        </div>  
+                                               
+                    </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+

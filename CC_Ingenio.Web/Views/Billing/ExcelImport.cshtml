@@ -1,0 +1,114 @@
+﻿@using CC_Ingenio_Resources;
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Import });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model CC_Ingenio.DataTranfer.BillingInfo.BillingTestingDTO
+
+
+<script>
+    $(document).ready(function () {
+
+              
+        function Validate() {
+
+            if ($('#BillDate').val() == '' ) {
+                $('#BillDate_Validate').text('@Html.Raw(String.Format(Resources.MsgErrPleaseSelect, Resources.BillDate))');
+                return false;
+            }
+            else if ($('#ProcName').val() == '') {
+                $('#ProcName_Validate').text('@Html.Raw(String.Format(Resources.MsgErrPleaseSelect, Resources.Procedure))');
+                return false;
+            }
+
+            return true;
+        };
+        
+        
+        $('#ClearButton').click(function (e) {
+            $('#BillDate_Validate').text('');
+            $('#ProcName_Validate').text('');
+        });
+
+
+    });
+
+</script>
+
+
+
+<section class="featured">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+        
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @{Html.EnableClientValidation(true);}
+                    @using (Html.BeginForm("ImportIntoPullingTable", "Billing", FormMethod.Post, new {id="frmtest", enctype = "multipart/form-data" }))
+                    {
+                        <div class="SearchBox">
+  
+                            <div class="row">
+
+                            <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.SelectFile</div>
+                                 <div class="Field">
+                                     <input id="filepath" type="file" name="file" style="width:96%" data-val="true" data-val-required="@Resources.MsgPleaseSelectAFileToImport" />
+                                     @Html.ValidationMessage("file")
+                                </div>
+                                @ViewBag.Message
+                            </div>
+                            </div>
+                       
+                                                                                                                                                                                                                      
+                            <div class="rowbtn">
+                                <span>
+                                    <input id="ImportButton" name="SearchButton" class="Greenbutton" type="Submit" value="@Resources.Import" />
+                                </span>
+                                 <span>
+                                    <input id="ClearButton" type="reset" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                </span>
+                            </div>
+
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div class="row">
+
+                        </div>
+                    }
+
+                </div>
+                
+            </div>
+            
+        </div>
+
+    </div>
+
+</section>
+
+@*
+@using (Html.BeginForm("ImportIntoPullingTable", "Billing", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div>
+    <b><u>File Upload in MVC3 By Using Razor</u></b>
+        Select Image
+        <input type="file" name="file" />&nbsp;&nbsp;&nbsp;
+        <input type="submit" value="Upload Image" name="Command" /><br />
+    </div>
+    <div>
+    @ViewBag.Message
+    </div>
+}*@

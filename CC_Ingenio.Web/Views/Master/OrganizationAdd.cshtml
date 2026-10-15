@@ -1,0 +1,235 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.Organization });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model OrganizationDTO
+@{
+    
+    List<string> lstPriv = new List<string>();
+    
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+
+
+
+<script type="text/javascript">
+
+    function setCalenderDates() {
+
+        var fromDate = $('#FromDate').val();
+        var toDate = $('#ToDate').val();
+
+        $('#FromDate').datepicker("option", "maxDate", toDate);
+        $('#ToDate').datepicker("option", "minDate", fromDate);
+    }
+ 
+
+    $(document).ready(function () {
+
+        $('#FromDate').datepicker("option", "onSelect", setCalenderDates);
+        $('#ToDate').datepicker("option", "onSelect", setCalenderDates);
+
+        $('input[type="submit"]').on('click', function () {
+            $('#frmOrganization').data('button', this.value);
+        });
+
+        $("#frmOrganization").submit(function (e) {
+
+            if ($('#OrganizationCode').val().trim() <= parseFloat(0)) {
+                $('#OrganizationCode_Validate').text("@Html.Raw(string.Format(Resources.MsgErrValueNotZero,Resources.OrganizationCode))");
+                e.preventDefault();
+            }
+
+            var submitButton = $(this).data('button') || $('input[type="submit"]').get(0).name;
+            //alert(submitButton);
+            
+            if (submitButton == "Delete")
+            {
+                e.preventDefault();
+
+                var OrgCode = '@Model.OrganizationCode'
+                
+                var url = '/Master/OrganizationDelete/' + OrgCode
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: OrgCode,
+                    dataType: 'json'
+                });
+                
+                
+
+            }
+
+        })
+
+        $('#OrganizationCode').focusin(function () {
+            $('#OrganizationCode_Validate').text("");
+        });
+
+        var filename = '@Model.OrganizationLogo';
+
+        if (!filename)
+        {
+            //$('#LogoLink').text(filename);
+            $('#LogoLink').hide();
+        }
+        
+        //document.getElementById("filepath").addEventListener("change", function () {
+        //    alert(document.getElementById("filepath").value)
+        //    var file = document.getElementById("filepath").value
+        //    $('#OrganizationLogo').val(file);
+        //});
+
+        //$('#Delete').click(function (e) {
+        //    e.preventDefault();
+        //    alert('hai');
+        //});
+                       
+
+    });
+</script>
+
+<style type="text/css">
+    .LogoLinkCSS {
+        color: red;
+    }
+</style>
+
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title </div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li>@Html.ActionLink(Resources.SearchPageHeading,"OrganizationList","Master" )</li>
+            }
+            <li class="active">@Html.ActionLink(Resources.DetailsPageHeading,"OrganizationAdd","Master" )</li>
+        </ul>
+       
+        <!-- Tabs Content -->
+
+            <div class="tabs-container">
+                 @using (Html.BeginForm("OrganizationSave", "Master", new { Id = Model.OrganizationCode }, FormMethod.Post, new { id = "frmOrganization", name = "frmOrganization", enctype = "multipart/form-data" }))
+                 {
+                <div class="tab-content" id="tab1">
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.OrganizationCode</div>
+                                <div class="Field">
+                                    @if (!string.IsNullOrWhiteSpace(Model.OrganizationCode))
+                                    {
+                                        @Html.TextBoxFor(x => x.OrganizationCode, new { id = "OrganizationCode", name = "OrganizationCode", maxlength = 5, @readonly = "readonly"  })
+                                    }
+                                    else
+                                    { 
+                                        @Html.TextBoxFor(x => x.OrganizationCode, new { id = "OrganizationCode", name = "OrganizationCode", maxlength = 5 })
+                                    }
+                                    
+                                    @Html.ValidationMessageFor(x => x.OrganizationCode)
+                                     <label id="OrganizationCode_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label"> @Resources.BusinessName
+                                </div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.OrganizationDescription, new { id = "BusinessName", name = "BusinessName", maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.OrganizationDescription)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.ShortName</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.OrganizationShortName, new { id = "OrganizationShortName", name = "OrganizationShortName", maxlength = 10 })
+                                    @Html.ValidationMessageFor(x => x.OrganizationShortName)
+                                </div>
+                            </div>
+
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.SelectLogoFile </div>
+                                 <div class="Field">
+                                     <input id="filepath" type="file" name="file" style="width:96% ;"/>
+                                     @Html.ValidationMessage("file")
+                                     @*<label id ="LogoLink"></label>*@
+                                     @*@Html.ActionLink(Model.OrganizationLogo, "ViewLogo","Master", new { AFileName = Model.OrganizationLogo }, new { id ="LogoLink", target = "_blank"  })*@
+                                     @Html.ActionLink("View Logo", "ViewLogo", "Master", 
+                     new {AFileName = Model.OrganizationLogo}, new  { id ="LogoLink", AFileName ="LogoLink", target = "_blank", @class = "LogoLinkCSS"})
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.EffectiveFromDate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.EffectiveFromDate, new {id = "FromDate", @class ="datepicker", @readonly="true", Value = Model.EffectiveFromDate.ToShortDateString() })
+                                    @Html.ValidationMessageFor(x => x.EffectiveFromDate)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.EffectiveToDate </div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.EffectiveToDate, new { id = "ToDate", @class ="datepicker", @readonly="true", Value = Model.EffectiveToDate.ToShortDateString() })
+                                    @Html.ValidationMessageFor(x => x.EffectiveToDate)
+                                </div>
+                            </div>
+                        </div>
+                        
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>
+<script>
+    $(function () {
+        setCalenderDates();
+
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+        
+        jQuery(this).prev("Delete").attr("id", "newId");
+        
+
+    })
+</script>

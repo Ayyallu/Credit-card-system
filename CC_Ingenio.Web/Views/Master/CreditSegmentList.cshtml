@@ -1,0 +1,218 @@
+﻿@using CC_Ingenio_Resources;
+@using CC_Ingenio.Web.ViewModel.Master;
+@using System.Web.Script.Serialization;
+@model CreditSegmentSearch
+
+@{
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+        
+}
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.CreditSegment, " ",  Resources.Search});
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+<script type="text/javascript">
+
+   
+    function setCalenderDates() {
+
+        var fromDate = $('#FromDate').val();
+        var toDate = $('#ToDate').val();
+
+        if(toDate == "")
+        {
+            $("#ToDate").datepicker("setDate", fromDate);
+        }
+        
+        if(fromDate == "")
+        {
+            $("#FromDate").datepicker("setDate", toDate);
+        }
+
+        fromDate = $('#FromDate').val();
+        $('#ToDate').datepicker("option", "minDate", fromDate);
+
+    }
+
+
+    $(document).ready(function () {
+          
+
+        $('#FromDate').datepicker("option", "onSelect", setCalenderDates);
+        $('#ToDate').datepicker("option", "onSelect", setCalenderDates);
+
+        var data =  @Html.Raw(new JavaScriptSerializer().Serialize(ViewData["SearchMode"]));
+
+        setCalenderDates();
+
+        if (data == 'Default')
+        {
+            $("#FromDate").datepicker("setDate", "");
+            $("#ToDate").datepicker("setDate", "");
+        }
+        
+
+      //$(function () {
+      //    $("#grid tr").each(function () {
+
+      //        var shouldBeRed = $(this).find(".deleted");
+
+      //        if (shouldBeRed.length > 0) {
+      //            $(this).attr("class", "redRow");
+      //        }
+      //    });
+      //});
+
+
+    });
+    
+    
+</script>
+
+@*<style>
+    .redRow {
+        color:blue;
+    }
+</style>*@
+
+<section class="feature">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active">@Html.ActionLink(Resources.SearchPageHeading, "CreditSegmentList", "Master")</li>
+            <li>@Html.ActionLink(Resources.DetailsPageHeading, "CreditSegmentAdd", "Master")</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("CreditSegmentList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+
+                            <div class="row">
+
+                                 <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CreditSegmentCode</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.CardSegmentCode, new { maxlength = 5 })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.CreditSegmentName</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.CardSegmentName, new { maxlength = 50 })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.EffectiveFromDate</div>
+                                        <div class="Field">
+                                             @Html.TextBoxFor(x => x.EffectiveFromDate, new {id = "FromDate", @class ="datepicker", @readonly="true", Value = Model.EffectiveFromDate.ToShortDateString() })
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.EffectiveToDate</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.EffectiveToDate, new { id = "ToDate", @class ="datepicker", @readonly="true", Value = Model.EffectiveToDate.ToShortDateString() })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                </div>
+                             <div class="SearchColumnbtn">
+                                    <span>
+                                        <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                    </span>
+                                    <span>
+                                        <input id="Button2" type="submit" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                    </span>
+@*                                    <span>
+                                        <label>Search inactive records  @Html.CheckBoxFor(x => x.SearchDeleted) </label>
+                                    </span>*@
+                                </div>
+                            <div class="clear"></div>
+                        </div>
+
+                    }
+
+                </div>
+                <div class="row">
+
+                    <div class="standard-table" id="grid">
+
+                        @grid.GetHtml(alternatingRowStyle: "alt", columns: grid.Columns(
+                                    grid.Column("CardSegmentCode", Resources.CreditSegmentCode),
+                                    grid.Column("CardSegmentName", Resources.CreditSegmentName),
+                                    grid.Column("LegalEntityTypeDesc", Resources.LegalEntity),
+                                    grid.Column("EffectiveFromDate", Resources.EffectiveFromDate,format:@<text> @item.EffectiveFromDate.ToShortDateString()</text>),  
+                                    grid.Column("EffectiveToDate", Resources.EffectiveToDate,format:@<text> @item.EffectiveToDate.ToShortDateString()</text>),   
+                                    grid.Column("ApprovalStatusDesc", Resources.Status),
+                                    grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                //var css = @"class=""deleted""";
+                                                
+                                                if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                                {
+                                                    //return Html.Raw("<span " + css + ">" + Html.Raw(Html.ActionLink("Edit", "CreditSegmentAdd", "Master", new { id = item.CardSegmentCode }, null)) + "</span>"); 
+                                                    return Html.Raw(Html.Raw(Html.ActionLink(Resources.Edit, "CreditSegmentAdd", "Master", new { ACardSegmentCode = item.CardSegmentCode, AOrganizationCode = item.OrganizationCode }, null))); 
+                                                }
+                                                else
+                                                {
+                                                    return Html.Raw(Html.ActionLink(Resources.View, "CreditSegmentView", "Master", new { ACardSegmentCode = item.CardSegmentCode, AOrganizationCode = item.OrganizationCode }, null));
+                                                }
+                                            }),
+                                    grid.Column(Resources.Delete,   format: 
+                                        (item) =>
+                                            {
+                                                if (lstPriv.Contains("Delete"))
+                                                {
+                                                    if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                                    {
+                                                        return Html.Raw(Html.ActionLink(Resources.Delete, "CreditSegmentDelete", "Master", new { ACardSegmentCode = item.CardSegmentCode, AOrganizationCode = item.OrganizationCode }, new { @class = "delete-link" }));
+                                                    }
+                                                    else
+                                                    {
+                                                        return Html.Raw("");
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    return Html.Raw("");
+                                                }
+                                            })
+                    ))
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+<script>
+    $(function () {
+        setCalenderDates();
+    })
+</script>

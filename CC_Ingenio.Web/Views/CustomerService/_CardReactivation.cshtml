@@ -1,0 +1,181 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@using System.Web.Script.Serialization;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+@model CardReactivationDTO  
+@{
+    List<SelectListItem> reactivationReasonList = new List<SelectListItem>();
+    foreach (var item in ViewBag.reactivationReasonList)
+    {
+        reactivationReasonList.Add(new SelectListItem()
+        {
+            Text = item.Text,
+            Value = item.Value
+        });
+    }
+
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+<link href="~/Content/PopUpStyle.css" rel="stylesheet" />
+    <script src="~/Scripts/PopUpScript.js"></script>  
+
+<script type="text/javascript">
+  @*  if ('@Model.IsSaved' == 'True') {
+        $("#Save").attr('disabled', true);
+        $("#Save").removeClass('Greenbutton').addClass('BtnDisabled');
+        $("#Clear").attr('disabled', true);
+        $("#Clear").removeClass('Greenbutton').addClass('BtnDisabled');
+
+    }*@
+
+  
+
+  
+
+    $(document).ready(function () {
+
+        $("#ClosuredDate").datepicker({
+            changeYear: true,
+            changeMonth: true,
+            yearRange: '2000:2020',
+            dateFormat: "@Resources.FormatDateJS",
+            numberOfMonths: 1                        
+        });
+
+
+        $('#Save').click(function (e) {
+            e.preventDefault();
+       
+            $.ajax({
+                url: '/CustomerService/SaveCardReactivation/',
+                type:'POST',
+                data: $('#frmCardReactivation').serialize(),
+                cache:false,
+                success: function (data) {
+                    @*//alert('@Model.IsSaved')*@
+                    if (data != 'Undefined')
+                    {
+                        $('#partialViewDiv').html(data);
+                        @*//alert('@Model.IsSaved')*@
+                    }
+                }
+            });
+            
+        });
+
+        if ('@Model.IsSaved' == 'True') {
+            ShowSimpleModalDialog("@Html.Raw(string.Format(Resources.MsgInfoSaveSuccess,""))", "");
+        }
+
+    });
+
+    $('input[id="New"]').hide();
+    $('input[id="Submit"]').hide();
+    $('input[id="Delete"]').hide();
+
+</script>
+<div id="HistoryDiv"></div>
+<div class="row">
+
+    <div class="BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.CardReactivation</div>
+        @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmCardReactivation", Name = "frmCardReactivation", @style = "height: 200px;" }))
+        {
+                
+            <div>
+                <span>
+                    @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatusdesc))
+                    { 
+                        <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusdesc })</text>
+                            }
+@* @if ((Model.ApprovalStatus) == "P" || (Model.ApprovalStatus) == "A")
+                            { 
+                                <text> Status : @Html.Raw(Model.ApprovalStatusdesc) </text>     
+                                <script>
+                                    $("#Save").attr('disabled', true);
+                                    $("#Save").removeClass('Greenbutton').addClass('BtnDisabled');
+                                    $("#Clear").attr('disabled', true);
+                                    $("#Clear").removeClass('Greenbutton').addClass('BtnDisabled');
+                              </script>  
+                            }
+                            
+                             else if((Model.ApprovalStatus=="R") || (Model.ApprovalStatus=="D"))
+                             { 
+                                <text> Status : @Html.Raw(Model.ApprovalStatusdesc) </text>     
+                                <script>
+                                    $("#Save").attr('disabled', false);
+                                    $("#Save").removeClass('BtnDisabled').addClass('Greenbutton');
+                                    $("#Clear").attr('disabled', false);
+                                    $("#Clear").removeClass('BtnDisabled').addClass('Greenbutton');
+                              </script>  
+                             }
+                             else
+                             {
+                                <script>
+                                    $("#Save").attr('disabled', false);
+                                    $("#Save").removeClass('BtnDisabled').addClass('Greenbutton');
+                                    $("#Clear").attr('disabled', false);
+                                    $("#Clear").removeClass('BtnDisabled').addClass('Greenbutton');
+                                </script>  }*@
+                </span>
+            </div>
+            <div class="row">
+                <div class="row">
+                    <div class="row">
+                        <div class="TwoColumn">
+                            <div class="label">@Resources.ClosedStatus</div>
+                            <div class="Field">
+                                @Html.TextBoxFor(x => x.ClosureReasondesc, new { id = "ClosuredReason", name = "ClosuredReason", @readonly = "readonly" })
+                                @Html.ValidationMessageFor(x => x.ClosureReasondesc, "", new { id = "Validation_MessageType" })
+                            </div>
+                        </div>
+                        <div class="TwoColumn">
+                            <div class="label">@Resources.StatusToBeReactivated</div>
+                            <div class="Field">
+                                @Html.DropDownListFor(x => x.ReactivationReason, reactivationReasonList, new { id = "ReactivationReason" })
+                                @Html.ValidationMessageFor(x => x.ReactivationReason, "", new { id = "Validation_MessageType" })
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="TwoColumn">
+                            <div class="label ">@Resources.ReasonForReactivation</div>
+                            <div class="Field">
+                                @Html.TextAreaFor(x => x.ReactivationRemarks, new { id = "ReactivationRemarks", name = "ReactivationRemarks", maxlength = 500 })
+                                @Html.ValidationMessageFor(x => x.ReactivationRemarks, "", new { id = "Validation_MessageType" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @Html.Raw(Html.BasicButtons(lstPriv))
+                <div>
+                    @Html.HiddenFor(x => x.CardNumber)
+                    @Html.HiddenFor(x => x.CustomerId)
+                    @Html.HiddenFor(x => x.ClosureID)
+                    @Html.HiddenFor(x => x.ApprovalStatus)
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+
+        EnableDisableControls('@ViewData["FormStatus"]');
+    })
+</script>
+

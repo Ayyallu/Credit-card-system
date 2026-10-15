@@ -1,0 +1,388 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+@using CC_Ingenio.Common.Utils;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.SalesId });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model SalesIdDTO
+@{
+   
+    List<string> lstPriv = new List<string>();
+    List<SelectListItem> BranchItems = new List<SelectListItem>();
+    
+    foreach (var itm in ViewBag.Branch)
+    {
+        BranchItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    List<SelectListItem> CityItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.City)
+    {
+        CityItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> CommunaItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Communas)
+    {
+        CommunaItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+          
+        $("#CommunaCode").change(function () {
+            var communaCode = $(this).val();
+            SetCityDropDown(communaCode);
+            SetRegionDropDown(communaCode);
+        });
+
+        $(function () {
+            $('#Reset').click(function () {
+                window.location.reload();
+            });
+        })       
+      
+        $('#RUT').focusout(function () {
+            ValidateRUT();
+        });
+        
+        $('#frmSalesAdd').on('submit', function (e) {
+         
+            if($('#lblValidateSearchCriteria').text()!="")
+            {
+                e.preventDefault();
+            }
+        });
+
+        function ValidateRUT() 
+        {               
+            $('#lblValidateSearchCriteria').text("");  
+            var rut = document.getElementById("RUT").value;        
+        
+            if(rut.length ==0)
+            {
+                alert (rut.length);
+                return false;
+            }
+            else if(rut.length <7)
+            {               
+                $('#lblValidateSearchCriteria').text("@Html.Raw(string.Format(Resources.MsgErrMinimumLengthDigit ,Resources.RUT,6))");   
+            }
+            else if(rut.length >11)
+                $('#lblValidateSearchCriteria').text("@Html.Raw(string.Format(Resources.MsgErrMaximumLength  ,Resources.RUT,10))");          
+            else  if(rut.substring(rut.length-2,rut.length-1) !='-')
+            {                   
+                $('#lblValidateSearchCriteria').text("@Html.Raw(string.Format(Resources.MsgErrInvalidRUT))");  
+            }  
+            else 
+            {               
+
+                var CheckDigit =   rut.substring(rut.length-1,rut.length);
+                var RUTNumber = rut.substring(0,rut.length-2);
+                $('#lblValidateSearchCriteria').text("");  
+       
+                if (RUTNumber && CheckDigit) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/CardBooking/CheckIfValidCard',
+                        data: { Id: RUTNumber, Acheck: CheckDigit },
+                        cache: false,
+                        success: function (returnData) {
+                      
+                            if (CheckDigit.toUpperCase() == (returnData.CheckDigit).toUpperCase()) {
+                                if (returnData.Isvalid) {
+                                    $('#lblValidateSearchCriteria').text("");                          
+                                    return;
+                                }
+                            }
+                            else {
+                                alert ((returnData.CheckDigit).toUpperCase());
+                          
+                                $('#lblValidateSearchCriteria').text("@Html.Raw(string.Format(Resources.MsgErrInvalid,Resources.RUT))");                     
+                            }
+                            return false;
+                        }
+                    });
+                }
+               
+            }
+    }
+
+    });
+
+    function SetCityDropDown(communaCode){
+        $.getJSON("/Master/GetCityByCommuna?ACommunaCode=" + communaCode,
+                function (modeldata) {
+                    var select = $("[id = CityCode]");
+                    select.empty();
+                    $.each(modeldata.cityCodes, function (index, itemData) {
+                        select.append($('<option/>', {
+                            value: itemData.Value,
+                            text: itemData.Text
+                        }));
+                    });
+                    select.val(modeldata.CityCode);
+                    if(modeldata.CityCode)
+                    {
+                        $("#CityCode").valid();
+                    }
+                });
+    };
+
+    function SetRegionDropDown(communaCode){
+        $.getJSON("/Master/GetRegionByCommuna?ACommunaCode=" + communaCode,
+                function (modeldata) {
+                    var select = $("[id = RegionCode]");
+                    select.empty();
+                    $.each(modeldata.regionCodes, function (index, itemData) {
+                        select.append($('<option/>', {
+                            value: itemData.Value,
+                            text: itemData.Text
+                        }));
+                    });
+                    select.val(modeldata.RegionCode);
+                    if(modeldata.RegionCode)
+                    {
+                        $("#RegionCode").valid();
+                    }
+                });
+    };
+            
+    function bindCommunaValue(countryCode, SelectedCommunaCode) {
+        $.getJSON("/Master/GetCommunaByCountry?ACountryCode=" + countryCode,
+                function (modeldata) {
+                    var select = $("[id = CommunaCode]");
+                    select.empty();
+                    $.each(modeldata, function (index, itemData) {
+                        select.append($('<option/>', {
+                            value: itemData.Value,
+                            text: itemData.Text
+                        }));
+                    });
+                    select.val(SelectedCommunaCode);
+                    if(SelectedCommunaCode)
+                    {
+                        $("#CommunaCode").valid();
+                    }
+                });
+
+    };
+
+    function bindCityValue(communaCode, SelectedCityCode) {
+        $.getJSON("/Master/GetCityByCommuna?ACommunaCode=" + communaCode,
+                function (modeldata) {
+                    var select = $("[id = CityCode]");
+                    select.empty();
+                    $.each(modeldata.cityCodes, function (index, itemData) {
+                        select.append($('<option/>', {
+                            value: itemData.Value,
+                            text: itemData.Text
+                        }));
+                    });
+                    select.val(SelectedCityCode);
+                    if(SelectedCityCode)
+                    {
+                        $("#CityCode").valid();
+                    }
+                });
+
+    };
+      
+    function bindRegionValue(communaCode, selectedRegionCode) {
+        $.getJSON("/Master/GetRegionByCommuna?ACommunaCode=" + communaCode,
+                function (modeldata) {
+                    var select = $("[id = RegionCode]");
+                    select.empty();
+                    $.each(modeldata.regionCodes, function (index, itemData) {
+                        select.append($('<option/>', {
+                            value: itemData.Value,
+                            text: itemData.Text
+                        }));
+                    });
+                    select.val(selectedRegionCode);
+                    if(selectedRegionCode)
+                    {
+                        $("#RegionCode").valid();
+                    }
+                });
+    };
+    
+    function ValidateRUT() {
+        var RUTNumber = document.getElementById("RUT").value;
+        var CheckDigit = document.getElementById("RUT").value;     
+        if (RUTNumber && CheckDigit) {
+            $.ajax({
+                type: 'POST',
+                url: '/CardBooking/CheckIfValidCard',
+                data: { Id: RUTNumber, ACheckDigit: CheckDigit },
+                cache: false,
+                success: function (returnData) {
+                    if (CheckDigit.toUpperCase() == (returnData.CheckDigit).toUpperCase()) {
+                        if (returnData.Isvalid) {
+                            $('#lblValidateSearchCriteria').text("");                          
+                            return;
+                        }
+                    }
+                    else {
+
+                        $('#lblValidateSearchCriteria').text("@Html.Raw(string.Format(Resources.MsgErrInvalid,Resources.RUT))");                     
+                    }
+                    return false;
+                }
+            });
+        }
+        else {
+            SetZoomButton();
+        }
+    }
+   </script>
+
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li>@Html.ActionLink(Resources.SearchPageHeading, "SalesIdList", "Master")</li>                
+            }
+            <li class="active">@Html.ActionLink(Resources.DetailsPageHeading, "SalesIdAdd", "Master")</li>
+
+        </ul>
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+
+            @using (Html.BeginForm("SalesIdSave", "Master", new { ASalesId = Model.SalesId, ARUT = Model.RUT, AOrganizationCode = Model.OrganizationCode }, FormMethod.Post, new { id = "frmSalesAdd", name = "frmSalesAdd" }))
+            {
+                <div class="tab-content" id="tab1">
+
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>
+
+                    <div class="row">
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.SalesId </div>
+                                <div class="Field">
+                                    @if (!string.IsNullOrWhiteSpace(Model.SalesId))
+                                    {
+                                        @Html.TextBoxFor(x => x.SalesId, new { id = "SalesId", name = "SalesId", maxlength = 8, @readonly = "readonly", @class = "NumericOnly" })
+                                    }
+                                    else
+                                    { 
+                                        @Html.TextBoxFor(x => x.SalesId, new { id = "SalesId", name = "SalesId", maxlength = 8, @class = "NumericOnly", })
+                                    }
+                                    @Html.ValidationMessageFor(x => x.SalesId)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.RUT</div>
+                                <div class="Field">
+
+                                    @if (!string.IsNullOrWhiteSpace(Model.RUT))
+                                    {
+                                        @Html.TextBoxFor(x => x.RUT, new { id = "RUT", name = "RUT", maxlength = 15, @readonly = "readonly" })
+                                    }
+                                    else
+                                    { 
+                                        @Html.TextBoxFor(x => x.RUT, new { id = "RUT", name = "RUT", maxlength = 15, @class = "NumberHyphen", placeholder = "#######-#" })
+                                    }
+                                    @Html.ValidationMessageFor(x => x.RUT)
+                                    <label id="lblValidateSearchCriteria" class="validationMessage"></label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="TwoColumn">
+                            <div class="label">@Resources.BranchCode</div>
+                            <div class="Field">
+                                @Html.DropDownListFor(x => x.BranchCode, BranchItems.AsEnumerable(), new { id = "BranchCode", name = "BranchCode" })
+                                @Html.ValidationMessageFor(x => x.BranchCode)
+
+                            </div>
+                        </div>
+                        <div class="TwoColumn">
+                            <div class="label">@Resources.Communa</div>
+                            <div class="Field">
+                                @Html.DropDownListFor(x => x.CommunaCode, CommunaItems.AsEnumerable(), new { id = "CommunaCode", name = "CommunaCode" })
+                                @Html.ValidationMessageFor(x => x.CommunaCode)
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="TwoColumn">
+                            <div class="label">@Resources.City</div>
+                            <div class="Field">
+                                @Html.DropDownListFor(x => x.CityCode, CityItems.AsEnumerable(), new { id = "CityCode", name = "CityCode" })
+                                @Html.ValidationMessageFor(x => x.CityCode)
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="TwoColumn">
+                            <div class="label fontmandatory">@Resources.Address</div>
+                            <div class="Field">
+                                @Html.TextAreaFor(x => x.Address, new { id = "Address", maxlength = 250 })                                
+                            </div>
+                        </div>
+
+                    </div>
+                    <div>
+                    </div>
+                    @Html.Raw(Html.BasicButtons(lstPriv))
+                </div>
+             }
+        </div>
+
+    </div>
+
+    <script>
+        var model = @Html.Raw(Json.Encode(Model));
+        bindCommunaValue('@Utils.CountryCode', model.CommunaCode);
+        if(model.CommunaCode)
+        {
+            bindCityValue(model.CommunaCode, model.CityCode);
+            bindRegionValue(model.CommunaCode, model.RegionCode);
+        }          
+    </script>
+
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>

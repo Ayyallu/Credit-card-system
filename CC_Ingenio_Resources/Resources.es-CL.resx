@@ -1,0 +1,3288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="MsgErrPleaseEnter3" xml:space="preserve">
+    <value>Por favor ingrese la {0}</value>
+  </data>
+  <data name="MsgErrPleaseEnter2" xml:space="preserve">
+    <value>Por favor ingrese {0}</value>
+  </data>
+  <data name="MsgInfoLoggedInSuccess" xml:space="preserve">
+    <value>Has accedido con éxito a</value>
+  </data>
+  <data name="MsgInfoNoRecords" xml:space="preserve">
+    <value>No hay registros válidos encontrado</value>
+  </data>
+  <data name="MsgErrSaveFailure" xml:space="preserve">
+    <value>No se puede guardar</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Nuevo</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="MsgErrValueGreaterThanZero" xml:space="preserve">
+    <value>{0} debería ser un valor mayor que 0</value>
+  </data>
+  <data name="MsgErrSpecialCharacterNotAllow" xml:space="preserve">
+    <value>Caracteres especiales y espacios no se permiten</value>
+  </data>
+  <data name="SearchPageHeading" xml:space="preserve">
+    <value>Búsqueda</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Enviar</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>Vista</value>
+  </data>
+  <data name="MsgErrPleaseSelect" xml:space="preserve">
+    <value>Por favor, seleccione {0}</value>
+  </data>
+  <data name="SelectOne" xml:space="preserve">
+    <value>Seleccionar Uno</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="Organization" xml:space="preserve">
+    <value>Organización</value>
+  </data>
+  <data name="MsgErrPleaseEnter1" xml:space="preserve">
+    <value>Por favor, introduzca el {0}</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Añadir</value>
+  </data>
+  <data name="DetailsPageHeading" xml:space="preserve">
+    <value>Detalles</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="Authorize" xml:space="preserve">
+    <value>Autorizar</value>
+  </data>
+  <data name="Block" xml:space="preserve">
+    <value>Bloqueo</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Limpiar</value>
+  </data>
+  <data name="CountryCode" xml:space="preserve">
+    <value>Codigo País</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>Moneda</value>
+  </data>
+  <data name="CurrencyCode" xml:space="preserve">
+    <value>Código Moneda</value>
+  </data>
+  <data name="CurrencyName" xml:space="preserve">
+    <value>Nombre moneda</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Cerrar sesión</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="RateUFtoCLP" xml:space="preserve">
+    <value>Tasa (UF a pesos)</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="Unblock" xml:space="preserve">
+    <value>Desbloquear</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Nombre de usuario</value>
+  </data>
+  <data name="AUTH" xml:space="preserve">
+    <value>Autorización</value>
+  </data>
+  <data name="AUTH_MAN" xml:space="preserve">
+    <value>Ingreso Manual</value>
+  </data>
+  <data name="AUTH_MN_FA" xml:space="preserve">
+    <value>Autorización forzada</value>
+  </data>
+  <data name="AUTH_MN_PPE" xml:space="preserve">
+    <value>Pre Pago/ Pre cierre Transacción Cuotas</value>
+  </data>
+  <data name="BILL" xml:space="preserve">
+    <value>Facturación y Pagos</value>
+  </data>
+  <data name="BILLING_TESTING" xml:space="preserve">
+    <value>Facturación e importación</value>
+  </data>
+  <data name="BILL_GNSS" xml:space="preserve">
+    <value>Búsqueda Estados de Cuenta generados</value>
+  </data>
+  <data name="BILL_STGN" xml:space="preserve">
+    <value>Genración Estados de Cuentas</value>
+  </data>
+  <data name="BT_DATESETTING" xml:space="preserve">
+    <value>Cambio de Empresas Fecha</value>
+  </data>
+  <data name="CARD_GENERATION" xml:space="preserve">
+    <value>Generacxión de Tarjeta</value>
+  </data>
+  <data name="CARD_RENEWAL_LIST" xml:space="preserve">
+    <value>Renovación de Tarjetas</value>
+  </data>
+  <data name="CDBK" xml:space="preserve">
+    <value>Enrolamiento</value>
+  </data>
+  <data name="CDBK_CUS" xml:space="preserve">
+    <value>Cliente</value>
+  </data>
+  <data name="CDBK_ESL" xml:space="preserve">
+    <value>Embozado de Tarjeta</value>
+  </data>
+  <data name="CUSR" xml:space="preserve">
+    <value>Servicio al Cliente</value>
+  </data>
+  <data name="CUSR_SRCH" xml:space="preserve">
+    <value>Búsqueda de Clientes</value>
+  </data>
+  <data name="MNTC" xml:space="preserve">
+    <value>Mantenciones</value>
+  </data>
+  <data name="MNTC_AUT" xml:space="preserve">
+    <value>Autorización</value>
+  </data>
+  <data name="MNTC_BIL" xml:space="preserve">
+    <value>Mantención Facturación</value>
+  </data>
+  <data name="MNTC_BL_CH" xml:space="preserve">
+    <value>Mantención Cargos</value>
+  </data>
+  <data name="MNTC_BL_IN" xml:space="preserve">
+    <value>Mantención Intereses</value>
+  </data>
+  <data name="MNTC_CRD" xml:space="preserve">
+    <value>Mantención de Tarjetas</value>
+  </data>
+  <data name="MNTC_CUM" xml:space="preserve">
+    <value>Mantención de Clientes</value>
+  </data>
+  <data name="MNTC_CUS" xml:space="preserve">
+    <value>Servicio al Cliente</value>
+  </data>
+  <data name="MNTC_PRD" xml:space="preserve">
+    <value>Producto</value>
+  </data>
+  <data name="MROP" xml:space="preserve">
+    <value>Operaciones de Comercios</value>
+  </data>
+  <data name="MT_BILLING_CYCLE_PARAMETER" xml:space="preserve">
+    <value>Parámetros Ciclo de Facturación</value>
+  </data>
+  <data name="MT_BILLING_PARAMETER" xml:space="preserve">
+    <value>Parámetros Facturación</value>
+  </data>
+  <data name="MT_BLOCKCODE" xml:space="preserve">
+    <value>Código de Bloqueos</value>
+  </data>
+  <data name="MT_BLOCK_CODE_FOR_COMMISSION_EXCLUSION" xml:space="preserve">
+    <value>Exclusión de Comisión por código de bloqueo</value>
+  </data>
+  <data name="MT_BOOST_MAINTENANCE" xml:space="preserve">
+    <value>Factor Sobrecupo</value>
+  </data>
+  <data name="MT_BRANCH" xml:space="preserve">
+    <value>Sucursal</value>
+  </data>
+  <data name="MT_CALENDAR_DATE_MAINTENANCE" xml:space="preserve">
+    <value>Calendario</value>
+  </data>
+  <data name="MT_CardCreditSegment" xml:space="preserve">
+    <value>Segmento Crédito Tarjeta</value>
+  </data>
+  <data name="MT_CARDSTATUS" xml:space="preserve">
+    <value>Estado Tarjeta</value>
+  </data>
+  <data name="MT_CARD_MASTER" xml:space="preserve">
+    <value>Maestro de Tarjetas</value>
+  </data>
+  <data name="MT_CITY" xml:space="preserve">
+    <value>Maestro de Ciudades</value>
+  </data>
+  <data name="MT_COLLECTION_CHARGE" xml:space="preserve">
+    <value>Cargos de Cobranzas</value>
+  </data>
+  <data name="MT_COMMISSION" xml:space="preserve">
+    <value>Códigos Comisiones</value>
+  </data>
+  <data name="MT_COMMISSION_CHARGE" xml:space="preserve">
+    <value>Comisiones</value>
+  </data>
+  <data name="MT_COMPANY" xml:space="preserve">
+    <value>Maestro Corporativas</value>
+  </data>
+  <data name="MT_CONTRACT" xml:space="preserve">
+    <value>Maestro de Contratos</value>
+  </data>
+  <data name="MT_CREDIT_SEGMENT" xml:space="preserve">
+    <value>Maestro Segmento de Crédito</value>
+  </data>
+  <data name="MT_CURRENCY" xml:space="preserve">
+    <value>Maestro de Monedas</value>
+  </data>
+  <data name="MT_CUSTOMER" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="MT_CUSTOMER_RUT" xml:space="preserve">
+    <value>Cliente(con id ventas)</value>
+  </data>
+  <data name="MT_CUSTOMER_SEGMENT" xml:space="preserve">
+    <value>Mantención Segmento de Cliente</value>
+  </data>
+  <data name="MT_CUSTOMER_SUB_SEGMENT" xml:space="preserve">
+    <value>Mantención Sub segmento de Cliente</value>
+  </data>
+  <data name="MT_CUSTOMER_UNDERWRITE" xml:space="preserve">
+    <value>Analista de Crédito</value>
+  </data>
+  <data name="MT_DESIGNATION" xml:space="preserve">
+    <value>Desognación</value>
+  </data>
+  <data name="MT_DISCOUNT_ON_MGMT_COLLECTION" xml:space="preserve">
+    <value>Descuento Comisión de Administración</value>
+  </data>
+  <data name="MT_DISCOUNT_PERCENTAGE" xml:space="preserve">
+    <value>Porcentaje de Descuento</value>
+  </data>
+  <data name="MT_FEE" xml:space="preserve">
+    <value>Maestro de Comisiones</value>
+  </data>
+  <data name="MT_FINANCIAL_ACCOUNT" xml:space="preserve">
+    <value>Contabilidad</value>
+  </data>
+  <data name="MT_FRANCHISE" xml:space="preserve">
+    <value>Maestro de Franquicias</value>
+  </data>
+  <data name="MT_GENERAL" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="MT_INSURANCE_CHARGE" xml:space="preserve">
+    <value>Cargos de Seguros</value>
+  </data>
+  <data name="MT_INTEREST_MASTER" xml:space="preserve">
+    <value>Maestro de Interés</value>
+  </data>
+  <data name="MT_MERCHANT" xml:space="preserve">
+    <value>Maestro de Comercios</value>
+  </data>
+  <data name="MT_ORGANIZATION" xml:space="preserve">
+    <value>Organización</value>
+  </data>
+  <data name="MT_PaymentHoliday" xml:space="preserve">
+    <value>Pago cero</value>
+  </data>
+  <data name="MT_PAYMENT_ALLOCATION_TYPE" xml:space="preserve">
+    <value>Tipo Distribución de Pago</value>
+  </data>
+  <data name="MT_PLAN_MASTER" xml:space="preserve">
+    <value>Maestro de Paln</value>
+  </data>
+  <data name="MT_PRODUCT" xml:space="preserve">
+    <value>Producto</value>
+  </data>
+  <data name="MT_PRODUCT_TYPE" xml:space="preserve">
+    <value>Maestro Tipo de Productos</value>
+  </data>
+  <data name="MT_SBIF_INTEREST" xml:space="preserve">
+    <value>Interés SBIF</value>
+  </data>
+  <data name="MT_SOURCING" xml:space="preserve">
+    <value>Maestro de Canales</value>
+  </data>
+  <data name="MT_STATEMENT_GROUPING" xml:space="preserve">
+    <value>Agrupación en estado de Cuenta</value>
+  </data>
+  <data name="MT_SYSTEM_PARAMETER" xml:space="preserve">
+    <value>Maestro Parámetros del Sistema</value>
+  </data>
+  <data name="MT_TRANSACTION" xml:space="preserve">
+    <value>Código Transacción</value>
+  </data>
+  <data name="MT_TRANSACTION_SUB_CODE" xml:space="preserve">
+    <value>Sub código Transacción</value>
+  </data>
+  <data name="OTH" xml:space="preserve">
+    <value>Otros</value>
+  </data>
+  <data name="OTH_APQ" xml:space="preserve">
+    <value>Cola de Aprobación</value>
+  </data>
+  <data name="TR_ONLINEPAYMENT" xml:space="preserve">
+    <value>Pago Onlone</value>
+  </data>
+  <data name="TR_REFINANCING" xml:space="preserve">
+    <value>Refinanciación</value>
+  </data>
+  <data name="TR_RENEGOTIATION" xml:space="preserve">
+    <value>Renegociación</value>
+  </data>
+  <data name="TR_TRANSACTION" xml:space="preserve">
+    <value>Transacción Manual</value>
+  </data>
+  <data name="TR_TransactionEMIMaster" xml:space="preserve">
+    <value>Transaccióbn de Cuotas</value>
+  </data>
+  <data name="TR_TRANSACTIONREVERSAL" xml:space="preserve">
+    <value>Reversa de Transacciones</value>
+  </data>
+  <data name="TR_TRANSACTION_REV" xml:space="preserve">
+    <value>Reversa de Transacciones</value>
+  </data>
+  <data name="USER" xml:space="preserve">
+    <value>Usuario</value>
+  </data>
+  <data name="USR_DETAILS" xml:space="preserve">
+    <value>Detalles de Usuario</value>
+  </data>
+  <data name="USR_GROUP_PRIVILEGE" xml:space="preserve">
+    <value>Provilegios de Grupos de Usuarios</value>
+  </data>
+  <data name="USR_LOGINAUDIT" xml:space="preserve">
+    <value>Login Auditoría</value>
+  </data>
+  <data name="USR_PRIVILEGE" xml:space="preserve">
+    <value>Privilegios de Usuarios</value>
+  </data>
+  <data name="AutoRenewal" xml:space="preserve">
+    <value>Auto Renovación</value>
+  </data>
+  <data name="BackgroundImageEmbossFlag" xml:space="preserve">
+    <value>Indicador Embozado Imagen de fondo</value>
+  </data>
+  <data name="BillingCycle" xml:space="preserve">
+    <value>Ciclo Facturación</value>
+  </data>
+  <data name="BinValue" xml:space="preserve">
+    <value>Valor Bin</value>
+  </data>
+  <data name="CardNoLength" xml:space="preserve">
+    <value>Largo Nº Tarjeta</value>
+  </data>
+  <data name="CardNoPattern" xml:space="preserve">
+    <value>PatrónNº Tarjeta</value>
+  </data>
+  <data name="CashLimitPercentage" xml:space="preserve">
+    <value>Límite Avance (%)</value>
+  </data>
+  <data name="CombinedScore" xml:space="preserve">
+    <value>Puntaje Combinado</value>
+  </data>
+  <data name="EmbossLogo" xml:space="preserve">
+    <value>Embozado Logo</value>
+  </data>
+  <data name="EmbossPhoto" xml:space="preserve">
+    <value>Embozado Foto</value>
+  </data>
+  <data name="EmbossSignature" xml:space="preserve">
+    <value>Embozado Firma</value>
+  </data>
+  <data name="ExternalScore" xml:space="preserve">
+    <value>Puntaje Externo</value>
+  </data>
+  <data name="ImageRefNo" xml:space="preserve">
+    <value>Nº Ref Imagen</value>
+  </data>
+  <data name="InterestMethod" xml:space="preserve">
+    <value>Método de Interés</value>
+  </data>
+  <data name="InternalScore" xml:space="preserve">
+    <value>Puntaje Interno</value>
+  </data>
+  <data name="InternalScoreDefinitionId" xml:space="preserve">
+    <value>Id Definición Puntaje Interno</value>
+  </data>
+  <data name="MaximumAddOnCount" xml:space="preserve">
+    <value>Conteo máximo adicional</value>
+  </data>
+  <data name="MaximumCardAdvance" xml:space="preserve">
+    <value>Máximo avance tarjeta</value>
+  </data>
+  <data name="MaximumCreditLine" xml:space="preserve">
+    <value>Línea Crédito Máxima</value>
+  </data>
+  <data name="MinimumCardAdvance" xml:space="preserve">
+    <value>Mínimo avance tarjeta</value>
+  </data>
+  <data name="MinimumCombinedScore" xml:space="preserve">
+    <value>Puntaje Combinado Mínimo</value>
+  </data>
+  <data name="MinimumConsumptionAmount" xml:space="preserve">
+    <value>Monto Consumo mínimo</value>
+  </data>
+  <data name="MinimumCreditLine" xml:space="preserve">
+    <value>Línea Crédito Mínima</value>
+  </data>
+  <data name="PaymentAllocationSequence" xml:space="preserve">
+    <value>Secuencia distribución Pagos</value>
+  </data>
+  <data name="Product" xml:space="preserve">
+    <value>Producto</value>
+  </data>
+  <data name="ProductCategory" xml:space="preserve">
+    <value>Categoría Producto</value>
+  </data>
+  <data name="ProductClass" xml:space="preserve">
+    <value>Clase Producto</value>
+  </data>
+  <data name="ProductClassIndicator" xml:space="preserve">
+    <value>Indicador clase Producto</value>
+  </data>
+  <data name="ProductCode" xml:space="preserve">
+    <value>Código Producto</value>
+  </data>
+  <data name="ProductExpiryMnths" xml:space="preserve">
+    <value>Vencimiento Produc to (en meses)</value>
+  </data>
+  <data name="ProductFranchise" xml:space="preserve">
+    <value>Franquicia Producto</value>
+  </data>
+  <data name="ProductMemberType" xml:space="preserve">
+    <value>Tipo miembro Producto</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>Nombre Producto</value>
+  </data>
+  <data name="ProductStatus" xml:space="preserve">
+    <value>Estado Producto</value>
+  </data>
+  <data name="ProductSubCategory" xml:space="preserve">
+    <value>Categoría Sub  Producto</value>
+  </data>
+  <data name="RenewalMonth" xml:space="preserve">
+    <value>Mes Renovación</value>
+  </data>
+  <data name="RenewalScoreFlag" xml:space="preserve">
+    <value>Indicador Puntaje Renovación</value>
+  </data>
+  <data name="RevolverCharge" xml:space="preserve">
+    <value>Revolvente/Cargo</value>
+  </data>
+  <data name="ScoreFlag" xml:space="preserve">
+    <value>Indicador Puntaje</value>
+  </data>
+  <data name="ServiceCode" xml:space="preserve">
+    <value>Código de Servicio</value>
+  </data>
+  <data name="SubBinValue" xml:space="preserve">
+    <value>Valor Sub Bin</value>
+  </data>
+  <data name="CreditSegment" xml:space="preserve">
+    <value>Segmento de Crédito</value>
+  </data>
+  <data name="CreditSegmentCode" xml:space="preserve">
+    <value>Código Segmento de Crédito</value>
+  </data>
+  <data name="CreditSegmentName" xml:space="preserve">
+    <value>Nombre Segmento de Crédito</value>
+  </data>
+  <data name="EffectiveFromDate" xml:space="preserve">
+    <value>Efectivo desde</value>
+  </data>
+  <data name="EffectiveToDate" xml:space="preserve">
+    <value>Efectivo Hasta</value>
+  </data>
+  <data name="LegalEntity" xml:space="preserve">
+    <value>Entodad Legal</value>
+  </data>
+  <data name="OTBReplenishment" xml:space="preserve">
+    <value>Refresco de Cupo</value>
+  </data>
+  <data name="AdjustCode" xml:space="preserve">
+    <value>Código Ajuste</value>
+  </data>
+  <data name="CeilingLimit" xml:space="preserve">
+    <value>Límite superior</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Ciudad</value>
+  </data>
+  <data name="CityCategory" xml:space="preserve">
+    <value>Categoría Ciudad</value>
+  </data>
+  <data name="CityCode" xml:space="preserve">
+    <value>Código Ciudad</value>
+  </data>
+  <data name="CityName" xml:space="preserve">
+    <value>Nombre Ciudad</value>
+  </data>
+  <data name="Communa" xml:space="preserve">
+    <value>Comuna</value>
+  </data>
+  <data name="Contract" xml:space="preserve">
+    <value>Contrato</value>
+  </data>
+  <data name="ContractCode" xml:space="preserve">
+    <value>Código de Contrato</value>
+  </data>
+  <data name="ContractDescription" xml:space="preserve">
+    <value>Descripción Contrato</value>
+  </data>
+  <data name="ContractTemplate" xml:space="preserve">
+    <value>Plantilla Contrato</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>País</value>
+  </data>
+  <data name="CustomerSegment" xml:space="preserve">
+    <value>Segmento de Cliente</value>
+  </data>
+  <data name="CustomerSubSegment" xml:space="preserve">
+    <value>Sub segmento de Cliente</value>
+  </data>
+  <data name="DefaultValue" xml:space="preserve">
+    <value>Valor por defecto</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="Designation" xml:space="preserve">
+    <value>Desognación</value>
+  </data>
+  <data name="DesignationCode" xml:space="preserve">
+    <value>Código Designación</value>
+  </data>
+  <data name="DesignationDescription" xml:space="preserve">
+    <value>Descripción Designación</value>
+  </data>
+  <data name="DiscountRatePercent" xml:space="preserve">
+    <value>Tasa descuento (%)</value>
+  </data>
+  <data name="Fee" xml:space="preserve">
+    <value>Comisión</value>
+  </data>
+  <data name="FeeAmount" xml:space="preserve">
+    <value>Monto Comisión</value>
+  </data>
+  <data name="FeeCode" xml:space="preserve">
+    <value>Código Comisión</value>
+  </data>
+  <data name="FeeType" xml:space="preserve">
+    <value>Tipo de Comisión</value>
+  </data>
+  <data name="FirstYearAmount" xml:space="preserve">
+    <value>Monto Primer año</value>
+  </data>
+  <data name="Flag" xml:space="preserve">
+    <value>Indicador</value>
+  </data>
+  <data name="FlatFee" xml:space="preserve">
+    <value>Comisión plana</value>
+  </data>
+  <data name="FloorLimit" xml:space="preserve">
+    <value>Límtie de piso</value>
+  </data>
+  <data name="FranchiseAllocation" xml:space="preserve">
+    <value>Franquicias asignadas</value>
+  </data>
+  <data name="FranchiseCode" xml:space="preserve">
+    <value>Código  Franquicia</value>
+  </data>
+  <data name="FranchiseName" xml:space="preserve">
+    <value>Nombre Franquicia</value>
+  </data>
+  <data name="HighValue" xml:space="preserve">
+    <value>Valor superior</value>
+  </data>
+  <data name="Hub" xml:space="preserve">
+    <value>Nodo</value>
+  </data>
+  <data name="LetterGenerationDelayDays" xml:space="preserve">
+    <value>Días generación cartas de mora</value>
+  </data>
+  <data name="LowValue" xml:space="preserve">
+    <value>Valor inferior</value>
+  </data>
+  <data name="Meaning" xml:space="preserve">
+    <value>Significado</value>
+  </data>
+  <data name="MinFee" xml:space="preserve">
+    <value>Comisión mínima</value>
+  </data>
+  <data name="MonthsFrom" xml:space="preserve">
+    <value>Meses desde</value>
+  </data>
+  <data name="NotaryName" xml:space="preserve">
+    <value>Nombre Notaría</value>
+  </data>
+  <data name="NotarySignDate" xml:space="preserve">
+    <value>Fecha firma Notario</value>
+  </data>
+  <data name="OrganizationCode" xml:space="preserve">
+    <value>Código Organización</value>
+  </data>
+  <data name="ParameterFunction" xml:space="preserve">
+    <value>Función del Parámetro</value>
+  </data>
+  <data name="ParameterName" xml:space="preserve">
+    <value>Nombre Parámetro</value>
+  </data>
+  <data name="ParameterValue" xml:space="preserve">
+    <value>Valor Parámetro</value>
+  </data>
+  <data name="Period" xml:space="preserve">
+    <value>Período</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Posición</value>
+  </data>
+  <data name="ProductType" xml:space="preserve">
+    <value>Tipo Producto</value>
+  </data>
+  <data name="ProductTypeCode" xml:space="preserve">
+    <value>Código Tipo Producto</value>
+  </data>
+  <data name="Rank" xml:space="preserve">
+    <value>Rango</value>
+  </data>
+  <data name="ReasonCode" xml:space="preserve">
+    <value>Código de Razón</value>
+  </data>
+  <data name="Region" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="RenewalFee" xml:space="preserve">
+    <value>Comisión renovación {0}</value>
+  </data>
+  <data name="Repertoire" xml:space="preserve">
+    <value>Repertorio</value>
+  </data>
+  <data name="SourcingChannelCode" xml:space="preserve">
+    <value>Código Canal</value>
+  </data>
+  <data name="SourcingChannelName" xml:space="preserve">
+    <value>Nombre Canal</value>
+  </data>
+  <data name="Spoke" xml:space="preserve">
+    <value>Recaudadores</value>
+  </data>
+  <data name="SystemParameter" xml:space="preserve">
+    <value>Parámetros del Sistema</value>
+  </data>
+  <data name="MsgErrAlreadyExists" xml:space="preserve">
+    <value>{0} ya existe.</value>
+  </data>
+  <data name="MsgErrDeleteConcurrencyError" xml:space="preserve">
+    <value>No puede eliminar {0}. Registro está en uso.</value>
+  </data>
+  <data name="MsgErrWhileSave" xml:space="preserve">
+    <value>Error ocurrió mientras guardaba</value>
+  </data>
+  <data name="MsgInfoDeleteSuccess" xml:space="preserve">
+    <value>{0} eliminado con éxito.</value>
+  </data>
+  <data name="MsgInfoSaveSuccess" xml:space="preserve">
+    <value>{0} guardado correctamente.</value>
+  </data>
+  <data name="AllowedChars" xml:space="preserve">
+    <value>^[a-zA-Z0-9]+$</value>
+  </data>
+  <data name="AutoApproval" xml:space="preserve">
+    <value>Auto Aprobación</value>
+  </data>
+  <data name="MsgErrValueShouldBeBetween" xml:space="preserve">
+    <value>{0} debe ser un valor entre {1} y {2}</value>
+  </data>
+  <data name="MsgErrValueShouldBeLessThan" xml:space="preserve">
+    <value>{0} debe ser menor que {1}</value>
+  </data>
+  <data name="MsgInfoNoItemSelected" xml:space="preserve">
+    <value>No ha seleccionado un item.</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Acción</value>
+  </data>
+  <data name="AddNew" xml:space="preserve">
+    <value>Agregar nuevo</value>
+  </data>
+  <data name="BillDate" xml:space="preserve">
+    <value>Fecha Facturación</value>
+  </data>
+  <data name="BillFromDate" xml:space="preserve">
+    <value>Facturación desde fecha</value>
+  </data>
+  <data name="BillMonth" xml:space="preserve">
+    <value>Mes Facturación</value>
+  </data>
+  <data name="BillToDate" xml:space="preserve">
+    <value>Facturación hasta fecha</value>
+  </data>
+  <data name="BillYear" xml:space="preserve">
+    <value>Año Fturaciónac</value>
+  </data>
+  <data name="BlockCode" xml:space="preserve">
+    <value>Código Bloqueo</value>
+  </data>
+  <data name="Branch" xml:space="preserve">
+    <value>Sucursal</value>
+  </data>
+  <data name="CapitalizeInterest" xml:space="preserve">
+    <value>Cpaitalización de Intereses</value>
+  </data>
+  <data name="CardNumber" xml:space="preserve">
+    <value>Número Tarjeta</value>
+  </data>
+  <data name="CardOrRUTNo" xml:space="preserve">
+    <value>Nº Tarjeta/RUT</value>
+  </data>
+  <data name="CardType" xml:space="preserve">
+    <value>Tipo Tarjeta</value>
+  </data>
+  <data name="CollectionChargeAmountPercentage" xml:space="preserve">
+    <value>Monto Cargo cobranza (%)</value>
+  </data>
+  <data name="CollectionCharges" xml:space="preserve">
+    <value>Cargos de Cobranzas</value>
+  </data>
+  <data name="Commission" xml:space="preserve">
+    <value>Comisión</value>
+  </data>
+  <data name="CommissionAmount" xml:space="preserve">
+    <value>Monto Comisión</value>
+  </data>
+  <data name="CommissionCharge" xml:space="preserve">
+    <value>Cargo Comisión</value>
+  </data>
+  <data name="CommissionCode" xml:space="preserve">
+    <value>Código Comisión</value>
+  </data>
+  <data name="ConsolidatedCreditFlag" xml:space="preserve">
+    <value>Indicador crédito consolidado</value>
+  </data>
+  <data name="ConsolidatedDebitFlag" xml:space="preserve">
+    <value>Indicador débito consolidado</value>
+  </data>
+  <data name="Consumption" xml:space="preserve">
+    <value>Consumo</value>
+  </data>
+  <data name="ConsumptionRangeFromUF" xml:space="preserve">
+    <value>Rango Consumo desde (UF)</value>
+  </data>
+  <data name="ConsumptionRangeToUF" xml:space="preserve">
+    <value>Rango Consumo hasta (UF)</value>
+  </data>
+  <data name="CreditAccountNumber" xml:space="preserve">
+    <value>Número cuenta crédito</value>
+  </data>
+  <data name="CreditLimitFrom" xml:space="preserve">
+    <value>Límite Crédito desde</value>
+  </data>
+  <data name="CreditLimitFromUF" xml:space="preserve">
+    <value>Límite Crédito desde (UF)</value>
+  </data>
+  <data name="CreditLimitTo" xml:space="preserve">
+    <value>Límite Crédito hasta</value>
+  </data>
+  <data name="CreditLimitToUF" xml:space="preserve">
+    <value>Límite Crédito hasta (UF)</value>
+  </data>
+  <data name="CreditNarration" xml:space="preserve">
+    <value>GlosaCrédito</value>
+  </data>
+  <data name="CreditSubSegment" xml:space="preserve">
+    <value>Sub segmento de Crédito</value>
+  </data>
+  <data name="CreditSubTransactionCode" xml:space="preserve">
+    <value>Código sub-transacción crédito</value>
+  </data>
+  <data name="CreditTransactionCode" xml:space="preserve">
+    <value>Código transacción crédito</value>
+  </data>
+  <data name="CycleCode" xml:space="preserve">
+    <value>Código Ciclo</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Días</value>
+  </data>
+  <data name="DebitAccountNumber" xml:space="preserve">
+    <value>Número cuenta débito</value>
+  </data>
+  <data name="DebitCredit" xml:space="preserve">
+    <value>Débito/Crédito</value>
+  </data>
+  <data name="DebitNarration" xml:space="preserve">
+    <value>Glosa débito</value>
+  </data>
+  <data name="DebitSubTransactionCode" xml:space="preserve">
+    <value>Código sub-transacción débito</value>
+  </data>
+  <data name="DebitTransactionCode" xml:space="preserve">
+    <value>Código transacción débito</value>
+  </data>
+  <data name="DeferredPayment" xml:space="preserve">
+    <value>Pago Diferido</value>
+  </data>
+  <data name="DelinquencyAmountFromUF" xml:space="preserve">
+    <value>Monto Moroso Desde(UF)</value>
+  </data>
+  <data name="DelinquencyAmountToUF" xml:space="preserve">
+    <value>Monto Moroso Hasta(UF)</value>
+  </data>
+  <data name="DelinquencyBucketCountForWriteOff" xml:space="preserve">
+    <value>Casillero de conteo mora para castigo</value>
+  </data>
+  <data name="DiscountPercentage" xml:space="preserve">
+    <value>Porecntaje Descuento</value>
+  </data>
+  <data name="DPDDaysFrom" xml:space="preserve">
+    <value>Días desde FV</value>
+  </data>
+  <data name="DPDDaysTo" xml:space="preserve">
+    <value>Días hasta FV</value>
+  </data>
+  <data name="EffectiveDate" xml:space="preserve">
+    <value>Fecha efectiva</value>
+  </data>
+  <data name="EligibilityAge" xml:space="preserve">
+    <value>Edad elegible</value>
+  </data>
+  <data name="ExpectedInterestRate" xml:space="preserve">
+    <value>Tasa interés esperada %</value>
+  </data>
+  <data name="FeesRequired" xml:space="preserve">
+    <value>Comisión requerida</value>
+  </data>
+  <data name="FinancialActivity" xml:space="preserve">
+    <value>Actividad Financiera</value>
+  </data>
+  <data name="FirstBilling" xml:space="preserve">
+    <value>Primera Facturación</value>
+  </data>
+  <data name="FromDate" xml:space="preserve">
+    <value>Fecha desde</value>
+  </data>
+  <data name="GeneralOrSpecial" xml:space="preserve">
+    <value>General/Especial</value>
+  </data>
+  <data name="GroupCode" xml:space="preserve">
+    <value>Código grupo</value>
+  </data>
+  <data name="GroupCodeDescription" xml:space="preserve">
+    <value>Descripción código grupo</value>
+  </data>
+  <data name="InclusionOfCharges" xml:space="preserve">
+    <value>Inclusión de Cargos</value>
+  </data>
+  <data name="Installments" xml:space="preserve">
+    <value>Cuotas</value>
+  </data>
+  <data name="InstallmentRequired" xml:space="preserve">
+    <value>Cuota requerida</value>
+  </data>
+  <data name="InsuranceCharges" xml:space="preserve">
+    <value>Cargos por Seguros</value>
+  </data>
+  <data name="InsuranceOption" xml:space="preserve">
+    <value>Opción de Seguro</value>
+  </data>
+  <data name="InsuranceRate" xml:space="preserve">
+    <value>Tasa Seguro</value>
+  </data>
+  <data name="InsuranceType" xml:space="preserve">
+    <value>Tipo Seguro</value>
+  </data>
+  <data name="InterestCalculation" xml:space="preserve">
+    <value>Cálculo Interés</value>
+  </data>
+  <data name="InterestMaster" xml:space="preserve">
+    <value>Maestro Intereses</value>
+  </data>
+  <data name="InterestRatePercentage" xml:space="preserve">
+    <value>Tasa Interés (%)</value>
+  </data>
+  <data name="IVARequired" xml:space="preserve">
+    <value>IVA requerido</value>
+  </data>
+  <data name="LegacyTransactionType" xml:space="preserve">
+    <value>Tipo de transacción Legacy</value>
+  </data>
+  <data name="MaxCollectionCharges" xml:space="preserve">
+    <value>Cargo Cobranza Max</value>
+  </data>
+  <data name="MaximumCoverAge" xml:space="preserve">
+    <value>Edad máxima de cobertura</value>
+  </data>
+  <data name="MaxInterestDefinitionFor" xml:space="preserve">
+    <value>Definición para Interés máximo</value>
+  </data>
+  <data name="MaxOCLCharge" xml:space="preserve">
+    <value>Max Cargo Sobrecupo</value>
+  </data>
+  <data name="MinCollectionCharges" xml:space="preserve">
+    <value>Cargo Cobranza Min</value>
+  </data>
+  <data name="MinDelinquencyAmount" xml:space="preserve">
+    <value>Monto Min Moroso</value>
+  </data>
+  <data name="MinimumDuePercentage" xml:space="preserve">
+    <value>Pago Mínimo (%)</value>
+  </data>
+  <data name="MinOCLCharge" xml:space="preserve">
+    <value>Min Cargo Sobrecupo</value>
+  </data>
+  <data name="MinTotalAmount" xml:space="preserve">
+    <value>Monto Total Min</value>
+  </data>
+  <data name="MinTotalDebt" xml:space="preserve">
+    <value>Deuda Total Min</value>
+  </data>
+  <data name="ModuleName" xml:space="preserve">
+    <value>Nombre módulo</value>
+  </data>
+  <data name="Network" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="OCLChargePercentage" xml:space="preserve">
+    <value>Cargo Sobrecupo (%)</value>
+  </data>
+  <data name="OCLIncludedInTotalMinDue" xml:space="preserve">
+    <value>Sobrecupo incluído en Pago mínimo</value>
+  </data>
+  <data name="PaymentDueDate" xml:space="preserve">
+    <value>Fecha de Vencimiento</value>
+  </data>
+  <data name="PlanMaster" xml:space="preserve">
+    <value>Maestro de Plan</value>
+  </data>
+  <data name="PolicyCode" xml:space="preserve">
+    <value>Código Póliza</value>
+  </data>
+  <data name="PolicyDetails" xml:space="preserve">
+    <value>Detalles Póliza</value>
+  </data>
+  <data name="PurchaseAmountFrom" xml:space="preserve">
+    <value>Monto Compra desde</value>
+  </data>
+  <data name="PurchaseAmountTo" xml:space="preserve">
+    <value>Monto Compra hasta</value>
+  </data>
+  <data name="SBIFInterest" xml:space="preserve">
+    <value>Intereses SBIF</value>
+  </data>
+  <data name="SBIFInterestRatePercentage" xml:space="preserve">
+    <value>Tasa Interés SBIF (%)</value>
+  </data>
+  <data name="StatementDate" xml:space="preserve">
+    <value>Fecha estado de Cuenta</value>
+  </data>
+  <data name="SubGroupCode" xml:space="preserve">
+    <value>Código Sub grupo</value>
+  </data>
+  <data name="SubGroupCodeDescription" xml:space="preserve">
+    <value>Descripción código sub grupo</value>
+  </data>
+  <data name="TaxesRequired" xml:space="preserve">
+    <value>Impuestos requeridos</value>
+  </data>
+  <data name="TenureFrom" xml:space="preserve">
+    <value>Cuotas desde</value>
+  </data>
+  <data name="TenureTo" xml:space="preserve">
+    <value>Cuotas hasta</value>
+  </data>
+  <data name="ThresholdRevolvingBalance" xml:space="preserve">
+    <value>Umbral saldo revolvente</value>
+  </data>
+  <data name="ToDate" xml:space="preserve">
+    <value>Fecha hasta</value>
+  </data>
+  <data name="Transaction" xml:space="preserve">
+    <value>Transacción</value>
+  </data>
+  <data name="TransactionCode" xml:space="preserve">
+    <value>Código Transacción</value>
+  </data>
+  <data name="TransactionSubCode" xml:space="preserve">
+    <value>Sub código de Transacción</value>
+  </data>
+  <data name="TransactionSubCodeDescription" xml:space="preserve">
+    <value>Descripción Sub código transacción</value>
+  </data>
+  <data name="ValidFrom" xml:space="preserve">
+    <value>Válido desde</value>
+  </data>
+  <data name="ValidTo" xml:space="preserve">
+    <value>Válido hasta</value>
+  </data>
+  <data name="WithInterest" xml:space="preserve">
+    <value>Con Interés</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>Años</value>
+  </data>
+  <data name="INSTALLMENT" xml:space="preserve">
+    <value>Cuotas</value>
+  </data>
+  <data name="MsgErrInvalid" xml:space="preserve">
+    <value>{0} inválido</value>
+  </data>
+  <data name="MsgErrMaximumLength" xml:space="preserve">
+    <value>{0} debe ser menor de {1} caracteres</value>
+  </data>
+  <data name="MsgErrMinimumLengthDigit" xml:space="preserve">
+    <value>{0} debe ser al menos de largo de {1} dígitos.</value>
+  </data>
+  <data name="MsgErrValueNotZero" xml:space="preserve">
+    <value>{0}No debería ser 0</value>
+  </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>CRECCU</value>
+  </data>
+  <data name="AccountBlocked" xml:space="preserve">
+    <value>Cuenta Bloqueada</value>
+  </data>
+  <data name="AccountBlockedFinancial" xml:space="preserve">
+    <value>Cuenta Bloqueada (Financiera)</value>
+  </data>
+  <data name="AccountBlockedNonFinancial" xml:space="preserve">
+    <value>Cuenta Bloqueada ( No Financiera)</value>
+  </data>
+  <data name="Calendar" xml:space="preserve">
+    <value>Calendario</value>
+  </data>
+  <data name="CardBlocked" xml:space="preserve">
+    <value>Tarjeta bloqueada</value>
+  </data>
+  <data name="CardBlockHierarchy" xml:space="preserve">
+    <value>Jerarquía Bolqueo Tarjeta</value>
+  </data>
+  <data name="MsgConfDelete" xml:space="preserve">
+    <value>Qué quieres eliminar el registro?</value>
+  </data>
+  <data name="MsgConfSubmit" xml:space="preserve">
+    <value>Qué quiere presentar el registro?</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Fecha</value>
+  </data>
+  <data name="FinancialHierarchy" xml:space="preserve">
+    <value>Jerarquía Financiera</value>
+  </data>
+  <data name="InstallmentClose" xml:space="preserve">
+    <value>Cierre Cuotas</value>
+  </data>
+  <data name="NonFinancialHierarchy" xml:space="preserve">
+    <value>Jerarquía No  Financiera</value>
+  </data>
+  <data name="PermanentTerminalBlock" xml:space="preserve">
+    <value>Bloqueo Permanente (Terminal)</value>
+  </data>
+  <data name="PlasticRecoveryNeeded" xml:space="preserve">
+    <value>Necesidad de recuperar plástico</value>
+  </data>
+  <data name="ShortDescription" xml:space="preserve">
+    <value>Descripción corta</value>
+  </data>
+  <data name="StatusApproved" xml:space="preserve">
+    <value>Aprobado</value>
+  </data>
+  <data name="StatusDeleted" xml:space="preserve">
+    <value>Suprimido</value>
+  </data>
+  <data name="StatusDiscarded" xml:space="preserve">
+    <value>Descartado</value>
+  </data>
+  <data name="StatusDraft" xml:space="preserve">
+    <value>Borrador</value>
+  </data>
+  <data name="StatusPendingApproval" xml:space="preserve">
+    <value>Pendiente de aprobación</value>
+  </data>
+  <data name="StatusRejected" xml:space="preserve">
+    <value>Rechazado</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="Franchise" xml:space="preserve">
+    <value>Franquicias</value>
+  </data>
+  <data name="PaymentAllocationType" xml:space="preserve">
+    <value>Tipo distribución de pagos</value>
+  </data>
+  <data name="ResourceCulture" xml:space="preserve">
+    <value>es-CL</value>
+  </data>
+  <data name="MsgErrWhileDelete" xml:space="preserve">
+    <value>Error ocurrió mientras eliminaba</value>
+  </data>
+  <data name="AffinityFlag" xml:space="preserve">
+    <value>Indicador de Afinidad</value>
+  </data>
+  <data name="BlackListed" xml:space="preserve">
+    <value>Lista Negra</value>
+  </data>
+  <data name="CompanyCategory" xml:space="preserve">
+    <value>Categoría Compañía</value>
+  </data>
+  <data name="CompanyCode" xml:space="preserve">
+    <value>Código Compañía</value>
+  </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>Nombre Compañía</value>
+  </data>
+  <data name="Corporate" xml:space="preserve">
+    <value>Corporativas</value>
+  </data>
+  <data name="PricingAmount" xml:space="preserve">
+    <value>Monto tarifas</value>
+  </data>
+  <data name="MsgInfoUnload" xml:space="preserve">
+    <value>Usted ingresó nuevos datos en est página. Si usted navega desde esta página sin guardar sus datos, los cambios se perderán</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Si</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Activo</value>
+  </data>
+  <data name="ApprovalQueue" xml:space="preserve">
+    <value>Cola de Aprobación</value>
+  </data>
+  <data name="Authorization" xml:space="preserve">
+    <value>Autorización</value>
+  </data>
+  <data name="BillingandImport" xml:space="preserve">
+    <value>Facturación e importación</value>
+  </data>
+  <data name="BillingandPayment" xml:space="preserve">
+    <value>Facturación y Pagos</value>
+  </data>
+  <data name="BillingMaintenance" xml:space="preserve">
+    <value>Mantención Facturación</value>
+  </data>
+  <data name="Branches" xml:space="preserve">
+    <value>Sucursales</value>
+  </data>
+  <data name="BusinessDate" xml:space="preserve">
+    <value>Fecha Comercial</value>
+  </data>
+  <data name="CardBooking" xml:space="preserve">
+    <value>Enrolamiento</value>
+  </data>
+  <data name="CardCreditSegment" xml:space="preserve">
+    <value>Segmento Crédito Tarjeta</value>
+  </data>
+  <data name="CardEmbossing" xml:space="preserve">
+    <value>Embozado de Tarjeta</value>
+  </data>
+  <data name="CardGeneration" xml:space="preserve">
+    <value>Generacxión de Tarjeta</value>
+  </data>
+  <data name="CardMaintenance" xml:space="preserve">
+    <value>Mantención de Tarjetas</value>
+  </data>
+  <data name="CardMaster" xml:space="preserve">
+    <value>Maestro de Tarjetas</value>
+  </data>
+  <data name="CommissionCharges" xml:space="preserve">
+    <value>Comisiones</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirme Clave</value>
+  </data>
+  <data name="Context" xml:space="preserve">
+    <value>Contexto</value>
+  </data>
+  <data name="Customer" xml:space="preserve">
+    <value>Cliente</value>
+  </data>
+  <data name="CustomerMaintenance" xml:space="preserve">
+    <value>Mantención de Clientes</value>
+  </data>
+  <data name="CustomerSearch" xml:space="preserve">
+    <value>Búsqueda de Clientes</value>
+  </data>
+  <data name="CustomerServices" xml:space="preserve">
+    <value>Servicio al Cliente</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="EMITransaction" xml:space="preserve">
+    <value>Transaccióbn de Cuotas</value>
+  </data>
+  <data name="Entity" xml:space="preserve">
+    <value>Entidad</value>
+  </data>
+  <data name="ForceAuthorization" xml:space="preserve">
+    <value>Autorización forzada</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Nombre Completo</value>
+  </data>
+  <data name="GeneratedStatementSearch" xml:space="preserve">
+    <value>Búsqueda Estados de Cuenta generados</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+  <data name="LoginAudit" xml:space="preserve">
+    <value>Login Auditoría</value>
+  </data>
+  <data name="LoginFrom" xml:space="preserve">
+    <value>Login desde</value>
+  </data>
+  <data name="LoginStatus" xml:space="preserve">
+    <value>Estado Login</value>
+  </data>
+  <data name="LoginTo" xml:space="preserve">
+    <value>Login a</value>
+  </data>
+  <data name="Maintenances" xml:space="preserve">
+    <value>Mantenciones</value>
+  </data>
+  <data name="ManagementCollectionDiscount" xml:space="preserve">
+    <value>Administración Descuento Cobranzas</value>
+  </data>
+  <data name="ManualEntry" xml:space="preserve">
+    <value>Ingreso Manual</value>
+  </data>
+  <data name="ManualTransaction" xml:space="preserve">
+    <value>Transacción Manual</value>
+  </data>
+  <data name="MerchantMaster" xml:space="preserve">
+    <value>Maestro de Comercios</value>
+  </data>
+  <data name="MerchantOperations" xml:space="preserve">
+    <value>Operaciones de Comercios</value>
+  </data>
+  <data name="NodeNameIP" xml:space="preserve">
+    <value>Nombre Nodo (IP)</value>
+  </data>
+  <data name="OnlinePayment" xml:space="preserve">
+    <value>Wallet Topup</value>
+  </data>
+  <data name="Others" xml:space="preserve">
+    <value>Otros</value>
+  </data>
+  <data name="PrePaymentOrPreClosureEMITransaction" xml:space="preserve">
+    <value>Pre Pago/ Pre cierre Transacción Cuotas</value>
+  </data>
+  <data name="ReFinancing" xml:space="preserve">
+    <value>Refinanciación</value>
+  </data>
+  <data name="ReNegotiation" xml:space="preserve">
+    <value>Renegociación</value>
+  </data>
+  <data name="RenewalCards" xml:space="preserve">
+    <value>Renovación de Tarjetas</value>
+  </data>
+  <data name="RequestedBy" xml:space="preserve">
+    <value>Requerido por</value>
+  </data>
+  <data name="RequestedOnFrom" xml:space="preserve">
+    <value>Solicitado desde</value>
+  </data>
+  <data name="RequestedOnTo" xml:space="preserve">
+    <value>Solicitado  a</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Mostrar Password</value>
+  </data>
+  <data name="StatementGeneration" xml:space="preserve">
+    <value>Genración Estados de Cuentas</value>
+  </data>
+  <data name="TransactionReversal" xml:space="preserve">
+    <value>Reversa de Transacciones</value>
+  </data>
+  <data name="Underwriter" xml:space="preserve">
+    <value>Analista de Crédito</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Actualizar</value>
+  </data>
+  <data name="UserDetails" xml:space="preserve">
+    <value>Detalles de Usuario</value>
+  </data>
+  <data name="UserGroupPrivilege" xml:space="preserve">
+    <value>Provilegios de Grupos de Usuarios</value>
+  </data>
+  <data name="Userprivilege" xml:space="preserve">
+    <value>Privilegios de Usuarios</value>
+  </data>
+  <data name="AccountNumber" xml:space="preserve">
+    <value>Número de Cuenta</value>
+  </data>
+  <data name="AccountStatus" xml:space="preserve">
+    <value>Estado de Cuenta</value>
+  </data>
+  <data name="AddressDetails" xml:space="preserve">
+    <value>Detalles de Dirección</value>
+  </data>
+  <data name="AddressType" xml:space="preserve">
+    <value>Tipo de Dirección</value>
+  </data>
+  <data name="AgeGroup" xml:space="preserve">
+    <value>Grupo de edad</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Monto</value>
+  </data>
+  <data name="ApplicationRefNo" xml:space="preserve">
+    <value>Nº Solicitud Ref</value>
+  </data>
+  <data name="ApplicationSignedOffByCustomer" xml:space="preserve">
+    <value>Solicitud firmada por el Cliente</value>
+  </data>
+  <data name="Bank" xml:space="preserve">
+    <value>Banco</value>
+  </data>
+  <data name="BankInstitutionId" xml:space="preserve">
+    <value>Código de Banco</value>
+  </data>
+  <data name="BankType" xml:space="preserve">
+    <value>Tipo de Banco</value>
+  </data>
+  <data name="BillingDetails" xml:space="preserve">
+    <value>Detalles de Facturación</value>
+  </data>
+  <data name="CardBrand" xml:space="preserve">
+    <value>Marca</value>
+  </data>
+  <data name="CashPrincipalDebit" xml:space="preserve">
+    <value>Capital de Avnce</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Canal</value>
+  </data>
+  <data name="ClosingRevBalance" xml:space="preserve">
+    <value>Saldo Rev Cierre</value>
+  </data>
+  <data name="CommercialHouseConsumptionDetails" xml:space="preserve">
+    <value>Tarjetas de Retail</value>
+  </data>
+  <data name="CompanyRUT" xml:space="preserve">
+    <value>RUT Empleador</value>
+  </data>
+  <data name="ComplementOfAddress" xml:space="preserve">
+    <value>Complemento de dirección</value>
+  </data>
+  <data name="ContractAcceptedByCustomer" xml:space="preserve">
+    <value>Contrato aceptado por Cliente</value>
+  </data>
+  <data name="CreditCardDetails" xml:space="preserve">
+    <value>Detalles Tarjeta de Crédito</value>
+  </data>
+  <data name="CreditLimit" xml:space="preserve">
+    <value>Límite de Crédito</value>
+  </data>
+  <data name="CreditNote" xml:space="preserve">
+    <value>Nota de Crédito</value>
+  </data>
+  <data name="CreditNoteAgainstPurchase" xml:space="preserve">
+    <value>Nota de Crédito (Contra Compra)</value>
+  </data>
+  <data name="CreditNoteNo" xml:space="preserve">
+    <value>Nº Nota de Crédito</value>
+  </data>
+  <data name="CreditValue" xml:space="preserve">
+    <value>Valor de Crédito</value>
+  </data>
+  <data name="CurrentAccountDetails" xml:space="preserve">
+    <value>Detalles de Cuenta Corriente</value>
+  </data>
+  <data name="CustomerCardName" xml:space="preserve">
+    <value>Nombre Tarjeta de Cliente</value>
+  </data>
+  <data name="CustomerName" xml:space="preserve">
+    <value>Nombre de Cliente</value>
+  </data>
+  <data name="CustomerType" xml:space="preserve">
+    <value>Tipo de Cliente</value>
+  </data>
+  <data name="DateOfBirth" xml:space="preserve">
+    <value>Fecha de Nacimiento</value>
+  </data>
+  <data name="DateOfJoining" xml:space="preserve">
+    <value>Fecha de Ingreso</value>
+  </data>
+  <data name="Decision" xml:space="preserve">
+    <value>Decisión</value>
+  </data>
+  <data name="DecisionDetails" xml:space="preserve">
+    <value>Detalles de Decisión</value>
+  </data>
+  <data name="DependentDetails" xml:space="preserve">
+    <value>Detalles de Dependientes</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detalles</value>
+  </data>
+  <data name="Education" xml:space="preserve">
+    <value>Educación</value>
+  </data>
+  <data name="ExpiryDate" xml:space="preserve">
+    <value>Fecha de  vencimiento</value>
+  </data>
+  <data name="ExternalCivilRegistryResult" xml:space="preserve">
+    <value>Resultado externo Registro Civil</value>
+  </data>
+  <data name="Fax" xml:space="preserve">
+    <value>Fax</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Género</value>
+  </data>
+  <data name="Housing" xml:space="preserve">
+    <value>Residencia</value>
+  </data>
+  <data name="IncomeProofAvailable" xml:space="preserve">
+    <value>Comprobante de ingresos disponible</value>
+  </data>
+  <data name="IncomeType" xml:space="preserve">
+    <value>Tipo de Ingreso</value>
+  </data>
+  <data name="Individual" xml:space="preserve">
+    <value>Persona natural</value>
+  </data>
+  <data name="InstrumentNo" xml:space="preserve">
+    <value>Nª Instrumnento</value>
+  </data>
+  <data name="InvoiceNo" xml:space="preserve">
+    <value>Nº Factura</value>
+  </data>
+  <data name="Joint" xml:space="preserve">
+    <value>Conjunta</value>
+  </data>
+  <data name="Landmark" xml:space="preserve">
+    <value>Referencia</value>
+  </data>
+  <data name="LegacyCardNumber" xml:space="preserve">
+    <value>Nº Tarjeta aantiguo</value>
+  </data>
+  <data name="MaritalStatus" xml:space="preserve">
+    <value>Estado Civil</value>
+  </data>
+  <data name="MaternalSurname" xml:space="preserve">
+    <value>Apellido Materno</value>
+  </data>
+  <data name="MCCCode" xml:space="preserve">
+    <value>Código MCC</value>
+  </data>
+  <data name="Merchant" xml:space="preserve">
+    <value>Comercio</value>
+  </data>
+  <data name="MerchantCode" xml:space="preserve">
+    <value>Código de Comercio</value>
+  </data>
+  <data name="MerchantName" xml:space="preserve">
+    <value>Nombre de Comercio</value>
+  </data>
+  <data name="MinDue" xml:space="preserve">
+    <value>Pago mínimo</value>
+  </data>
+  <data name="Mobile" xml:space="preserve">
+    <value>Celular</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="Nationality" xml:space="preserve">
+    <value>Nacionalidad</value>
+  </data>
+  <data name="NoOfChildren" xml:space="preserve">
+    <value>Número de Hijos</value>
+  </data>
+  <data name="Number" xml:space="preserve">
+    <value>Número</value>
+  </data>
+  <data name="NumberOfDependents" xml:space="preserve">
+    <value>Número de dependientes</value>
+  </data>
+  <data name="OccupationDetails" xml:space="preserve">
+    <value>Detalles de Empleo</value>
+  </data>
+  <data name="Office" xml:space="preserve">
+    <value>Oficina</value>
+  </data>
+  <data name="OpeningRevBalance" xml:space="preserve">
+    <value>Saldo Rev Apertura</value>
+  </data>
+  <data name="OrderNo" xml:space="preserve">
+    <value>Nº Pedido</value>
+  </data>
+  <data name="OTB" xml:space="preserve">
+    <value>Cupo</value>
+  </data>
+  <data name="Paid" xml:space="preserve">
+    <value>Pagado</value>
+  </data>
+  <data name="PaternalSurname" xml:space="preserve">
+    <value>Apellido Paterno</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Pago</value>
+  </data>
+  <data name="PaymentAmount" xml:space="preserve">
+    <value>Monto pagado</value>
+  </data>
+  <data name="PaymentCurrency" xml:space="preserve">
+    <value>Moneda</value>
+  </data>
+  <data name="PaymentMode" xml:space="preserve">
+    <value>Modo de Pago</value>
+  </data>
+  <data name="PaymentReversalDebit" xml:space="preserve">
+    <value>Reversa de Pagos (Débito)</value>
+  </data>
+  <data name="Permanent" xml:space="preserve">
+    <value>Permanente</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>Detalles Personales</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Fono</value>
+  </data>
+  <data name="PhysicalApplicationRefDate" xml:space="preserve">
+    <value>Fecha  Ref Solicitud Física</value>
+  </data>
+  <data name="PhysicalApplicationRefNo" xml:space="preserve">
+    <value>Nº Ref Solicitud Física</value>
+  </data>
+  <data name="POBox" xml:space="preserve">
+    <value>Casilla Postal</value>
+  </data>
+  <data name="PostalCode" xml:space="preserve">
+    <value>Código Postal</value>
+  </data>
+  <data name="PreClosure" xml:space="preserve">
+    <value>Pago Anticipado</value>
+  </data>
+  <data name="ProcedureToRun" xml:space="preserve">
+    <value>Procedimiento para corrida</value>
+  </data>
+  <data name="ProcessDate" xml:space="preserve">
+    <value>Fecha de proceso</value>
+  </data>
+  <data name="Profession" xml:space="preserve">
+    <value>Profesión</value>
+  </data>
+  <data name="PurchasePrincipalDebit" xml:space="preserve">
+    <value>Capotal de Compra</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Razón</value>
+  </data>
+  <data name="ReferenceNo" xml:space="preserve">
+    <value>Nº Referencia</value>
+  </data>
+  <data name="Remarks" xml:space="preserve">
+    <value>Comentarios</value>
+  </data>
+  <data name="RUT" xml:space="preserve">
+    <value>SCN</value>
+  </data>
+  <data name="RUTSerialNo" xml:space="preserve">
+    <value>Nº Serie C de Id</value>
+  </data>
+  <data name="SalesAndPolicyDetails" xml:space="preserve">
+    <value>Dertalles de enrolamiento</value>
+  </data>
+  <data name="SalesId" xml:space="preserve">
+    <value>ID de Ventas</value>
+  </data>
+  <data name="SelectFile" xml:space="preserve">
+    <value>Seleccione archivo</value>
+  </data>
+  <data name="SendAccountStatementTo" xml:space="preserve">
+    <value>Envío Estado de Cuenta a</value>
+  </data>
+  <data name="StatementFileName" xml:space="preserve">
+    <value>Nombre archivo Estado de Cuenta</value>
+  </data>
+  <data name="Street" xml:space="preserve">
+    <value>Calle</value>
+  </data>
+  <data name="TotalMonthlyIncome" xml:space="preserve">
+    <value>Ingreso mensual total</value>
+  </data>
+  <data name="Town" xml:space="preserve">
+    <value>Pueblo</value>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>Fecha de Transacción</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Tipo de Transacción</value>
+  </data>
+  <data name="TypeOfResidenceClearance" xml:space="preserve">
+    <value>Tipo de Resdidencia</value>
+  </data>
+  <data name="Unemployment" xml:space="preserve">
+    <value>Desempleado</value>
+  </data>
+  <data name="WorkType" xml:space="preserve">
+    <value>Tipo de Trabajo</value>
+  </data>
+  <data name="ÈMIPrincipalDebit" xml:space="preserve">
+    <value>Capotal de Cuota</value>
+  </data>
+  <data name="MsgConfApproval" xml:space="preserve">
+    <value>¿Quiere enviar para aprobación?</value>
+  </data>
+  <data name="MsgErrCombinedScoreLess" xml:space="preserve">
+    <value>Puntaje combinado es menir que puntaje definido para el producto</value>
+  </data>
+  <data name="MsgErrDefaultExist" xml:space="preserve">
+    <value>{0} Priopiedad "por defecto" ya existe</value>
+  </data>
+  <data name="MsgErrDesignationHRP" xml:space="preserve">
+    <value>Designación seleccionada pertenece a categoría de Perfil de Alto Riesgo</value>
+  </data>
+  <data name="MsgErrOneValid" xml:space="preserve">
+    <value>Por favor ingrese al menos uno{0}</value>
+  </data>
+  <data name="MsgErrOverlapValid" xml:space="preserve">
+    <value>{0} Sobrepuesto. Por favor entre válido {0}</value>
+  </data>
+  <data name="MsgInfoUpdateSuccess" xml:space="preserve">
+    <value>{0} actualizado correctamente.</value>
+  </data>
+  <data name="ConsumptionRange" xml:space="preserve">
+    <value>Rango de consumo</value>
+  </data>
+  <data name="DelinquencyAmount" xml:space="preserve">
+    <value>Monto Moroso</value>
+  </data>
+  <data name="DiscountPer" xml:space="preserve">
+    <value>descuento(%)</value>
+  </data>
+  <data name="MsgErrValueShouldBeGreaterThan" xml:space="preserve">
+    <value>{0} debe ser mayor que {1}</value>
+  </data>
+  <data name="PurchaseAmount" xml:space="preserve">
+    <value>Compra Monto</value>
+  </data>
+  <data name="UserGroups" xml:space="preserve">
+    <value>Grupos de Usuarios</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>Correcto</value>
+  </data>
+  <data name="ConfirmationRequired" xml:space="preserve">
+    <value>Requiere confirmación</value>
+  </data>
+  <data name="BlockCodeForCommissionExclusion" xml:space="preserve">
+    <value>Código de Bloqueo para exclusión de Cobro de Administración</value>
+  </data>
+  <data name="BranchCode" xml:space="preserve">
+    <value>Código de Sucursal</value>
+  </data>
+  <data name="BranchName" xml:space="preserve">
+    <value>Nombre de Sucursal</value>
+  </data>
+  <data name="Percentage" xml:space="preserve">
+    <value>Porcentaje</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Dirección</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Compañía</value>
+  </data>
+  <data name="CorporateCategory" xml:space="preserve">
+    <value>Categoría Corporativo</value>
+  </data>
+  <data name="CorporateCode" xml:space="preserve">
+    <value>Código Corporativo</value>
+  </data>
+  <data name="CorporateName" xml:space="preserve">
+    <value>Nombre Corporativo</value>
+  </data>
+  <data name="CreditScore" xml:space="preserve">
+    <value>Puntaje de Crédito</value>
+  </data>
+  <data name="BusinessName" xml:space="preserve">
+    <value>Nombre del Negocio</value>
+  </data>
+  <data name="DiscountOnManagementCommission" xml:space="preserve">
+    <value>Descuento sobre Comisión de Administración</value>
+  </data>
+  <data name="HRP" xml:space="preserve">
+    <value>Perfil de Alto Riesgo</value>
+  </data>
+  <data name="InsuranceAmount" xml:space="preserve">
+    <value>Monto de Seguro</value>
+  </data>
+  <data name="InterestDefinition" xml:space="preserve">
+    <value>Definición de Interés</value>
+  </data>
+  <data name="NTP" xml:space="preserve">
+    <value>NTP</value>
+  </data>
+  <data name="SelectLogoFile" xml:space="preserve">
+    <value>Seleccione archivo Logo</value>
+  </data>
+  <data name="ShortName" xml:space="preserve">
+    <value>Nombre corto</value>
+  </data>
+  <data name="Sourcing" xml:space="preserve">
+    <value>Fuentes</value>
+  </data>
+  <data name="AddOnOfCustomer" xml:space="preserve">
+    <value>Adicional de Cliente</value>
+  </data>
+  <data name="Application" xml:space="preserve">
+    <value>Solicitud</value>
+  </data>
+  <data name="ChangeBusinessDate" xml:space="preserve">
+    <value>Cambio Ciclo de Facturación</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Cambio de Clave</value>
+  </data>
+  <data name="CurrentBusinessDate" xml:space="preserve">
+    <value>Fecha actual de Negocios</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="GroupName" xml:space="preserve">
+    <value>Nombre de Grupo</value>
+  </data>
+  <data name="KeyCode" xml:space="preserve">
+    <value>Códiho Clave</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Login </value>
+  </data>
+  <data name="LoginDate" xml:space="preserve">
+    <value>Fecha loogin</value>
+  </data>
+  <data name="LogoutDate" xml:space="preserve">
+    <value>Fecha  logout</value>
+  </data>
+  <data name="MsgEntityPrivPendingForApproval" xml:space="preserve">
+    <value>Privilegio de entidad pendiente para aprobación</value>
+  </data>
+  <data name="MsgErrPasswordNotMatching" xml:space="preserve">
+    <value>La clave y la clave confirmada no coinciden</value>
+  </data>
+  <data name="NewBusinessDate" xml:space="preserve">
+    <value>Nueva Fecha de negocios</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>Nueva Clave</value>
+  </data>
+  <data name="OldPassword" xml:space="preserve">
+    <value>Clave antigua</value>
+  </data>
+  <data name="UserGroupDetails" xml:space="preserve">
+    <value>Detalles Grupo de Usuarios</value>
+  </data>
+  <data name="UserGroupPrivileges" xml:space="preserve">
+    <value>Privilegios Grupo de Usuarios</value>
+  </data>
+  <data name="Value1" xml:space="preserve">
+    <value>Valor 1</value>
+  </data>
+  <data name="Value2" xml:space="preserve">
+    <value>Valor 2</value>
+  </data>
+  <data name="CardStatus" xml:space="preserve">
+    <value>Estado de Tarjeta</value>
+  </data>
+  <data name="CardStatusCode" xml:space="preserve">
+    <value>Código de Estado de Tarjeta</value>
+  </data>
+  <data name="DefaultFlag" xml:space="preserve">
+    <value>Indicador por defecto</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>Ejecutar</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Importar</value>
+  </data>
+  <data name="InstrumentDate" xml:space="preserve">
+    <value>Fecha del Instrumento</value>
+  </data>
+  <data name="Narration" xml:space="preserve">
+    <value>Glosa</value>
+  </data>
+  <data name="Procedure" xml:space="preserve">
+    <value>Procedimiento</value>
+  </data>
+  <data name="SearchCriteria" xml:space="preserve">
+    <value>Criterio de Búsqueda</value>
+  </data>
+  <data name="SegmentCode" xml:space="preserve">
+    <value>Código der Segmento</value>
+  </data>
+  <data name="SegmentDescription" xml:space="preserve">
+    <value>Desc ripción de Segmento</value>
+  </data>
+  <data name="SegmentName" xml:space="preserve">
+    <value>Nombre del Segmento</value>
+  </data>
+  <data name="ShowReport" xml:space="preserve">
+    <value>Mostrar Reporte</value>
+  </data>
+  <data name="SubSegmentCode" xml:space="preserve">
+    <value>Código de Sub Segmento</value>
+  </data>
+  <data name="SubSegmentName" xml:space="preserve">
+    <value>Nombre del Sub Segmento</value>
+  </data>
+  <data name="DecisionCode" xml:space="preserve">
+    <value>Código de Decisión</value>
+  </data>
+  <data name="ResidenceClearanceType" xml:space="preserve">
+    <value>Residence Clearance Type</value>
+  </data>
+  <data name="ActivateCard" xml:space="preserve">
+    <value>Activación de Tarjeta</value>
+  </data>
+  <data name="MsgCardActivatedSuccessfully" xml:space="preserve">
+    <value>Tarjeta activada exitosamente</value>
+  </data>
+  <data name="MsgCardAlreadyActivated" xml:space="preserve">
+    <value>Tarjeta ya activada</value>
+  </data>
+  <data name="MsgPleaseMakeCardActive" xml:space="preserve">
+    <value>Por favor active la tarjeta</value>
+  </data>
+  <data name="AdjustmentCode" xml:space="preserve">
+    <value>Código de Ajuste</value>
+  </data>
+  <data name="AdjustmentNarration" xml:space="preserve">
+    <value>Glosa de Ajuste</value>
+  </data>
+  <data name="Adjustments" xml:space="preserve">
+    <value>Ajustes</value>
+  </data>
+  <data name="AlertMessage" xml:space="preserve">
+    <value>Mensaje de Alerta</value>
+  </data>
+  <data name="AlertType" xml:space="preserve">
+    <value>Tipo de Alerta</value>
+  </data>
+  <data name="ApprovedBy" xml:space="preserve">
+    <value>Aprobada por</value>
+  </data>
+  <data name="ChangeCustomerAddress" xml:space="preserve">
+    <value>Cambio Dirección de Cliente</value>
+  </data>
+  <data name="Charged" xml:space="preserve">
+    <value>Cargado</value>
+  </data>
+  <data name="CreatedBy" xml:space="preserve">
+    <value>Creado por</value>
+  </data>
+  <data name="CustomerAddress" xml:space="preserve">
+    <value>Dirección de Cliente</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Mensaje</value>
+  </data>
+  <data name="MsgInfoSelectChannel" xml:space="preserve">
+    <value>Seleccione el canal para recibir Mensaje de alerta</value>
+  </data>
+  <data name="ActualAmount" xml:space="preserve">
+    <value>Monto actual</value>
+  </data>
+  <data name="AllTransactions" xml:space="preserve">
+    <value>Todas las transacciones</value>
+  </data>
+  <data name="AmountUtilized" xml:space="preserve">
+    <value>Monto Utilizado</value>
+  </data>
+  <data name="AuthCode" xml:space="preserve">
+    <value>CódAut</value>
+  </data>
+  <data name="AvailableSegmentDetailsList" xml:space="preserve">
+    <value>Lista de Detalles disponibles de Segmento</value>
+  </data>
+  <data name="BothSearchCriterias" xml:space="preserve">
+    <value>Ambos criterios de búsqueda</value>
+  </data>
+  <data name="ChangeBillingCycle" xml:space="preserve">
+    <value>Cambio Ciclo de Facturación</value>
+  </data>
+  <data name="Disputed" xml:space="preserve">
+    <value>Disputado</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Mes</value>
+  </data>
+  <data name="SegmentOTB" xml:space="preserve">
+    <value>Cupo de Segmento</value>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>Transacciones</value>
+  </data>
+  <data name="AccountBlockFinancial" xml:space="preserve">
+    <value>Bloqueo Financiero de Cuenta</value>
+  </data>
+  <data name="AccountBlockNonFinancial" xml:space="preserve">
+    <value>Bloqueo No  Financiero de Cuenta</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Aprobada</value>
+  </data>
+  <data name="ARNNumber" xml:space="preserve">
+    <value>Número ARN</value>
+  </data>
+  <data name="AtleastOneRecord" xml:space="preserve">
+    <value>al menos un registro</value>
+  </data>
+  <data name="AuthorizationCode" xml:space="preserve">
+    <value>Código de Autorización</value>
+  </data>
+  <data name="AuthorizeAll" xml:space="preserve">
+    <value>Autorizar Todos</value>
+  </data>
+  <data name="BlockCardOrSegment" xml:space="preserve">
+    <value>Bloqueo Tarjeta/Segmento</value>
+  </data>
+  <data name="BlockCodes" xml:space="preserve">
+    <value>Códigos de Bloqueo</value>
+  </data>
+  <data name="BlockCodeStatusDetails" xml:space="preserve">
+    <value>Detalle estado códigos de bloqueo</value>
+  </data>
+  <data name="BookedDate" xml:space="preserve">
+    <value>Fecha registrada</value>
+  </data>
+  <data name="Card" xml:space="preserve">
+    <value>Tarjeta</value>
+  </data>
+  <data name="CardBlock" xml:space="preserve">
+    <value>Bloqueo de Tarjeta</value>
+  </data>
+  <data name="CardBlockSegment" xml:space="preserve">
+    <value>Segmento Bloqueo de Tarjeta</value>
+  </data>
+  <data name="CardBlockStatus" xml:space="preserve">
+    <value>Estado Bloqueo de Tarjeta</value>
+  </data>
+  <data name="CardClosureInitiation" xml:space="preserve">
+    <value>Inicio de Cierre de Tarjeta</value>
+  </data>
+  <data name="CardReactivation" xml:space="preserve">
+    <value>Reactivación de Tarjeta</value>
+  </data>
+  <data name="CardReceived" xml:space="preserve">
+    <value>Tarjeta recibida</value>
+  </data>
+  <data name="ClosedStatus" xml:space="preserve">
+    <value>Estado Cerrada</value>
+  </data>
+  <data name="ClosureDate" xml:space="preserve">
+    <value>Fecha de Cierre</value>
+  </data>
+  <data name="ClosureReason" xml:space="preserve">
+    <value>Razón de Cierre</value>
+  </data>
+  <data name="ClosureStatus" xml:space="preserve">
+    <value>Estado de Cierre</value>
+  </data>
+  <data name="ConversionTableDetails" xml:space="preserve">
+    <value>Detalles Table de Conversión</value>
+  </data>
+  <data name="CurrentBalance" xml:space="preserve">
+    <value>Saldo Actual</value>
+  </data>
+  <data name="Discard" xml:space="preserve">
+    <value>Descartar</value>
+  </data>
+  <data name="DisputedTransactions" xml:space="preserve">
+    <value>Transacciones disputadas</value>
+  </data>
+  <data name="DocumentsReceived" xml:space="preserve">
+    <value>Documentos recibidos</value>
+  </data>
+  <data name="DueDate" xml:space="preserve">
+    <value>Fecha de Vencimiento</value>
+  </data>
+  <data name="InstallmentAmount" xml:space="preserve">
+    <value>Monto de Cuotas</value>
+  </data>
+  <data name="InstallmentNo" xml:space="preserve">
+    <value>Cuota Nº</value>
+  </data>
+  <data name="InstallmentScheduleDetails" xml:space="preserve">
+    <value>Detalles de programación de cuotas</value>
+  </data>
+  <data name="InterestAmount" xml:space="preserve">
+    <value>Monto de Interés</value>
+  </data>
+  <data name="Memo" xml:space="preserve">
+    <value>Memo</value>
+  </data>
+  <data name="MsgErrCannotBeEmpty" xml:space="preserve">
+    <value>{0} No puede ser vacío</value>
+  </data>
+  <data name="NewCardNumber" xml:space="preserve">
+    <value>Nuevo número de Tarjeta</value>
+  </data>
+  <data name="PressEsctoclose" xml:space="preserve">
+    <value>Presione Esc para cerrar</value>
+  </data>
+  <data name="PrincipalAmount" xml:space="preserve">
+    <value>Monto de Capital</value>
+  </data>
+  <data name="RateOfInterest" xml:space="preserve">
+    <value>Tasa de Interés</value>
+  </data>
+  <data name="ReactivatedDate" xml:space="preserve">
+    <value>Fecha Reactivación</value>
+  </data>
+  <data name="ReactivationReason" xml:space="preserve">
+    <value>Razón Reactivación</value>
+  </data>
+  <data name="ReactivationStatus" xml:space="preserve">
+    <value>Estado Reactivación</value>
+  </data>
+  <data name="ReasonDescription" xml:space="preserve">
+    <value>Descripción de Razón</value>
+  </data>
+  <data name="ReasonForReactivation" xml:space="preserve">
+    <value>Razón para reactivación</value>
+  </data>
+  <data name="Reject" xml:space="preserve">
+    <value>Rechazo</value>
+  </data>
+  <data name="RequestedOn" xml:space="preserve">
+    <value>solicitada fecha</value>
+  </data>
+  <data name="Segment" xml:space="preserve">
+    <value>Segmento</value>
+  </data>
+  <data name="StatusChangeDate" xml:space="preserve">
+    <value>Fecha de cambio de Estado</value>
+  </data>
+  <data name="StatusToBeReactivated" xml:space="preserve">
+    <value>Estado para ser Reactivado</value>
+  </data>
+  <data name="Tenure" xml:space="preserve">
+    <value>Plazo</value>
+  </data>
+  <data name="TotalAmount" xml:space="preserve">
+    <value>Monto Total</value>
+  </data>
+  <data name="UnBlockCardOrSegment" xml:space="preserve">
+    <value>Tarjetas desbloqueadas/Segmento</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Cargar</value>
+  </data>
+  <data name="UploadCustomerDocuments" xml:space="preserve">
+    <value>Documentos de Clientes cargados</value>
+  </data>
+  <data name="StatementGrouping" xml:space="preserve">
+    <value>Agrupación de estados de Cuenta</value>
+  </data>
+  <data name="BillStatement" xml:space="preserve">
+    <value>Estados de Cuentas facturados</value>
+  </data>
+  <data name="CardMemberType" xml:space="preserve">
+    <value>Tipo de miembro de tarjeta</value>
+  </data>
+  <data name="CashOTB" xml:space="preserve">
+    <value>Cupo Efectivo</value>
+  </data>
+  <data name="CreditOTB" xml:space="preserve">
+    <value>Cupo de Crédito</value>
+  </data>
+  <data name="CustomerDueRenegoCount" xml:space="preserve">
+    <value>Conteo de Renegociaciones del Cliente</value>
+  </data>
+  <data name="CustomerWriteOffRenegoCount" xml:space="preserve">
+    <value>Conteo de Renegociaciones castigadas del cliente</value>
+  </data>
+  <data name="DocumentName" xml:space="preserve">
+    <value>Nombre documento</value>
+  </data>
+  <data name="MaximumDueRenegoCount" xml:space="preserve">
+    <value>Conteo máximo de renegociaciones</value>
+  </data>
+  <data name="MaximumOverDueRenegoCount" xml:space="preserve">
+    <value>Conteo máximo de renegociaciones de Cartera Vencida</value>
+  </data>
+  <data name="MaximumPermittedRenegoCount" xml:space="preserve">
+    <value>Conteo máximo permitido  de renegociaciones</value>
+  </data>
+  <data name="MaximumWriteOffRenegoCount" xml:space="preserve">
+    <value>Conteo máximo  de renegociaciones de Castigos</value>
+  </data>
+  <data name="MemberType" xml:space="preserve">
+    <value>Tipo de miembro</value>
+  </data>
+  <data name="MsgInfoNotAvailable" xml:space="preserve">
+    <value>No {0} disponibles</value>
+  </data>
+  <data name="RecapNumber" xml:space="preserve">
+    <value>Número de vale</value>
+  </data>
+  <data name="RenegotiationDetails" xml:space="preserve">
+    <value>Detalles de Renegociación</value>
+  </data>
+  <data name="StatementImage" xml:space="preserve">
+    <value>Imagen del  Estado de Cuenta</value>
+  </data>
+  <data name="TransactionPostDate" xml:space="preserve">
+    <value>Fecha de Posteo de la transacción</value>
+  </data>
+  <data name="UnbilledTransactionDetails" xml:space="preserve">
+    <value>Detalle de transacciones no factruradas</value>
+  </data>
+  <data name="UnmatchedAuthorizationDetails" xml:space="preserve">
+    <value>Detalle de autorizaciones no conciliadas</value>
+  </data>
+  <data name="UploadedBy" xml:space="preserve">
+    <value>Actualizado por</value>
+  </data>
+  <data name="UploadedDocumentsList" xml:space="preserve">
+    <value>Lista de documentos actualizados</value>
+  </data>
+  <data name="UploadedOn" xml:space="preserve">
+    <value>Actualizados en</value>
+  </data>
+  <data name="CustomerRefinanceCount" xml:space="preserve">
+    <value>Conteo de Refinanciaciones del Cliente</value>
+  </data>
+  <data name="LostOrStolenReissueRequest" xml:space="preserve">
+    <value>Solicitud de Reemisión Tarjeta Perdida o robada</value>
+  </data>
+  <data name="MaximumPermittedRefinanceCount" xml:space="preserve">
+    <value>Conteo máximo permitido  de refinanciaciones</value>
+  </data>
+  <data name="MessageType" xml:space="preserve">
+    <value>Tipo de Mensaje</value>
+  </data>
+  <data name="NotepadDetails" xml:space="preserve">
+    <value>Detalles libreta de notas</value>
+  </data>
+  <data name="NotepadEntry" xml:space="preserve">
+    <value>Entrada libreta de notas</value>
+  </data>
+  <data name="AddressChange" xml:space="preserve">
+    <value>Cambio de Dirección</value>
+  </data>
+  <data name="AlertRegistration" xml:space="preserve">
+    <value>Registro de Alerta</value>
+  </data>
+  <data name="ApplicationReferenceNumberOrSlNumber" xml:space="preserve">
+    <value>Número de referencia solicitud</value>
+  </data>
+  <data name="AvailableSegmentDetails" xml:space="preserve">
+    <value>Detalles disponibles de Segmento</value>
+  </data>
+  <data name="BillDateOrAmount" xml:space="preserve">
+    <value>Fecha de facturación o monto</value>
+  </data>
+  <data name="BlockOrUnblock" xml:space="preserve">
+    <value>Bloqueo o desbloqueo</value>
+  </data>
+  <data name="BookDate" xml:space="preserve">
+    <value>Fecha de registro</value>
+  </data>
+  <data name="BounceCountOrDate" xml:space="preserve">
+    <value>Contador de protestos o fecha</value>
+  </data>
+  <data name="CardDetails" xml:space="preserve">
+    <value>Detalles de Tarjeta</value>
+  </data>
+  <data name="CardExpiryDate" xml:space="preserve">
+    <value>Fecha vencimiento tarjeta</value>
+  </data>
+  <data name="CardNumberType" xml:space="preserve">
+    <value>Tipo de Número de Tarjeta</value>
+  </data>
+  <data name="CardOrSegmentBlock" xml:space="preserve">
+    <value>Bloqueo de Tarjeta o segmento</value>
+  </data>
+  <data name="CardOrSegmentUnBlock" xml:space="preserve">
+    <value>Desbloqueo de Tarjeta o segmento</value>
+  </data>
+  <data name="CashAdvance" xml:space="preserve">
+    <value>Avance en efectivo</value>
+  </data>
+  <data name="ClosedCardActivation" xml:space="preserve">
+    <value>Activación de Tarjeta Cerrada</value>
+  </data>
+  <data name="Count" xml:space="preserve">
+    <value>Conteo</value>
+  </data>
+  <data name="CreditLimitOrCashLimit" xml:space="preserve">
+    <value>Límite de Crédito o Límite de avance</value>
+  </data>
+  <data name="CreditOTBOrCashOTB" xml:space="preserve">
+    <value>Cupo de Crédito o Cupo de avance</value>
+  </data>
+  <data name="CurrentBalanceOrUMAuth" xml:space="preserve">
+    <value>CurrentBalance Or UM Auth</value>
+  </data>
+  <data name="CustomerDetails" xml:space="preserve">
+    <value>Detalles de Cliente</value>
+  </data>
+  <data name="DateofbirthOrGender" xml:space="preserve">
+    <value>Días moroso</value>
+  </data>
+  <data name="DaysPastDue" xml:space="preserve">
+    <value>Días de mora / Contador de envejecimiento</value>
+  </data>
+  <data name="EMI" xml:space="preserve">
+    <value>Cuotas</value>
+  </data>
+  <data name="Fees" xml:space="preserve">
+    <value>Cargos</value>
+  </data>
+  <data name="FinancialDetails" xml:space="preserve">
+    <value>Detalles Financieros</value>
+  </data>
+  <data name="HighBilledOrHighCleared" xml:space="preserve">
+    <value>Alta Facturación o Alta compensación</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>Información</value>
+  </data>
+  <data name="InstallmentSchedule" xml:space="preserve">
+    <value>Programación de Cuotas</value>
+  </data>
+  <data name="Limit" xml:space="preserve">
+    <value>Límite</value>
+  </data>
+  <data name="LineUtilization" xml:space="preserve">
+    <value>Utilización de línea</value>
+  </data>
+  <data name="LineUtilizationDetails" xml:space="preserve">
+    <value>Detalles  utilización de línea</value>
+  </data>
+  <data name="LineUtilizationPercentage" xml:space="preserve">
+    <value>Porcentaje Utilización de línea</value>
+  </data>
+  <data name="LostOrStolenCardBlock" xml:space="preserve">
+    <value>Bloqueo Tarjeta Perdida o robada</value>
+  </data>
+  <data name="LostOrStolenCardReissue" xml:space="preserve">
+    <value>Reemisión Tarjeta Perdida o robada</value>
+  </data>
+  <data name="NetTotal" xml:space="preserve">
+    <value>Total Neto</value>
+  </data>
+  <data name="NewContract" xml:space="preserve">
+    <value>Contarto Nuevo</value>
+  </data>
+  <data name="NotepadHistoryDetails" xml:space="preserve">
+    <value>Detalles historia de libreta de notas</value>
+  </data>
+  <data name="NumberOrStreet" xml:space="preserve">
+    <value>Número de Calle</value>
+  </data>
+  <data name="OtherCharges" xml:space="preserve">
+    <value>Otros cargos</value>
+  </data>
+  <data name="ParentCard" xml:space="preserve">
+    <value>Tarjeta Relacionada</value>
+  </data>
+  <data name="PaymentAgainstRefinance" xml:space="preserve">
+    <value>Refinanciación Monto</value>
+  </data>
+  <data name="PaymentAgainstRenegotiation" xml:space="preserve">
+    <value>Renegociación Monto</value>
+  </data>
+  <data name="Payments" xml:space="preserve">
+    <value>Pagos</value>
+  </data>
+  <data name="PendingAdjustment" xml:space="preserve">
+    <value>Ajustes pendientes</value>
+  </data>
+  <data name="PendingAdjustmentsIndividualEntries" xml:space="preserve">
+    <value>Entradas individuales ajustes Pendientes</value>
+  </data>
+  <data name="PendingAdjustmentsSummary" xml:space="preserve">
+    <value>Resúmen Ajustes pendientes</value>
+  </data>
+  <data name="PhoneOrMobile" xml:space="preserve">
+    <value>Fono o Celular</value>
+  </data>
+  <data name="Purchases" xml:space="preserve">
+    <value>Compras</value>
+  </data>
+  <data name="RefinanceDetails" xml:space="preserve">
+    <value>Detalles de Refinanciamiento</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>Número Serial </value>
+  </data>
+  <data name="TotalCreditAmount" xml:space="preserve">
+    <value>Monto Total de Crédito</value>
+  </data>
+  <data name="TotalDebitAmount" xml:space="preserve">
+    <value>Monto Total de Débito</value>
+  </data>
+  <data name="TransactionAmount" xml:space="preserve">
+    <value>Monto de Transacción</value>
+  </data>
+  <data name="UnbilledDetails" xml:space="preserve">
+    <value>Detalles No facturados</value>
+  </data>
+  <data name="UnbilledTransactions" xml:space="preserve">
+    <value>Transacciones No Facturadas</value>
+  </data>
+  <data name="UploadDocuments" xml:space="preserve">
+    <value>Documentos cargados</value>
+  </data>
+  <data name="UtilizedAmount" xml:space="preserve">
+    <value>Monto utilizado</value>
+  </data>
+  <data name="ViewConversionTable" xml:space="preserve">
+    <value>Vista de Tabla de Conversión</value>
+  </data>
+  <data name="CreatedOn" xml:space="preserve">
+    <value>Creado sobre</value>
+  </data>
+  <data name="MaternalName" xml:space="preserve">
+    <value>Apellido Materno</value>
+  </data>
+  <data name="PaternalName" xml:space="preserve">
+    <value>Apellido Paterno</value>
+  </data>
+  <data name="TypeOfAddressClearance" xml:space="preserve">
+    <value>Type Of Address Clearance</value>
+  </data>
+  <data name="AddressClearance" xml:space="preserve">
+    <value>Complemento de Dirección</value>
+  </data>
+  <data name="Precision" xml:space="preserve">
+    <value>precisión</value>
+  </data>
+  <data name="AmountPaidI" xml:space="preserve">
+    <value>Monto Pagado (I)</value>
+  </data>
+  <data name="AmountPaidP" xml:space="preserve">
+    <value>Monto Pagado (P)</value>
+  </data>
+  <data name="BillCycleCode" xml:space="preserve">
+    <value>Código Ciclo de Facturación</value>
+  </data>
+  <data name="BillGeneration" xml:space="preserve">
+    <value>Generación de Facturación</value>
+  </data>
+  <data name="ChargeSlipDate" xml:space="preserve">
+    <value>Diferir fecha cargo</value>
+  </data>
+  <data name="InstallmentNumber" xml:space="preserve">
+    <value>Número de Cuotas</value>
+  </data>
+  <data name="LoanAmount" xml:space="preserve">
+    <value>Monto de Préstamo</value>
+  </data>
+  <data name="LoanDate" xml:space="preserve">
+    <value>Fecha Préstamo</value>
+  </data>
+  <data name="MsgConfClose" xml:space="preserve">
+    <value>¿Quiere cerrar las transacciones?</value>
+  </data>
+  <data name="MsgConfGenerate" xml:space="preserve">
+    <value>¿Quiere generar el Estado de Cuenta?</value>
+  </data>
+  <data name="MsgConfPost" xml:space="preserve">
+    <value>¿Quiere postear las transacciones?</value>
+  </data>
+  <data name="MsgConfSave" xml:space="preserve">
+    <value>¿Quiere guardar los registros?</value>
+  </data>
+  <data name="PlanId" xml:space="preserve">
+    <value>ID de Plan</value>
+  </data>
+  <data name="PreInterestAmtI" xml:space="preserve">
+    <value>Monto prepago Interés (I)</value>
+  </data>
+  <data name="PrePaymentAmtP" xml:space="preserve">
+    <value>Monto prepago Capital ©</value>
+  </data>
+  <data name="ResponseCode" xml:space="preserve">
+    <value>Código de Respuesta</value>
+  </data>
+  <data name="Statement" xml:space="preserve">
+    <value>Estados de Cuenta</value>
+  </data>
+  <data name="TotalInstallment" xml:space="preserve">
+    <value>Total de Cuotas</value>
+  </data>
+  <data name="TransactionAdjustment" xml:space="preserve">
+    <value>Ajuste de Transacción</value>
+  </data>
+  <data name="TransactionNo" xml:space="preserve">
+    <value>Transacción Nº</value>
+  </data>
+  <data name="TransactionTime" xml:space="preserve">
+    <value>Hora de la Transacción</value>
+  </data>
+  <data name="MsgErrSelectApproveAll" xml:space="preserve">
+    <value>Por favor, seleccione contexto similar para aprobar todos</value>
+  </data>
+  <data name="AmountFrom" xml:space="preserve">
+    <value>Monto desde</value>
+  </data>
+  <data name="AmountTo" xml:space="preserve">
+    <value>Monto hasta</value>
+  </data>
+  <data name="ConsumptionRangeFrom" xml:space="preserve">
+    <value>Rango de consumo desde</value>
+  </data>
+  <data name="ConsumptionRangeTo" xml:space="preserve">
+    <value>Rango Consumo hasta</value>
+  </data>
+  <data name="MsgInfoValueGreaterThanOne" xml:space="preserve">
+    <value>Por favor ingrese un valor mayor o igual a 1</value>
+  </data>
+  <data name="RangeFrom" xml:space="preserve">
+    <value>Rango desde</value>
+  </data>
+  <data name="RangeTo" xml:space="preserve">
+    <value>Rango hasta</value>
+  </data>
+  <data name="TypeOfAddressClearance1" xml:space="preserve">
+    <value>Type Of Address Clearance</value>
+  </data>
+  <data name="MsgErrAuditLogin" xml:space="preserve">
+    <value>Excepción ocurrió al intentar auditar login.</value>
+  </data>
+  <data name="MsgErrExecBillingProc" xml:space="preserve">
+    <value>Error durante la ejecución de la facturación.</value>
+  </data>
+  <data name="MsgErrGenCardNo" xml:space="preserve">
+    <value>Se produjo un error al generar el número de tarjeta.</value>
+  </data>
+  <data name="MsgErrGenReport" xml:space="preserve">
+    <value>Se produjo un error al generar el informe.</value>
+  </data>
+  <data name="MsgErrIncorrectFile" xml:space="preserve">
+    <value>Archivo incorrecta.</value>
+  </data>
+  <data name="MsgErrIncorrectLoginData" xml:space="preserve">
+    <value>Datos de identificación no son correctos.</value>
+  </data>
+  <data name="MsgErrInsufficientPrivilege" xml:space="preserve">
+    <value>Usted no tiene privilegios suficientes para realizar esta operación</value>
+  </data>
+  <data name="MsgErrLogin" xml:space="preserve">
+    <value>Excepción ocurrió al intentar iniciar sesión.</value>
+  </data>
+  <data name="MsgErrNoRecordsFound" xml:space="preserve">
+    <value>No se encontraron registros</value>
+  </data>
+  <data name="MsgErrRUTExists" xml:space="preserve">
+    <value>Este RUT ya existe en otra organización.</value>
+  </data>
+  <data name="MsgErrSelectCardNo" xml:space="preserve">
+    <value>Por favor, seleccione el número de tarjeta de generar archivos.</value>
+  </data>
+  <data name="MsgErrSessionExpired" xml:space="preserve">
+    <value>Su sesión ha expirado. Por favor, iniciar sesión de nuevo.</value>
+  </data>
+  <data name="MsgErrStatementGeneration" xml:space="preserve">
+    <value>Se produjo un error al generar comunicado.</value>
+  </data>
+  <data name="MsgErrUpdateBillingCycle" xml:space="preserve">
+    <value>Excepción ocurrió mientras que la actualización de ciclo de facturación.</value>
+  </data>
+  <data name="MsgInfoAuthCancelled" xml:space="preserve">
+    <value>Autorización cancelado correctamente.</value>
+  </data>
+  <data name="MsgInfoExecBillingSuccess" xml:space="preserve">
+    <value>EOD procesado correctamente.</value>
+  </data>
+  <data name="MsgInfoFileImportSuccess" xml:space="preserve">
+    <value>Archivo importado correctamente.</value>
+  </data>
+  <data name="MsgInfoFilesGenSuccess" xml:space="preserve">
+    <value>Archivo ( s ) generó correctamente.</value>
+  </data>
+  <data name="MsgInfoGenCardNoSuccess" xml:space="preserve">
+    <value>Número de tarjeta generó correctamente para el cliente ( s ) seleccionado.</value>
+  </data>
+  <data name="MsgInfoRecordsPostedSuccess" xml:space="preserve">
+    <value>Record ( s ) publicado con éxito.</value>
+  </data>
+  <data name="MsgInfoRecordsSaveSuccess" xml:space="preserve">
+    <value>Record ( s ) guardado correctamente.</value>
+  </data>
+  <data name="MsgInfoStatementGenSuccess" xml:space="preserve">
+    <value>Declaración generó correctamente.</value>
+  </data>
+  <data name="DelinquencyAmountFrom" xml:space="preserve">
+    <value>Monto Moroso Desde</value>
+  </data>
+  <data name="DelinquencyAmountTo" xml:space="preserve">
+    <value>Monto Moroso Hasta</value>
+  </data>
+  <data name="InterestRate" xml:space="preserve">
+    <value>Tasa de Interés</value>
+  </data>
+  <data name="SBIFInterestRate" xml:space="preserve">
+    <value>Tasa Interés SBIF</value>
+  </data>
+  <data name="UFRATE_SETTINGS" xml:space="preserve">
+    <value>UF Ajustes de la frecuencia</value>
+  </data>
+  <data name="UFRate" xml:space="preserve">
+    <value>UF Tasa</value>
+  </data>
+  <data name="CreditSubSegmentCode" xml:space="preserve">
+    <value>Código Sub segmento de Crédito</value>
+  </data>
+  <data name="NetRenegotiatedAmount" xml:space="preserve">
+    <value>Monto Neto renegociado</value>
+  </data>
+  <data name="PlanCode" xml:space="preserve">
+    <value>Código de Plan</value>
+  </data>
+  <data name="TenureFromMonths" xml:space="preserve">
+    <value>Plazo desde Meses</value>
+  </data>
+  <data name="TenureToMonths" xml:space="preserve">
+    <value>Plazo hasta Meses</value>
+  </data>
+  <data name="BillingCycleCode" xml:space="preserve">
+    <value>Código Ciclo de Facturación</value>
+  </data>
+  <data name="SequenceNumber" xml:space="preserve">
+    <value>Número de secuencia</value>
+  </data>
+  <data name="MsgErrChangePwd" xml:space="preserve">
+    <value>Ocurrió un error duranbte el cambio de clave</value>
+  </data>
+  <data name="MNTC_SETTINGS" xml:space="preserve">
+    <value>Ajustes</value>
+  </data>
+  <data name="ActualRefinanceCount" xml:space="preserve">
+    <value>Conteo refinanciamientos actual</value>
+  </data>
+  <data name="BilledOS" xml:space="preserve">
+    <value>Saldo Facturadoi</value>
+  </data>
+  <data name="CardHolderName" xml:space="preserve">
+    <value>Nombre Tarjeta Habiente</value>
+  </data>
+  <data name="DelinquencyInterest" xml:space="preserve">
+    <value>Interés Penal</value>
+  </data>
+  <data name="DiscountAmount" xml:space="preserve">
+    <value>Monto de descuento</value>
+  </data>
+  <data name="DownPayment" xml:space="preserve">
+    <value>Pié</value>
+  </data>
+  <data name="DownPaymentAmount" xml:space="preserve">
+    <value>Monto de pié</value>
+  </data>
+  <data name="DPDCount" xml:space="preserve">
+    <value>Conteo FV</value>
+  </data>
+  <data name="Due" xml:space="preserve">
+    <value>Vencimiento</value>
+  </data>
+  <data name="Good" xml:space="preserve">
+    <value>Buena</value>
+  </data>
+  <data name="GrossAmountForRefinancing" xml:space="preserve">
+    <value>Monto total para refinanciamiento</value>
+  </data>
+  <data name="GrossAmountForRenegotiation" xml:space="preserve">
+    <value>Monto total para renegociación</value>
+  </data>
+  <data name="MinDueAmount" xml:space="preserve">
+    <value>Monto mínimo vencido</value>
+  </data>
+  <data name="NetAmount" xml:space="preserve">
+    <value>Monto Neto</value>
+  </data>
+  <data name="NetRefinancedAmount" xml:space="preserve">
+    <value>Monto Neto Refinanciado</value>
+  </data>
+  <data name="OtherCharge" xml:space="preserve">
+    <value>Otros cargos</value>
+  </data>
+  <data name="OverAll" xml:space="preserve">
+    <value>Sobretodo</value>
+  </data>
+  <data name="OverDue" xml:space="preserve">
+    <value>Cartera Vencida</value>
+  </data>
+  <data name="RefinancingDetails" xml:space="preserve">
+    <value>Detalles de Refinanciamiento</value>
+  </data>
+  <data name="Strong" xml:space="preserve">
+    <value>Fuerte</value>
+  </data>
+  <data name="TooShort" xml:space="preserve">
+    <value>Demasiado Corto</value>
+  </data>
+  <data name="TotalOS" xml:space="preserve">
+    <value>Saldo Total</value>
+  </data>
+  <data name="UnBilledOS" xml:space="preserve">
+    <value>Saldo No Facturado</value>
+  </data>
+  <data name="Weak" xml:space="preserve">
+    <value>Débil</value>
+  </data>
+  <data name="WriteOff" xml:space="preserve">
+    <value>Castigo</value>
+  </data>
+  <data name="CheckDigit" xml:space="preserve">
+    <value>Dígito Verificador</value>
+  </data>
+  <data name="ParentCustomer" xml:space="preserve">
+    <value>Cliente Titular</value>
+  </data>
+  <data name="Age" xml:space="preserve">
+    <value>Edad</value>
+  </data>
+  <data name="AlcoholLicense" xml:space="preserve">
+    <value>Patente de Alcoholes</value>
+  </data>
+  <data name="CommercialAddress" xml:space="preserve">
+    <value>Dirección Comercial</value>
+  </data>
+  <data name="CommercialBranch" xml:space="preserve">
+    <value>Sucursal Comercial</value>
+  </data>
+  <data name="CreditBureauDicom" xml:space="preserve">
+    <value>Dicom</value>
+  </data>
+  <data name="CreditBureauScore" xml:space="preserve">
+    <value>Puntaje Dicom</value>
+  </data>
+  <data name="CreditLineRequested" xml:space="preserve">
+    <value>Línea de Crédito solicitada</value>
+  </data>
+  <data name="CurrentAccountNo" xml:space="preserve">
+    <value>Nº de Cuenta Corriente</value>
+  </data>
+  <data name="CustomerIdentification" xml:space="preserve">
+    <value>Identificación del Cliente</value>
+  </data>
+  <data name="DSACode" xml:space="preserve">
+    <value>Código DSA</value>
+  </data>
+  <data name="DSAIdentification" xml:space="preserve">
+    <value>Identificación Vendedor</value>
+  </data>
+  <data name="GrowthPotentialPercentage" xml:space="preserve">
+    <value>Ptencial de Crecimiento(%)</value>
+  </data>
+  <data name="LandPhone" xml:space="preserve">
+    <value>Fono fijo</value>
+  </data>
+  <data name="LocalType" xml:space="preserve">
+    <value>Tipo de Local</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Otros</value>
+  </data>
+  <data name="ParticularAddress" xml:space="preserve">
+    <value>Dirección Particular</value>
+  </data>
+  <data name="PurchaseAndConsumptionOccasion" xml:space="preserve">
+    <value>Ocasión de Compra y Consumo</value>
+  </data>
+  <data name="Relevance" xml:space="preserve">
+    <value>Relevancia</value>
+  </data>
+  <data name="ResidenceType" xml:space="preserve">
+    <value>Tipo de Residencia</value>
+  </data>
+  <data name="RiskData" xml:space="preserve">
+    <value>Datos de Riesgo</value>
+  </data>
+  <data name="SendStatementTo" xml:space="preserve">
+    <value>Enviar EE CC a</value>
+  </data>
+  <data name="StatementAddress" xml:space="preserve">
+    <value>Dirección envío EE CC</value>
+  </data>
+  <data name="UEN" xml:space="preserve">
+    <value>UEN</value>
+  </data>
+  <data name="Village" xml:space="preserve">
+    <value>Localidad</value>
+  </data>
+  <data name="GenerateStatement" xml:space="preserve">
+    <value>Generas de Declaraciones</value>
+  </data>
+  <data name="MT_SalesId" xml:space="preserve">
+    <value>ID de Ventas</value>
+  </data>
+  <data name="AuthPost" xml:space="preserve">
+    <value>Posteo de Autorizaciones</value>
+  </data>
+  <data name="ChequeNo" xml:space="preserve">
+    <value>Cheque Número</value>
+  </data>
+  <data name="Criteria" xml:space="preserve">
+    <value>Criterio</value>
+  </data>
+  <data name="EmbossedFile" xml:space="preserve">
+    <value>Embossed File</value>
+  </data>
+  <data name="EmbossedKit" xml:space="preserve">
+    <value>Embossed Kit</value>
+  </data>
+  <data name="EMIMasterInstallment" xml:space="preserve">
+    <value>EMI Master Installment</value>
+  </data>
+  <data name="GenerateCard" xml:space="preserve">
+    <value>Tarjeta Generada</value>
+  </data>
+  <data name="GrossAmount" xml:space="preserve">
+    <value>Monto total</value>
+  </data>
+  <data name="IsAutoRenewal" xml:space="preserve">
+    <value>Is Auto Renewal</value>
+  </data>
+  <data name="IsInterestWaiver" xml:space="preserve">
+    <value>Is Interest Waiver</value>
+  </data>
+  <data name="IsRenewable" xml:space="preserve">
+    <value>Is Renewable</value>
+  </data>
+  <data name="List" xml:space="preserve">
+    <value>Lista</value>
+  </data>
+  <data name="MsgPleaseSelectAFileToUpload" xml:space="preserve">
+    <value>Por favor seleccione un archivo para subir</value>
+  </data>
+  <data name="Prepayment" xml:space="preserve">
+    <value>Prepago</value>
+  </data>
+  <data name="PrePaymentOrPreClosureSettlment" xml:space="preserve">
+    <value>Liquidación de Pre Cierre</value>
+  </data>
+  <data name="RenewalFeeWaiver" xml:space="preserve">
+    <value>Renewal Fee Waiver</value>
+  </data>
+  <data name="SearchUsing" xml:space="preserve">
+    <value>Búsqueda utilizada</value>
+  </data>
+  <data name="MsgErrInvalidRUT" xml:space="preserve">
+    <value>RUT formato no valido</value>
+  </data>
+  <data name="DSA" xml:space="preserve">
+    <value>DSA</value>
+  </data>
+  <data name="DSAName" xml:space="preserve">
+    <value>Nombre DSA</value>
+  </data>
+  <data name="FormatDateJS" xml:space="preserve">
+    <value>dd-mm-yy</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Año</value>
+  </data>
+  <data name="FormatAmountExpression" xml:space="preserve">
+    <value>/^\d{1,9}(\,\d{0,5})?$/</value>
+  </data>
+  <data name="FormatAmountJS" xml:space="preserve">
+    <value>n5</value>
+  </data>
+  <data name="LostOrStolenStatus" xml:space="preserve">
+    <value>Perdido / Estado Stolen</value>
+  </data>
+  <data name="MsgInfoValueGreaterThanCustom" xml:space="preserve">
+    <value>Por favor ingrese un valor mayor o igual a {0}</value>
+  </data>
+  <data name="MsgInfoValueLessThanCustom" xml:space="preserve">
+    <value>Por favor, introduzca un valor menor o igual a {0}</value>
+  </data>
+  <data name="MaxInterestDefinition" xml:space="preserve">
+    <value>Max interés Definición</value>
+  </data>
+  <data name="MsgErrConfirmPasswordNoMatch" xml:space="preserve">
+    <value>Confirmar contraseña no coincide</value>
+  </data>
+  <data name="FormatAmountJSn0" xml:space="preserve">
+    <value>n0</value>
+  </data>
+  <data name="FormatAmountJSn2" xml:space="preserve">
+    <value>n2</value>
+  </data>
+  <data name="FormatAmountJSn3" xml:space="preserve">
+    <value>n3</value>
+  </data>
+  <data name="FormatAmountJSD" xml:space="preserve">
+    <value>D</value>
+  </data>
+  <data name="USR_GROUPDETAILS" xml:space="preserve">
+    <value>Detalles Grupo de Usuarios</value>
+  </data>
+  <data name="FormatAmountPercentage" xml:space="preserve">
+    <value>/^\d{1,9}(\,\d{0,2})?$/</value>
+  </data>
+  <data name="MsgErrInvalidParentCustomer" xml:space="preserve">
+    <value>Debido a que no está activo el Titular, no se puede crear adicional</value>
+  </data>
+  <data name="MsgErrMaxAddOnCountExceed" xml:space="preserve">
+    <value>Excede número máximo de adicionales permitidos para un titular</value>
+  </data>
+  <data name="MsgErrUnAuthParentCustomer" xml:space="preserve">
+    <value>Debido a que no está aprobado el Titular, no se puede crear adicional</value>
+  </data>
+  <data name="TransactionBased" xml:space="preserve">
+    <value>Transaction Based</value>
+  </data>
+  <data name="TransactionCheckFrequency" xml:space="preserve">
+    <value>Frecuencia de Transacción</value>
+  </data>
+  <data name="SettlementInDays" xml:space="preserve">
+    <value>Settlement In Days</value>
+  </data>
+  <data name="MT_MERCHANTDISCOUNT" xml:space="preserve">
+    <value>Descuento Merchant</value>
+  </data>
+  <data name="MerchantDiscount" xml:space="preserve">
+    <value>Descuento Merchant</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Quitar</value>
+  </data>
+  <data name="MsgErrIncorrectOldPassword" xml:space="preserve">
+    <value>Incorrecta antigua contraseña</value>
+  </data>
+  <data name="MsgErrMerchantDiscountAlreadyExists" xml:space="preserve">
+    <value>{0} ya existe para la fecha seleccionada.</value>
+  </data>
+  <data name="UMAuth" xml:space="preserve">
+    <value>Autorizaciones No Conciliadas</value>
+  </data>
+  <data name="BounceCount" xml:space="preserve">
+    <value>Contador de protestos</value>
+  </data>
+  <data name="HighBilled" xml:space="preserve">
+    <value>Alta Facturación</value>
+  </data>
+  <data name="HighCleared" xml:space="preserve">
+    <value>Alta compensación</value>
+  </data>
+  <data name="MsgErrMinimumLength" xml:space="preserve">
+    <value>{0} debe ser al menos de largo de {2} dígitos.</value>
+  </data>
+  <data name="MsgPleaseSelectAFileToImport" xml:space="preserve">
+    <value>Por favor seleccione un archivo para importar</value>
+  </data>
+  <data name="CashLimit" xml:space="preserve">
+    <value>Límite Avance</value>
+  </data>
+  <data name="RPT" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="RPT_DAILY_COLL" xml:space="preserve">
+    <value>Daily Collection</value>
+  </data>
+  <data name="Interest" xml:space="preserve">
+    <value>Interés</value>
+  </data>
+  <data name="MsgInfoCardBlockedSuccessfully" xml:space="preserve">
+    <value>Tarjeta bloqueada  correctamente.</value>
+  </data>
+  <data name="ChargeType" xml:space="preserve">
+    <value>Tipo de Cargo</value>
+  </data>
+  <data name="ServiceTax" xml:space="preserve">
+    <value>impuesto de servicio</value>
+  </data>
+  <data name="ChangeCreditLimit" xml:space="preserve">
+    <value>Cambio Límite de Crédito</value>
+  </data>
+  <data name="NewCreditLimit" xml:space="preserve">
+    <value>New Credit Limit</value>
+  </data>
+  <data name="CurrentCreditLimit" xml:space="preserve">
+    <value>Current Credit Limit</value>
+  </data>
+  <data name="PROC_EOD" xml:space="preserve">
+    <value>EOD</value>
+  </data>
+  <data name="PROC_IMPORT" xml:space="preserve">
+    <value>Import Transactions</value>
+  </data>
+  <data name="MSG_ALLOWED_NUMERALS" xml:space="preserve">
+    <value>^-?(?!0)(?:\d+|\d{1,3}(?:\.\d{3})+)$</value>
+  </data>
+  <data name="MsgErrAmount" xml:space="preserve">
+    <value>Monto inválido</value>
+  </data>
+  <data name="AmountCancelled" xml:space="preserve">
+    <value>Monto Cancelado</value>
+  </data>
+  <data name="DelinquencyServiceTax" xml:space="preserve">
+    <value>Impuesto de Servicio Delincuencia</value>
+  </data>
+  <data name="RevolvingInterest" xml:space="preserve">
+    <value>Interés Revolvente</value>
+  </data>
+  <data name="RevolvingServiceTax" xml:space="preserve">
+    <value>Impuesto de Servicio Revolvente</value>
+  </data>
+  <data name="UnbilledInterestDetails" xml:space="preserve">
+    <value>Detalles de Interés no Facturados</value>
+  </data>
+  <data name="UnbilledPaymentDetails" xml:space="preserve">
+    <value>Detalles de Pago no Facturados</value>
+  </data>
+  <data name="UnbilledPurchaseDetails" xml:space="preserve">
+    <value>Detalles de la Compra no Facturados</value>
+  </data>
+  <data name="UnbilledServiceTaxDetails" xml:space="preserve">
+    <value>Detalles de Impuestos de Servicios no Facturados</value>
+  </data>
+  <data name="UnbillledCreditNoteDetails" xml:space="preserve">
+    <value>No Facturados Detalles de la Nota de Crédito</value>
+  </data>
+  <data name="MT_MERCHANTTRANSACTION" xml:space="preserve">
+    <value>transacción Merchant</value>
+  </data>
+  <data name="Adjust" xml:space="preserve">
+    <value>Ajustar</value>
+  </data>
+  <data name="AdjustedAmount" xml:space="preserve">
+    <value>Monto ajustado</value>
+  </data>
+  <data name="AmountToAdjust" xml:space="preserve">
+    <value>Monto para ajustar</value>
+  </data>
+  <data name="TRANSACTION_ADJUSTMENT" xml:space="preserve">
+    <value>Ajuste de Transacción</value>
+  </data>
+  <data name="CardActivatedDate" xml:space="preserve">
+    <value>Card Activated Date</value>
+  </data>
+  <data name="FormatAmountJSn5" xml:space="preserve">
+    <value>n5</value>
+  </data>
+  <data name="MsgErrInvalidSalesIdBranch" xml:space="preserve">
+    <value>Usuario no tiene acceso a la sucursal de salesid</value>
+  </data>
+  <data name="ActualDue" xml:space="preserve">
+    <value>Debido actual</value>
+  </data>
+  <data name="ActualOverAll" xml:space="preserve">
+    <value>Actual sobre todos</value>
+  </data>
+  <data name="ActualOverDue" xml:space="preserve">
+    <value>Actual Durante Debido</value>
+  </data>
+  <data name="ActualWriteOff" xml:space="preserve">
+    <value>Escribir Actual Off</value>
+  </data>
+  <data name="MT_CUSTOMER_WITHOUT_SALESID" xml:space="preserve">
+    <value>Cliente (sin Identificación ventas)</value>
+  </data>
+  <data name="MsgErrValueShouldBeLessThanCreditLimitofProduct" xml:space="preserve">
+    <value>El valor debe ser menor o igual a la credit limit de producto ({0})</value>
+  </data>
+  <data name="PortFolio" xml:space="preserve">
+    <value>Cartera</value>
+  </data>
+  <data name="DepartmentId" xml:space="preserve">
+    <value>Departamento Id</value>
+  </data>
+  <data name="SwapProduct" xml:space="preserve">
+    <value>Producto de intercambio</value>
+  </data>
+  <data name="CurrentProduct" xml:space="preserve">
+    <value>Producto actual</value>
+  </data>
+  <data name="NewProduct" xml:space="preserve">
+    <value>Nuevo producto</value>
+  </data>
+  <data name="UnbilledEMIDetails" xml:space="preserve">
+    <value>A facturar Detalles EMI</value>
+  </data>
+  <data name="MT_ADJUSTMENT_FINANCIAL_ACCOUNT" xml:space="preserve">
+    <value>Adjustment Financial Account</value>
+  </data>
+  <data name="AdjustmentFinancialActivityCode" xml:space="preserve">
+    <value>Adj Financial Activity</value>
+  </data>
+  <data name="MsgErrCustomerAlreadyExistsInOtherMode" xml:space="preserve">
+    <value>Ya existe Cliente fuera Identificación ventas</value>
+  </data>
+  <data name="MsgErrCannotAuthorizeSwapCard" xml:space="preserve">
+    <value>No se puede autorizar. El estado de la tarjeta no es normal</value>
+  </data>
+  <data name="MsgErrCustomerAlreadyExistsWithSalesId" xml:space="preserve">
+    <value>Cliente ya existe con id ventas</value>
+  </data>
+  <data name="TransactionAdjustmentCode" xml:space="preserve">
+    <value>Transaction Adjustment Code</value>
+  </data>
+  <data name="MsgWaitEOD" xml:space="preserve">
+    <value>Por favor espere mientras EOD está procesando ....</value>
+  </data>
+  <data name="MsgWaitStatementGen" xml:space="preserve">
+    <value>Por favor espere mientras comunicado está generando ....</value>
+  </data>
+  <data name="MsgConfProcessEOD" xml:space="preserve">
+    <value>¿Quieres procesar la EOD</value>
+  </data>
+  <data name="StatusExpired" xml:space="preserve">
+    <value>Expirado</value>
+  </data>
+  <data name="CommercialUEN" xml:space="preserve">
+    <value>Comercial UEN</value>
+  </data>
+  <data name="CommercialUENName" xml:space="preserve">
+    <value>Nombre Comercial UEN</value>
+  </data>
+  <data name="MsgErrSelectOnlyOne" xml:space="preserve">
+    <value>Por favor seleccione sólo un {0}.</value>
+  </data>
+  <data name="FinancialSummary" xml:space="preserve">
+    <value>Resumen Financiero</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BilledAmount" xml:space="preserve">
+    <value>Importe Facturado</value>
+  </data>
+  <data name="TotalMinDue" xml:space="preserve">
+    <value>Pago mínimo  total</value>
+  </data>
+  <data name="CreditAdjustment" xml:space="preserve">
+    <value>Ajustes de crédito</value>
+  </data>
+  <data name="DebitAdjustment" xml:space="preserve">
+    <value>Ajustes de Débito</value>
+  </data>
+  <data name="AdjustmentDate" xml:space="preserve">
+    <value>Fecha de Ajuste</value>
+  </data>
+  <data name="PostedDate" xml:space="preserve">
+    <value>Publicado Fecha</value>
+  </data>
+  <data name="BalanceAmount" xml:space="preserve">
+    <value>Saldo Monto</value>
+  </data>
+  <data name="LegacyProductCode" xml:space="preserve">
+    <value>Código de Producto Legado</value>
+  </data>
+  <data name="MsgErrAnySearchCriteria" xml:space="preserve">
+    <value>Por favor seleccione los criterios de búsqueda.</value>
+  </data>
+  <data name="OverdueSummary" xml:space="preserve">
+    <value>Resumen Cartera Vencida</value>
+  </data>
+  <data name="CardGeneratedDate" xml:space="preserve">
+    <value>Card Generado Fecha</value>
+  </data>
+  <data name="OriginalDebt" xml:space="preserve">
+    <value>Deuda Original</value>
+  </data>
+  <data name="PaymentRefNo" xml:space="preserve">
+    <value>Pago Ref No</value>
+  </data>
+  <data name="MsgErrServerException" xml:space="preserve">
+    <value>Se produjo un error en el servidor al procesar la dirección URL . Por favor, póngase en contacto con el administrador del sistema.</value>
+  </data>
+  <data name="FinancialCreditNote" xml:space="preserve">
+    <value>Financiera Nota de Crédito</value>
+  </data>
+  <data name="UnBilledFinancialCreditNote" xml:space="preserve">
+    <value>No facturados de Crédito Financiero detalles Nota</value>
+  </data>
+  <data name="UnPosted" xml:space="preserve">
+    <value>Sin contabilizar</value>
+  </data>
+  <data name="PaymentReversal" xml:space="preserve">
+    <value>Reverso de Pago</value>
+  </data>
+  <data name="Collector" xml:space="preserve">
+    <value>Collector</value>
+  </data>
+  <data name="InstallmentCAE" xml:space="preserve">
+    <value>cuota CAE</value>
+  </data>
+  <data name="InstallmentInterest" xml:space="preserve">
+    <value>interés cuota</value>
+  </data>
+  <data name="RevolvingCAE" xml:space="preserve">
+    <value>Rotatorio CAE</value>
+  </data>
+  <data name="MT_INTERESTRATE" xml:space="preserve">
+    <value>Declaración de interés establecido</value>
+  </data>
+  <data name="MsgMovtoOD" xml:space="preserve">
+    <value>Movimiento de Atrasado procesado correctamente</value>
+  </data>
+  <data name="PROC_OVERDUE" xml:space="preserve">
+    <value>Paso a Cartera Vencida</value>
+  </data>
+  <data name="MsgMovtoIN" xml:space="preserve">
+    <value>Movimiento de insurence procesado correctamente</value>
+  </data>
+  <data name="PROC_INSURANCE" xml:space="preserve">
+    <value>Paso a Siniestros</value>
+  </data>
+  <data name="UserStatus" xml:space="preserve">
+    <value>Datos del Usuario ( Activación / Bloquear / Desbloquear )</value>
+  </data>
+  <data name="Maker" xml:space="preserve">
+    <value>Fabricante ID</value>
+  </data>
+  <data name="MsgMovtoNL" xml:space="preserve">
+    <value>	Movimiento en Normal procesado correctamente</value>
+  </data>
+  <data name="PROC_MOVNOR" xml:space="preserve">
+    <value>Retorno a Normal</value>
+  </data>
+  <data name="USR_SPCLPRIV" xml:space="preserve">
+    <value>Usuario Privilegio Especial</value>
+  </data>
+  <data name="MsgInfoLicenceExpired" xml:space="preserve">
+    <value>Licence Expired</value>
+  </data>
+  <data name="MsgLicenceExpiredon" xml:space="preserve">
+    <value>Licence Will Expire On</value>
+  </data>
+  <data name="PROC_MOVFROMBBI" xml:space="preserve">
+    <value>movimiento del bloque por emisor</value>
+  </data>
+  <data name="PROC_MOVTOBBI" xml:space="preserve">
+    <value>movimiento para bloquear por emisor</value>
+  </data>
+</root>

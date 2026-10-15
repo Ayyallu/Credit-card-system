@@ -1,0 +1,112 @@
+﻿@using CC_Ingenio.Web.ViewModel.Master;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.MerchantDiscount, " ", Resources.Search });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model MerchantDiscountSearch
+@{
+    
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+
+    List<SelectListItem> MerchantList = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Merchants)
+    {
+        MerchantList.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    MerchantList.RemoveAt(0);
+    MerchantList.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+}
+
+<section class="feature">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active">@Html.ActionLink(Resources.SearchPageHeading, "MerchantDiscountList", "Master")</li>
+            <li>@Html.ActionLink(Resources.DetailsPageHeading, "MerchantDiscountAdd", "Master")</li>
+
+        </ul>
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("MerchantDiscountList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.Merchant</div>
+                                        <div class="Field">
+                                            @Html.DropDownListFor(x => x.MerchantCode, MerchantList)
+                                        </div>
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="Field">&nbsp;</div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="SearchColumnbtn">
+                                        <span>
+                                            <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                        </span>
+
+                                        <span>
+                                            <input id="Button2" type="submit" name="ClearButton" class="Greenbutton" value="@Resources.Clear" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+
+                        </div>
+                    }
+
+                </div>
+
+                <div class="row">
+                    <div class="standard-table">
+                        @grid.GetHtml(columns: grid.Columns(
+                                    grid.Column("MerchantCode", Resources.MerchantCode),
+                                    grid.Column("MerchantName", Resources.MerchantName),
+                                    grid.Column("DiscountRate", Resources.DiscountRatePercent),
+                                    grid.Column("EffectiveFromDate",Resources.EffectiveFromDate,format:@<text> @item.EffectiveFromDate.ToShortDateString()</text>),                                   
+                                    grid.Column("TransactionCheckFrequencyDesc", Resources.TransactionCheckFrequency),
+                                    grid.Column("ApprovalStatusDesc", Resources.Status),
+                                    grid.Column(Resources.Edit, format:
+                                        (item) =>
+                                        {
+                                            if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                            {
+                                                return Html.Raw(Html.ActionLink(Resources.Edit, "MerchantDiscountAdd", "Master", new { id = item.MerchantDiscountId }, null));
+
+                                            }
+                                            else
+                                            {
+                                                return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "MerchantDiscountView", "Master", new { id = item.MerchantDiscountId }, null)));
+                                            }
+                                        }),
+                                    grid.Column(Resources.Delete, format:
+                                        (item) =>
+                                        {
+                                            if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                            {
+                                                return Html.Raw(Html.ActionLink(Resources.Delete, "MerchantDiscountDelete", "Master", new { id = item.MerchantDiscountId }, new { @class = "delete-link" }));
+                                            }
+                                            else
+                                            {
+                                                return Html.Raw("");
+                                            }
+                                        })
+                                   ))
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

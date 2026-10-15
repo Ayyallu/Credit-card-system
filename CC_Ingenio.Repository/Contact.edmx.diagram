@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="71165d283c0046b597041fc5454e147c" Name="Diagram1">
+        <EntityTypeShape EntityType="TestMVC.Models.TestMVCDbContextModel.Addresses" Width="1.5" PointX="6.2669964033490961" PointY="10.644952391574602" />
+        <EntityTypeShape EntityType="TestMVC.Models.TestMVCDbContextModel.ContactAddresses" Width="1.5" PointX="1.1513128006604094" PointY="6.3865181088384793" />
+        <AssociationConnector Association="TestMVC.Models.TestMVCDbContextModel.Fk_ContactAddress_AddressId" />
+        <EntityTypeShape EntityType="TestMVC.Models.TestMVCDbContextModel.CONTACTS" Width="1.5" PointX="6.5750633639167351" PointY="12.94932436055938" />
+        <AssociationConnector Association="TestMVC.Models.TestMVCDbContextModel.Fk_ContactAddress_ContactId1" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

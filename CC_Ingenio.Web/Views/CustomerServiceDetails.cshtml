@@ -1,0 +1,394 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@model CustomerServiceDetailsDTO
+
+<aside class="landing">
+    <ul>
+
+
+        <li>Addon Primary Details</li>
+        <li>Adjustments</li>
+        <li>Available Credit Line</li>
+        <li>Embossing Details</li>
+        <li>Installment Schedule</li>
+        <li>Fee Details</li>
+        <li>Photo Details</li>
+        <li>Swap Details</li>
+        <li>Unbilled Transactions</li>
+        <li>View Address</li>
+        <li>ATM PIN Details</li>
+        <li>Other Cards</li>
+        <li>Pending Adjustment</li>
+        <li>Cycle Code Change</li>
+        <li>Notepad Details</li>
+        <li>Addon Primary Details</li>
+        <li>Adjustments</li>
+        <li>Available Credit Line</li>
+        <li>Embossing Details</li>
+        <li>Installment Schedule</li>
+        <li>Fee Details</li>
+        <li>Photo Details</li>
+        <li>Swap Details</li>
+        <li>Unbilled Transactions</li>
+        <li>View Address</li>
+        <li>ATM PIN Details</li>
+        <li>Other Cards</li>
+        <li>Pending Adjustment</li>
+        <li>Cycle Code Change</li>
+        <li>Notepad Details</li>
+
+    </ul>
+
+</aside>
+<article class="CutomerDetails">
+    <div style="height:300px; overflow-y:scroll; overflow-x:hidden;">
+    <div class="row">
+        <div class="CustomerTwoColumn BorderColumn">
+            <div class="CustomerColumnTitle">Customer Details</div>
+            <div class="row">
+                <div class="label">Card No/Type</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.CardNumber) ? "-" : Model.CardNumber)
+                    @Html.Label("/") 
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.CardTypeDesc) ? "-" : Model.CardTypeDesc)
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Application Ref.No./Slno</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.ApplicationReferenceNo) == null ? "-" : Model.ApplicationReferenceNo)
+                    @Html.Label("/")
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.SerialNo) == null ? "-" : Model.SerialNo)
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Name</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.CustomerName) == null ? "-" : Model.CustomerName)
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Date of birth/Gender</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(Model.DateOfBirth == null ? "-" : Model.DateOfBirth.Value.ToShortDateString())
+                    @Html.Label("/")
+                    @Html.Label(Model.Gender)
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">RUT</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(Model.RUT)               
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Address Line 1</div>
+                <div class="label" style="display:inline; width:auto">
+                    ####
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Address Line 2</div>
+                <div class="label" style="display:inline; width:auto">
+                    ###
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Address Line 3</div>
+                <div class="label" style="display:inline; width:auto">
+                    ####
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Address Line 4</div>
+                <div class="label" style="display:inline; width:auto">###</div>
+            </div>
+            <div class="row">
+                <div class="label">Region</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.RegionName) ? "-" : Model.RegionName)
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">City</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.CityName) ? "-" : Model.CityName)
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Communa</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.CommunaName) ? "-" : Model.CommunaName)
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Phone/Mobile</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.Phone) ? "-" : Model.Phone)
+                    @Html.Label("/")
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.Mobile) ? "-" : Model.Mobile)
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Email</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.EmailID) ? "-" : Model.EmailID )
+                </div>
+            </div>
+        </div>
+        <div class="CustomerTwoColumn BorderColumn">
+            <div class="CustomerColumnTitle">Card Details</div>
+            <div class="row">
+                <div class="label">Card Status</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.CardStatus) ? "-" : Model.CardStatus)
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Status Change Date</div>
+                <div class="label" style="display:inline; width:auto">
+                    Date
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Parent Card</div>
+                <div class="label" style="display:inline; width:auto">
+                    Parent Card
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Card Expiry Date</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(Model.CardExpiryDate == null ? "-" : Model.CardExpiryDate.Value.ToShortDateString())
+                </div>
+            </div>
+             <div class="row">
+                <div class="label">Emboss Date</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(Model.CardEmbossedDate == null ? "-" : Model.CardEmbossedDate.Value.ToShortDateString())
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="label">Cycle Code</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.BillingCycleCode) ? "-" : Model.BillingCycleCode)
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="label">Customer Segment</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.CustomerSegmentName) ? "-" : Model.CustomerSegmentName )
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="label">Cusotmer Sub Segment</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.CusotmerSubSegmentName) ? "-" : Model.CusotmerSubSegmentName)
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="label">Contract</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.ContractDescription) ? "-" : Model.ContractDescription)
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="label">&nbsp;</div>
+                <div class="label" style="display:inline; width:auto">&nbsp;</div>
+            </div>
+            <div class="row">
+               <div class="label">&nbsp;</div>
+                <div class="label" style="display:inline; width:auto">&nbsp;</div>
+            </div>
+            <div class="row">
+                <div class="label">&nbsp;</div>
+                <div class="label" style="display:inline; width:auto">&nbsp;</div>
+            </div>
+            <div class="row">
+                <div class="label">&nbsp;</div>
+                <div class="label" style="display:inline; width:auto">&nbsp;</div>
+            </div>
+            <div class="row">
+                <div class="label">&nbsp;</div>
+                <div class="label" style="display:inline; width:auto">&nbsp;</div>
+            </div>
+        </div>
+
+    </div></div>
+    <div style="height:250px; overflow-y:scroll; overflow-x:hidden;">
+    <div class="row">
+
+        <div class="CustomerTwoColumn BorderColumn">
+            <div class="CustomerColumnTitle">Financial Details</div>
+            <div class="row">
+                <div class="label">Credit Limit/Cash Limit</div>
+                <div class="label">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.CreditLimit.ToString()) ? "-" : Model.CreditLimit.ToString())
+                    @Html.Label("/")
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.CashLimit.ToString()) ? "-" : Model.CashLimit.ToString())
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Credit OTB/Cash OTB</div>
+                <div class="label">
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.CreditOTB.ToString()) ? "-" : Model.CreditOTB.ToString())
+                    @Html.Label("/")
+                    @Html.Label(string.IsNullOrWhiteSpace(Model.CashOTB.ToString()) ? "-" : Model.CashOTB.ToString())
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Bill Date/Amount</div>
+                <div class="label">
+                    @Html.Label(Model.BillDate == null ? "-" : Model.BillDate.Value.ToShortDateString())
+                    @Html.Label("/")
+                    @Html.Label("-")
+                    @*@Html.Label(string.IsNullOrWhiteSpace(Model.Amount.ToString()) ? "-" : Model.Amount.ToString())*@
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Current Balance/UM Auth</div>
+                <div class="label">
+                    0/1420000
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Current Delinquent Month</div>
+                <div class="label">
+                    0
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">High Billed/High Cleared</div>
+                <div class="label">
+                    0/0
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Bounce Count/Date</div>
+                <div class="label">
+                    0/-
+                </div>
+            </div>
+            <div class="row">
+                <div class="label">Days Past Due</div>
+                <div class="label">
+                    0
+                </div>
+            </div>
+        </div>
+        <div class="CustomerTwoColumn BorderColumn">
+            <div class="CustomerColumnTitle">Unbilled Details</div>
+
+            <table>
+                <tr>
+                    <th>-</th>
+                    <th>Count</th>
+                    <th>Transaction Amount</th>
+                </tr>
+                <tr>
+                    <td>Purchases</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>Cash Advance</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>Fees</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>Other Charges</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>Debit Adjustments</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>Credit Adjustments</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>Payments</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>EMI</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+            </table>
+            <div class="row"></div>
+
+        </div>
+
+    </div></div>
+    <div class="row">
+        <div class=" BorderColumn">
+            <div class="CustomerColumnTitle">Available Segment Details List</div>
+            <div class="row">
+
+                <table>
+
+                    <tr>
+                        <th>Segment Code</th>
+                        <th>RUT No.</th>
+                        <th>Limit</th>
+                        <th>Amout Used</th>
+                        <th>Segment</th>
+                        <th>Valid From</th>
+                        <th>Valid To</th>
+                    </tr>
+                    <tr>
+                        <td>0434343</td>
+                        <td>1240045</td>
+                        <td>100000</td>
+                        <td>26000</td>
+                        <td>05145</td>
+                        <td>20-FEB-2012</td>
+                        <td>19-MAR-2016</td>
+
+                    </tr>
+                    <tr class="alt">
+                        <td>0434343</td>
+                        <td>1240045</td>
+                        <td>100000</td>
+                        <td>26000</td>
+                        <td>05145</td>
+                        <td>20-FEB-2012</td>
+                        <td>19-MAR-2016</td>
+
+                    </tr>
+                    <tr>
+                        <td>0434343</td>
+                        <td>1240045</td>
+                        <td>100000</td>
+                        <td>26000</td>
+                        <td>05145</td>
+                        <td>20-FEB-2012</td>
+                        <td>19-MAR-2016</td>
+
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+</article>

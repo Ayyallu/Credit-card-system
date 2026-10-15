@@ -1,0 +1,150 @@
+﻿@using CC_Ingenio.DataTranfer.ApprovalQueueInfo;
+@using CC_Ingenio_Resources;
+@using System.Web.Script.Serialization;
+@{
+    
+    bool ApproveAll = ViewBag.RequestQueueId == null ? false : true;
+    
+    List<SelectListItem> ResonContextItems = new List<SelectListItem>();
+    if (ViewBag.ReasonCodes != null)
+    {
+        foreach (var itm in ViewBag.ReasonCodes)
+        {
+            ResonContextItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+        }
+    }
+    else
+    {
+        ResonContextItems.Add(new SelectListItem { Text = Resources.SelectOne, Value = "" });
+    }
+
+    <link href="~/Content/PopUpStyle.css" rel="stylesheet" />
+    <script src="~/Scripts/PopUpScript.js"></script>    
+<script type="text/javascript">
+    var ReasonContextList = @Html.Raw(new JavaScriptSerializer().Serialize(ResonContextItems));
+</script>           
+<script>
+
+    $(document).ready(function () {
+        $('#href').click(function (event) {
+            event.preventDefault();
+            var flag = true;
+            if ($('#ReasonCode').val() == "")
+            {
+                $('#ReasonCode_validate').text("@Html.Raw(string.Format(Resources.MsgErrPleaseSelect,Resources.Reason))");
+                flag = false;
+            }
+            if ($('#ContextDesc').val().trim() == "") {
+                $('#ContextDesc_validate').text("@Html.Raw(string.Format(Resources.MsgErrPleaseEnter2,Resources.ReasonDescription))");
+                flag = false;
+            }
+            if(flag) {
+                //submit the page
+                $(this).closest('form').submit();
+            }
+        });
+
+        $('#ContextDesc').focusin(function () {
+            $('#ContextDesc_validate').text("");
+        });
+        $('#ReasonCode').focusin(function () {
+            $('#ReasonCode_validate').text("");
+        });
+
+        $("input[name=ApprovalOption]:radio").change(function () {
+
+            var objReasonCode = $('#ReasonCode');
+            objReasonCode.empty();
+
+            objReasonCode.append($('<option/>',
+              {
+                  value: "",
+                  text: "@Resources.SelectOne"
+              }));
+
+            if ($('input:radio[name=ApprovalOption]:checked').val() == 'Approve') {
+                $.each(ReasonContextList, function (index, itemData) {
+                    if (itemData["Value"].substring(itemData["Value"].length - 1) == "A") {
+                        objReasonCode.append($('<option/>',
+                                {
+                                    value: itemData.Value,
+                                    text: itemData.Text
+                                }));
+                    }
+                });
+            }
+            else if ($('input:radio[name=ApprovalOption]:checked').val() == 'Reject') {
+                $.each(ReasonContextList, function (index, itemData) {
+                    if (itemData["Value"].substring(itemData["Value"].length - 1) == "R") {
+                        objReasonCode.append($('<option/>',
+                                {
+                                    value: itemData.Value,
+                                    text: itemData.Text
+                                }));
+                    }
+                });
+            }
+            else if ($('input:radio[name=ApprovalOption]:checked').val() == 'Discard') {
+                $.each(ReasonContextList, function (index, itemData) {
+                    if (itemData["Value"].substring(itemData["Value"].length - 1) == "D") {
+                        objReasonCode.append($('<option/>',
+                                {
+                                    value: itemData.Value,
+                                    text: itemData.Text
+                                }));
+                    }
+                });
+            }
+        });
+        $('input:radio[name=ApprovalOption]:checked').trigger("change");
+
+       
+    });
+</script>    
+    
+    <div id="divApproval">
+       
+                 <div id="toPopup" class="Popup">
+                    <div class="close"></div>
+                    <span class="ecs_tooltip">@Resources.PressEsctoclose <span class="arrow"></span></span>
+                        <div id="popup_content">
+                            @using (Html.BeginForm("RequestAuthorize", "Approval", new { @id = ViewBag.RequestQueueId, @ctx = ViewBag.TableName }, FormMethod.Post, new { id = "frmApproval", name = "frmApproval" }))
+                            {
+                                  <fieldset class="authorize">
+                                    <legend>@Resources.Authorize</legend>
+                                    <div class="PageRowPopup">
+                                        <div class="row">
+                                            <div class="left;"></div>
+                                            <div class="left;"></div>
+                                            <label class="popupauthorize" for="Approve">@Resources.Approve @Html.RadioButton("ApprovalOption", true, true, new { @name = "ApprovalOption", @id = "Approve", @Value = "Approve" }) </label>
+                                            <label class="popupauthorize" for="Reject">@Resources.Reject  @Html.RadioButton("ApprovalOption", false, false, new { @name = "ApprovalOption", @id = "Reject", @Value = "Reject" })</label>
+                                           <label class="popupauthorize" for="Discard">@Resources.Discard  @Html.RadioButton("ApprovalOption", false, false, new { @name = "ApprovalOption", @id = "Discard", @Value = "Discard" })</label>
+                                        </div>
+                                            <div class="row">
+                                            <div class="label">@Resources.Reason</div>
+                                            <div class="Field" style="float: left;">
+                                                @Html.DropDownList("ReasonCode", new List<SelectListItem>(), new { @id = "ReasonCode", @name = "ReasonCode" })
+                                                <label id="ReasonCode_validate" style="color: red ;font-size: .95em;" class="validation"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="label">&nbsp;</div>
+                                            <div class="Field">@Html.TextArea("ReasonDescription", new { @id = "ContextDesc", @name = "ContextDesc", @class = "required", maxlength = 50 })
+                                                <label id="ContextDesc_validate" style="color: red ;font-size: .95em;" class="validation"></label>
+                                            </div>
+                                        </div>
+                                        <div class="PageRowPopupBtn">
+                                            <a href="#" id="href">@Resources.Submit</a>
+
+                                        </div>
+                                    </div>
+                                </fieldset>       
+                            }
+                        </div>
+                 </div>
+        
+                <div class="loader"></div>
+                <div id="backgroundPopup"></div>
+    </div>
+    
+}

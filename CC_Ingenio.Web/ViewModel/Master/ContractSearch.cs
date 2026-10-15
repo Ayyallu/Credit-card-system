@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using CC_Ingenio.DataTranfer.MasterInfo;
+using CC_Ingenio.Common.Utils;
+
+namespace CC_Ingenio.Web.ViewModel.Master
+{
+    public class ContractSearch
+    {
+        public int? Page { get; set; }
+
+        public string ContractCode { get; set; }
+
+        public string ContractDescription { get; set; }
+
+        public string ProductCode { get; set; }
+
+        public IQueryable<ContractDTO> SearchResults { get; set; }
+
+        public string ApprovalReasonCode { get; set; }
+
+        public string ApprovalRemarks { get; set; }
+
+        public ApprovalStatus ApprovalType { get; set; }
+
+        public string SearchButton { get; set; }
+    }
+}

@@ -1,0 +1,207 @@
+﻿@using CC_Ingenio.DataTranfer.AuthorizationInfo;
+@using CC_Ingenio.Web.Helpers;
+
+@model ManualTransactionDTO
+@{
+    List<SelectListItem> CustomerSegmentCodeList = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+
+    foreach (var item in ViewBag.CustomerSegmentCodeList)
+    {
+        CustomerSegmentCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    List<SelectListItem> MerchantCodeList = new List<SelectListItem>();
+    foreach (var item in ViewBag.MerchantCodeList)
+    {
+        MerchantCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    List<SelectListItem> MCCCodeList = new List<SelectListItem>();
+    foreach (var item in ViewBag.MCCCodeList)
+    {
+        MCCCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+
+@{
+    ViewBag.Title = "Add ManualTransaction ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script type="text/javascript">
+
+    function setCalenderDates() {
+
+        var fromDate = $('#TxnDate').val();
+        
+
+        $('#TxnDate').datepicker("option", "maxDate", toDate);
+   
+    }
+
+    $(document).ready(function () {
+       
+        $("#TxnDate").datepicker({
+            changeYear: true,
+            changeMonth: true,
+            yearRange: '1900:2050',
+            dateFormat: "dd/mm/yy",
+            onSelect: setCalenderDates               
+        });
+       
+    });
+</script>
+@section featured
+    {
+    
+    }
+
+<section class="featured">
+     <div class="PageTitle">EMI Transaction </div>
+     <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active"><a href="#tab1">Details</a></li>
+
+            <li> @Html.ActionLink("Search","ManualTransactionList","Authorization" )</li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("ManualTransactionSave", "Authorization", new { Id = Model.TransactionNo, }, FormMethod.Post))
+                {
+                <div class="tab-content" id="tab1">
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> Status : @Html.Raw(Model.ApprovalStatusDesc) </text>
+                            }
+                        </span>
+                    </div>
+                    
+                      <div class="TwoColumn">
+                           <div class="row">
+                                <div class="label fontmandatory">Card Number</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CardNumber, new {@class="number", id = "CardNumber", name="CardNumber" , maxlength = 16 })
+                                    @Html.ValidationMessageFor(x => x.CardNumber)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">AccountNo</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.AccountNo, new {@class="number",id = "PlanId", name="AccountNo", maxlength = 15 })
+                                    @Html.ValidationMessageFor(x => x.AccountNo)
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label ">Transaction Code</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TransactionNo,new {id = "TransactionNo", name="TransactionNo", maxlength = 15  })
+                                    @Html.ValidationMessageFor(x => x.TransactionNo)
+                                </div>
+                            </div>
+                                                  
+                            <div class="row">
+                                
+                                <div class="label">TxnDate</div>
+                                <div class="Field">
+                                   @Html.TextBoxFor(x => x.TxnDate,"{0: dd/MM/yyyy}", new {id = "TxnDate", @readonly="true" })
+                                    @Html.ValidationMessageFor(x => x.TxnDate)
+                                </div>
+                            </div>
+                        </div>
+                        
+                            
+                            
+
+                        
+                        <div class="TwoColumn">
+                            
+                            <div class="row">
+                                <div class="label ">AuthCode</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.AuthCode, new {id = "MerchantCode", name="AuthCode", maxlength = 10  })
+                                    @Html.ValidationMessageFor(x => x.AuthCode)
+                                </div>
+                            </div>
+                        
+                        
+                        
+                            <div class="row">
+                                <div class="label">ResponseCode</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ResponseCode, new {id = "TotalAmt", name="Total Amount", maxlength = 15  })                                
+                                    @Html.ValidationMessageFor(x => x.ResponseCode)
+                                </div>
+                            </div>
+                            </div>
+
+                           <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label ">MerchantCode</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.MerchantCode,MerchantCodeList)
+                                    @Html.ValidationMessageFor(x => x.MerchantCode)
+                                </div>
+                            </div>
+                              <div class="row">
+                                <div class="label">MCC Code</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.MCCCode,MCCCodeList)
+                                    @Html.ValidationMessageFor(x => x.MCCCode)
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">Segment Code</div>
+                                 <div class="Field">
+                                
+                                   @Html.DropDownListFor(x => x.SegmentCode,CustomerSegmentCodeList)
+                                    @Html.ValidationMessageFor(x => x.SegmentCode)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">Amount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Amount, new {@class="decimal", id="Amount", name="Amount", maxlength = 10})
+                                    @Html.ValidationMessageFor(x => x.Amount)
+                                </div>
+                            </div>
+                         </div>
+
+                       
+                     </div>
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    
+                
+                 }
+
+            </div>
+        
+
+   </div>
+</section>
+
+
+

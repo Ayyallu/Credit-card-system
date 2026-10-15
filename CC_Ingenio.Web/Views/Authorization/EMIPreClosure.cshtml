@@ -1,0 +1,279 @@
+﻿@using CC_Ingenio_Resources;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    
+    var index = 1;
+    $(document).ready(function () {
+     @*   var data1 = JSON.stringify(@Html.Raw(new JavaScriptSerializer().Serialize(TempData["Data"])));
+        alert(data1);*@
+        $("#allBox").click(function () {
+            var type = $lstType.val();
+
+          //  alert( $(".checkbox").attr("checked", $(this).attr("checked")));
+            var all = $(".select").attr("checked") ? true : false;
+          //  alert(all);
+            $(".select").attr("checked", $(this).attr("checked") ? true : false);
+            $.ajax({
+                url: '/Authorization/UpdatingForceSessionAll/',
+                data: { ischecked: all, Type: type },
+                type: 'get',
+                cache: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    //  alert(data);
+                }
+            });
+        });
+        $("input.select").each(function () {
+            $(this).data('row', index);
+            $(this).click(function () {
+               // var type = $lstType.val();
+                var tr = $(this).parents('tr:first');
+                var CardNumber = tr.find("#EMIAuthNo").text();
+                var intallmentNo = tr.find("#InstallmentNo").text();
+                var PPA = tr.find("#PPA").val();
+                var PIA = tr.find("#PIA").val();
+                var Isprinted = tr.find('#IsChecked').attr('checked') ? "True" : "False";
+
+
+                $.ajax({
+                    url: '/Authorization/UpdatingEMIPreClosureSession/',
+                    data: { CardNumber: CardNumber, ischecked: Isprinted, PrincipalAmt: PPA, InterestAmt: PIA, IntallmentNo: intallmentNo },
+                    type: 'get',
+                    cache: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                       
+                        //  alert(data);
+                    }
+                });
+            });
+            index++;
+        });
+      
+        $("input.PPA").each(function () {
+            $(this).data('row', index);
+            $(this).change(function () {
+                // var type = $lstType.val();
+                var tr = $(this).parents('tr:first');
+                var CardNumber = tr.find("#EMIAuthNo").text();
+                var intallmentNo = tr.find("#InstallmentNo").text();
+                var PPA = tr.find("#PPA").val();
+                var PIA = tr.find("#PIA").val();
+                var Isprinted = tr.find('#IsChecked').attr('checked') ? "True" : "False";
+              
+                $.ajax({
+                    url: '/Authorization/UpdatingEMIPreClosureSession/',
+                    data: { CardNumber: CardNumber, ischecked: Isprinted, PrincipalAmt: PPA, InterestAmt: PIA, IntallmentNo: intallmentNo },
+                    type: 'get',
+                    cache: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+
+                        //  alert(data);
+                    }
+                });
+            });
+            index++;
+        });
+        $("#SearchButton").click(function () {
+
+            $.ajax({
+                type: 'POST',
+                url: '/Authorization/DeletingEMIInstallmentData',
+                success: function (returnData) {
+
+                    if (returnData.RedirectUrl.length > 0) {
+
+                        window.location.href = returnData.RedirectUrl;
+                        return true;
+                    }
+
+                }
+
+            });
+
+        });
+
+
+
+    })
+   
+
+
+</script>
+@using CC_Ingenio.Web.ViewModel.Authorization;
+@using System.Web.Script.Serialization;
+@model EMIAuthorizationSearch  
+@{
+        
+    var grid = new WebGrid(Model.SearchResults,
+                defaultSort: "AuthCode",
+                rowsPerPage: 25);    
+
+
+    
+}
+@using System.Web.Script.Serialization;
+@section featured {
+}
+
+
+
+<script type="text/javascript">
+    $(function () {
+        $("#AuthPost").click(function (e) {
+         //   var data2 = JSON.stringify(@Html.Raw(new JavaScriptSerializer().Serialize(TempData["Data"])));
+          //  alert(data2);
+            e.preventDefault();
+            $("#dialog").dialog({
+                resizable: false,
+                height: 160,
+                width: 'auto',
+                modal: true,
+                title: '@Resources.ApplicationName',
+                buttons: {
+                    "Yes": function () {
+
+                        $("#dialog").dialog("close");
+
+                        $("#frmAuthPost").submit();
+                     
+
+                    },
+                    "No": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
+            $("#dialog").text("@Html.Raw(string.Format(Resources.MsgConfClose,Resources.Transaction))");
+
+            $("#dialog").dialog("open");
+
+
+        });
+
+        $("#Reset").click(function (e) {
+
+            $("#Type").attr("value", String.Empty);
+            $("#Type").attr("Text", "Select");
+
+            $("#AccountNo").attr("value", "");
+            $("#CardNo").attr("value", "");
+            $("#BatchNo").attr("value", ""); 
+            $("#TxnToDate").attr("value", ""); 
+            $("#TxnDate").attr("value", "");           
+           
+           
+        });
+    });
+    var index = 1;
+    function OnPPA() {
+
+        $(this).data('row', index);
+        var tr = $(this).parents('tr:first');
+        var CardNumber = tr.find("#PIA").text();
+        var type = tr.find("#PPA").text();
+        //alert("test");
+        //alert(CardNumber);
+    }
+
+    function OnPIA() {
+
+        $(this).data('row', index);
+        var tr = $(this).parents('tr:first');
+        var CardNumber = tr.find("#EMIAuthNo").text();
+        var type = tr.find("#PPA").text();
+        //alert("hai");
+        //alert(CardNumber);
+    }
+</script>
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+         
+            @using (Html.BeginForm("EMIPreClosure", "Authorization", FormMethod.Get, new { Id = Model.EMIAuthNo, }))
+            {
+                @*<div class="tab-content" id="tab1">
+
+                    <div class="row">
+
+                        <fieldset class="double">
+                            <legend></legend>                             
+                            <div class="row">
+                                <div class="label">Card No</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CardNumber, new { id = "CardNumber", name = "CardNumber", maxlength = 16 })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">From</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.EMIAuthNo, new  { id = "EMIAuthNo", name = "CardNumber", maxlength = 16 })
+                                    @Html.ValidationMessageFor(x => x.EMIAuthNo)
+                                </div>
+                            </div>
+                          
+                        </fieldset>                        
+
+
+                        <div class="rowbtn">
+                            <span>
+                                <input id="SearchButton" name="SearchButton" value="Search" type="submit" class="Greenbutton" /></span>
+                            <span>
+                                <input id="Reset" type="reset" class="Greenbutton" value="Cancel" /></span>
+                        </div>
+                    </div>
+                </div>*@
+            }
+
+        </div>
+
+        <div class="row">
+
+            <div class="standard-table">
+
+                @grid.GetHtml(columns: grid.Columns(
+
+
+                                   
+                                    grid.Column("CardNumber", Resources.CardNumber),                                 
+                                  
+                                    //grid.Column("SegmentCode", "Segment Code"),
+                                    grid.Column("TotalPrincipalAmt",Resources.PrincipalAmount),
+                                    grid.Column("TotalInterestAmt",Resources.InterestAmount),                                       
+                                     grid.Column("TotalPrincipalAmtPaid",  Resources.AmountPaidP),
+                                    grid.Column("TotallInterestAmtPaid", Resources.AmountPaidI),   
+                                    //grid.Column("TotalPrepaymentPrincipalAmount", "Pre Payment Amt(P)", format: @<text><input type="text", id="PPA", class = "PPA", value="@item.TotalPrepaymentPrincipalAmount" style="font-size: .95em; width:100px ;  font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';"></text>)                       ,
+                                   // grid.Column("TotalPrepaymentInterestAmount", "Pre Interest Amt(I)", format: @<text><input type="text", class = "PPA", id="PIA", value="@item.TotalPrepaymentInterestAmount" style="font-size: .95em; width:100px ;  font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';"></text>)                       ,
+                                     grid.Column("AdjPrincipalAmount", Resources.PrePaymentAmtP, format: @<text><input type="text", id="PPA", class = "PPA", value="@item.AdjPrincipalAmount" style="font-size: .95em; width:100px ; text-align :right ;  font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';"></text>)                       ,
+                                    grid.Column("AdjInterestAmount", Resources.PreInterestAmtI, format: @<text><input type="text", class = "PPA", id="PIA", value="@item.AdjInterestAmount" style="font-size: .95em; width:100px ;  text-align :right ; font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';"></text>)                       ,
+                    
+                    
+                                grid.Column("EMIAuthNo",Resources.AuthCode,format: @<text><label id="EMIAuthNo"  style="font-size: .95em; font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.EMIAuthNo</label> </text>)                                
+                                   // grid.Column("AuthCode", "AuthCode")@*,
+                                    //grid.Column("Status", header: "Status", format: @<text>@Html.DropDownList("selection", AuthCodeItems)</text>)*@)
+                       ))
+
+            </div>
+        </div>
+
+        <div class="rowbtn">
+            @using (Html.BeginForm("EMIPreClosurePost", "Authorization", FormMethod.Post, new { id = "frmAuthPost", name = "frmAuthPost" }))
+            {
+                <span>
+                    <input type="hidden" id="hidData" name="hidData" value="@Html.Raw(new JavaScriptSerializer().Serialize(TempData["Data"]))" />
+                    <input id="AuthPost" name="AuthPost" value=@Resources.AuthPost type="submit" class="Greenbutton" /></span>
+            }
+        </div>
+
+    </div>
+</section>

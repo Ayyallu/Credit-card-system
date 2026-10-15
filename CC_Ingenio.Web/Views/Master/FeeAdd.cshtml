@@ -1,0 +1,464 @@
+﻿@using CC_Ingenio_Resources;
+@using System.Web.Script.Serialization;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio.DataTranfer.MasterInfo;
+
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.Fee });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="/Scripts/Master/FeeType.js"></script>
+
+@model FeeDTO
+@{    
+    List<SelectListItem> FinActivityItems = new List<SelectListItem>();
+    List<SelectListItem> CustomerSubSegmentItems = new List<SelectListItem>();
+    List<SelectListItem> CustomerSegmentItems = new List<SelectListItem>();
+    List<SelectListItem> ProductItems = new List<SelectListItem>();
+    List<SelectListItem> FeeTypeItems = new List<SelectListItem>();
+    List<SelectListItem> CurrencyItems = new List<SelectListItem>();
+   
+    foreach (var itm in ViewBag.ProductList)
+    {
+        ProductItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    foreach (var itm in ViewBag.CustomerSegmentList)
+    {
+        CustomerSegmentItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    foreach (var itm in ViewBag.CustomerSubSegmentList)
+    {
+        CustomerSubSegmentItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    foreach (var itm in ViewBag.FinActivityList)
+    {
+        FinActivityItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    foreach (var itm in ViewBag.FeeTypeList)
+    {
+        FeeTypeItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+        
+    foreach (var itm in ViewBag.CurrencyList)
+    {
+        CurrencyItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+         
+    List<string> lstPrivilege = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPrivilege.Add(item);
+        }
+    }
+   
+}
+
+
+
+<script type="text/javascript">
+        
+
+    var productDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(ProductItems));    
+    var customerSegmentDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(CustomerSegmentItems));
+    var customerSubSegmentDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(CustomerSubSegmentItems));
+    var finActivityItemsDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(FinActivityItems));
+    var contractItemsDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(""));
+    var feeTypeDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(FeeTypeItems));
+    var productMemberTypeDDL = @Html.Raw(new JavaScriptSerializer().Serialize(""));
+    var currencyListDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(CurrencyItems));  
+    var Fees =  @Html.Raw(ViewBag.Fee);  
+
+    
+    function setProductCurrency(productCode) {
+        $.getJSON("/Master/GetProductCurrency?AProductCode=" + $('#Product').val(),
+            function (modeldata) {
+
+                //var select = $("[id = Currency]");
+                //select.val(modeldata);
+
+                $("#Currency option[value=" + modeldata.currencyCode + "]").prop("selected","selected");
+                $("#Currency").change();
+
+                //$.ajaxSetup({ cache: true });
+            });
+    };
+
+    $(document).ready(function(){
+
+
+        $('#FeeCode').blur(function(){
+            if(parseFloat($('#FeeCode').val().trim()) > parseFloat(0))
+            {
+                if($('#FeeCode_Validate').text().length > 0)
+                {
+                    $('#FeeCode_Validate').text("");
+                }
+            }
+        });
+
+  
+                  
+        $('#Product').change(function(){
+            if($('#Product').val() != ''){
+                setProductCurrency($('#Product').val());
+            }        
+        });
+
+    });
+
+</script>
+
+
+<style type="text/css">
+    
+    fieldset.tri-row
+    {
+	    width: 25%;
+	    float: left;
+	    border: 0;
+    }
+
+</style>
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li>@Html.ActionLink(Resources.SearchPageHeading, "FeeList", "Master")</li>
+            }
+            <li class="active"><a href="#tab1">@Resources.DetailsPageHeading</a></li>
+        </ul>
+
+        <div class="tabs-container">
+            @using (Html.BeginForm())
+            {
+        
+                <div class="tab-content" id="tab1">                 
+                    <div class="row">
+
+                    <div id="accordion">
+                    <h3>@Resources.Fee</h3>
+                        <div class="row">
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.FeeCode</div>
+                                    <div class="Field">
+                                        <input type="text" id="FeeCode" data-bind="value: Fee.FeeCode, attr: { 'readonly': Fees['FeeCode'] == undefined ? undefined : 'readonly' }" onkeypress="return OnlyNumeric(event);" maxlength="3" />
+                                        <span id="FeeCode_Validate" class="validationMessage"></span>
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.Product</div>
+                                    <div class="Field">
+                                        <select id="Product"
+                                            data-bind="options: productDDL, 
+                                            optionsText: 'Text', 
+                                            optionsValue: 'Value', 
+                                            value: Fee.ProductCode
+    ">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.ProductMemberType</div>
+                                    <div class="Field">
+                                        <select id="ProductMemberType"
+                                            data-bind="options: productMemberTypeDDL, 
+                                            optionsText: 'Text', 
+                                            optionsValue: 'Value', 
+                                            value: Fee.ProductMemberTypeCode">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.Contract</div>
+                                    <div class="Field">
+                                        <select id="Contract" 
+                                            data-bind="options: contractItemsDDL, 
+                                            optionsText: 'Text', 
+                                            optionsValue: 'Value', 
+                                            value: Fee.ContractCode">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.CustomerSegment</div>
+                                    <div class="Field">
+                                        <select data-bind="options: customerSegmentDDL, 
+                                            optionsText: 'Text', 
+                                            optionsValue: 'Value', 
+                                            value: Fee.CustomerSegmentCode">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.CustomerSubSegment</div>
+                                    <div class="Field">
+                                        <select data-bind="options: customerSubSegmentDDL, 
+                                            optionsText: 'Text', 
+                                            optionsValue: 'Value', 
+                                            value: Fee.CustomerSubSegmentCode">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.EffectiveFromDate</div>
+                                    <div class="Field">
+                                         <input type="text" id="EffectiveFromDate" class="datepicker" readonly="true" data-bind="value: Fee.EffectiveFromDate" />
+                                    </div>
+                                </div>
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.EffectiveToDate</div>
+                                    <div class="Field">
+                                        <input type="text" id="EffectiveToDate" class="datepicker" readonly="true" data-bind="value: Fee.EffectiveToDate" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="TwoColumn">
+                                    <div class="label">@Resources.Currency</div>
+                                    <div class="Field">
+                                        <select id = "Currency", data-bind="options: currencyListDDL, optionsText: 'Text', optionsValue: 'Value', value: Fee.CurrencyCode"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>      
+
+                        <h3>@Resources.FeeType</h3>
+                        <div class="row">
+                            <div>
+                                <div data-bind="template:{name:'FeeTypeTemplate', foreach:Fee.FeeTypeDet}"></div>
+                                 <button class="Greenbutton" style="width: 8%; font-size: .8em" data-bind='click: AddFeeType'>@Resources.AddNew</button>
+                            </div>
+                        </div>
+                    </div>  
+                    <!--Accordion ends-->
+                        <div class ="row">
+                            <script id="FeeTypeTemplate" type="text/html">
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label" style="width: 40%">@Resources.FeeType</div>
+                                            <div class="Field" style="width: 52%">
+                                                <select data-bind="options: feeTypeDDL, 
+                                                    optionsText: 'Text', 
+                                                    optionsValue: 'Value', 
+                                                    value: FeeTypeCode">
+                                                </select>
+                                            </div>
+                                        </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label" style="width: 40%">@Resources.FeeAmount</div>
+                                            <div class="Field" style="width: 50%">
+                                                <input type="text" id="FeeAmount" data-bind="value: FeeAmount" onkeypress = "return AllowOnlyAmountWithoutDot(event);" maxlength="11" style="text-align:right", onblur = "FormatOnBlur(event)" />
+                                                <span id="FeeAmount_Validate" class="validationMessage"></span>
+                                            </div>
+                                        </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label" style="width: 40%">@Resources.MonthsFrom</div>
+                                            <div class="Field" style="width: 50%">
+                                                <input id="MonthsFrom" maxlength="2" data-bind="value: MonthsFrom" onkeypress = "return AllowOnlyAmountWithoutDot(event);" style="text-align:right" />
+                                                 <span id="MonthsFrom_Validate" class="validationMessage"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label" style="width: 40%">@Resources.ReasonCode</div>
+                                            <div class="Field" style="width: 50%">
+                                                <input maxlength="5" data-bind='value: ReasonCode' />
+                                            </div>
+                                        </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label fontmandatory" style="width: 40%">@Resources.FirstYearAmount</div>
+                                            <div class="Field" style="width: 50%">
+                                                <input maxlength="11" onkeypress = "return AllowOnlyAmountWithoutDot(event)" style="text-align:right" data-bind='value: FirstYearAmount', onblur = "FormatOnBlur(event)"  />
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label" style="width: 40%">@Resources.Period</div>
+                                            <div class="Field" style="width: 50%">
+                                                <input maxlength="3" data-bind='value: Period' onkeypress = "return AllowOnlyAmountWithoutDot(event)" style="text-align:right" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label fontmandatory" style="width: 40%"> @string.Format(Resources.RenewalFee,1)</div>
+                                            <div class="Field" style="width: 50%">
+                                                <input maxlength="11" onkeypress = "return AllowOnlyAmountWithoutDot(event)" style="text-align:right" data-bind='value: RenwalFee1', onblur = "FormatOnBlur(event)"  />
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label fontmandatory" style="width: 40%"> @string.Format(Resources.RenewalFee,2)</div>
+                                            <div class="Field" style="width: 50%">
+                                                <input maxlength="11" onkeypress = "return AllowOnlyAmountWithoutDot(event)" style="text-align:right" data-bind='value: RenwalFee2', onblur = "FormatOnBlur(event)"  />
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label fontmandatory" style="width: 40%"> @string.Format(Resources.RenewalFee,3)</div>
+                                            <div class="Field" style="width: 50%">
+                                                <input maxlength="11" onkeypress = "return AllowOnlyAmountWithoutDot(event)" style="text-align:right" data-bind='value: RenwalFee3', onblur = "FormatOnBlur(event)"  />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label fontmandatory" style="width: 40%"> @string.Format(Resources.RenewalFee,4)</div>
+                                            <div class="Field" style="width: 50%">
+                                                <input maxlength="11" onkeypress = "return AllowOnlyAmountWithoutDot(event)" style="text-align:right" data-bind='value: RenwalFee4', onblur = "FormatOnBlur(event)"  />
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label fontmandatory" style="width: 40%"> @string.Format(Resources.RenewalFee,5)</div>
+                                            <div class="Field" style="width: 50%">
+                                                <input maxlength="11" onkeypress = "return AllowOnlyAmountWithoutDot(event)" style="text-align:right" data-bind='value: RenwalFee5', onblur = "FormatOnBlur(event)"  />
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label fontmandatory" style="width: 40%"> @string.Format(Resources.RenewalFee,6)</div>
+                                            <div class="Field" style="width: 50%">
+                                                <input maxlength="11" onkeypress = "return AllowOnlyAmountWithoutDot(event)" style="text-align:right" data-bind='value: RenwalFee6', onblur = "FormatOnBlur(event)"  />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">  
+                                        <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label fontmandatory" style="width: 40%">@Resources.AdjustCode</div>
+                                            <div class="Field" style="width: 50%">
+                                                <select data-bind="options: finActivityItemsDDL, 
+                                                    optionsText: 'Text', 
+                                                    optionsValue: 'Value', 
+                                                    value: AdjustCode">
+                                                </select>
+                                            </div>
+                                        </div>                                            
+                                        <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label fontmandatory" style="width: 40%">@Resources.DiscountRatePercent</div>
+                                            <div class="Field" style="width: 50%">
+                                                <input id="DiscountRatePercent" data-bind="value: DiscountRatePercent" maxlength="6", onkeypress="return validateFloatKeyPress(this,event);", style="text-align:right;" />
+                                            </div>
+                                        </div>
+                                        <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label fontmandatory" style="width: 40%">@Resources.FlatFee</div>
+                                            <div class="Field" style="width: 50%">
+                                                <input maxlength="11" onkeypress = "return AllowOnlyAmountWithoutDot(event)" style="text-align:right" data-bind='value: FlatFee', onblur = "FormatOnBlur(event)" />
+                                            </div>
+                                        </div>
+                                    </div>  
+                                    <div class="row">                                         
+                                        <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label fontmandatory" style="width: 40%">@Resources.MinFee</div>
+                                            <div class="Field" style="width: 50%">
+                                                <input maxlength="11" onkeypress = "return AllowOnlyAmountWithoutDot(event)" style="text-align:right" data-bind='value: MinFee', onblur = "FormatOnBlur(event)" />
+                                            </div>
+                                        </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label fontmandatory" style="width: 40%">@Resources.Flag</div>
+                                            <div style="width: 50%">
+                                                <input type="checkbox" id="Flag" data-bind="checked: Flag" />
+                                            </div>
+                                        </div>
+                                         <div class="TwoColumn" style="width: 28%; float: left">
+                                            <div class="label" style="width: 40%">&nbsp;</div>
+                                            <div class="Field" style="width: 50%">&nbsp;</div>
+                                        </div>
+                                    </div>                                            
+                                </div>
+                                <div class="row" style="height: 2em">
+                                    <div style="width: 8%; float: right; padding: 0 2.2em 0 2em">
+                                        <button class="Greenbutton" style="width: 100%; font-size: .8em" data-bind='click: $parent.RemoveFeeType'>@Resources.Remove</button>
+                                    </div>
+                                </div>
+                            </script>
+                        </div>
+
+                        @Html.Raw(Html.KnockoutButtons(lstPrivilege, true))
+
+                    </div>
+                </div>
+            }
+        </div>
+        
+    </div>
+    <script>
+        
+        var url = window.location.pathname;
+        var feeQueryString = GetQueryStrings();
+        var viewModel;
+        
+        if (feeQueryString["AFeeCode"] && feeQueryString["AFeeCode"] != 0)
+        {
+            viewModel = new FeeVM(Fees);
+        }
+        else
+        {
+            viewModel = new FeeVM();
+        }
+        $(function ()
+        {
+            var feeQueryString = GetQueryStrings();
+            ko.validation.configure({
+                registerExtenders: true,
+                insertMessages: true,
+                messagesOnModified: false
+            });
+
+            ko.applyBindings(viewModel);
+            //$('#EffectiveFromDate').datepicker("option", "maxDate", viewModel.Fee.EffectiveToDate._latestValue);
+            //$('#EffectiveToDate').datepicker("option", "minDate", viewModel.Fee.EffectiveFromDate._latestValue);
+
+            $("[id=ProductMemberType]").append($('<option/>',
+            {
+               value: "",
+               text:"@Resources.SelectOne"
+            }));
+            if (feeQueryString["AFeeCode"] && feeQueryString["AFeeCode"] != 0){
+                PopulateProductMemberTypeCascadeDDL(Fees,viewModel);
+            }
+
+            $("[id=Contract]").append($('<option/>',
+            {
+                value: "",
+                text:"@Resources.SelectOne"
+            }));
+            if (feeQueryString["AFeeCode"] && feeQueryString["AFeeCode"] != 0){
+                PopulateContractCascadeDDL(Fees,viewModel);
+            }
+
+            var errors = ko.validation.group(viewModel.Fee, { deep: true });
+            errors.showAllMessages(false);
+
+
+        });
+       
+    </script>
+
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>

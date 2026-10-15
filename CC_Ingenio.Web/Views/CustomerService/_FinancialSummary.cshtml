@@ -1,0 +1,30 @@
+﻿
+@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@using CC_Ingenio_Resources;
+@model List<FinancialSummaryDTO>  
+@{
+    var financialSummaryGrid = new WebGrid(Model, canPage: true, rowsPerPage: 5, ajaxUpdateContainerId: "container-body");
+    financialSummaryGrid.Pager(WebGridPagerModes.All);   
+}
+
+<div class="row">
+    <div class=" BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.FinancialSummary</div>           
+        <div style="width: 100%; overflow:scroll">
+            <div class="standard-table">
+                @financialSummaryGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+                alternatingRowStyle: "alt",
+                columns: financialSummaryGrid.Columns(
+                    financialSummaryGrid.Column("BillDate", Resources.BillDate, format: @<text>@item.BillDate.ToShortDateString()</text>),
+                    financialSummaryGrid.Column("PaymentDueDate", Resources.PaymentDueDate, format: @<text>@item.PaymentDueDate.ToShortDateString()</text>),
+                    financialSummaryGrid.Column("PaymentPostDate", Resources.PaymentPostDate, (item)=> item.PaymentPostDate == null ? string.Empty : @item.PaymentPostDate.ToShortDateString() ),
+                    financialSummaryGrid.Column("DPDCount", Resources.DPDCount),
+                    financialSummaryGrid.Column("TotalBillAmount", Resources.BilledAmount, format: (item) => string.Format("{0:N0}", item.TotalBillAmount)),
+                    financialSummaryGrid.Column("MinDueAmount",Resources.MinDue, format: (item) => string.Format("{0:N0}", item.MinDueAmount)),   
+                    financialSummaryGrid.Column("TotalMinDue",Resources.TotalMinDue, format: (item) => string.Format("{0:N0}", item.TotalMinDue)),                                     
+                    financialSummaryGrid.Column("Status", Resources.Status))  )                
+                   
+            </div>
+        </div>
+    </div>
+</div>

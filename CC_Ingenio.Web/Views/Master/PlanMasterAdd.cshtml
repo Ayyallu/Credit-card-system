@@ -1,0 +1,381 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.PlanMaster });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model PlanMasterDTO
+@{
+    List<SelectListItem> ProductCodeList = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+    
+    foreach (var item in ViewBag.ProductCodeList)
+    {
+      ProductCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    ProductCodeList.Add(new SelectListItem { Text = "ALL", Value = "ALL" });
+    
+    List<SelectListItem> CreditSegmentCodeListItems = new List<SelectListItem>();
+    foreach (var item in ViewBag.CreditSegmentCodeItems)
+    {
+        CreditSegmentCodeListItems.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    
+    List<SelectListItem>CustomerSegmentCodeList = new List<SelectListItem>();
+    foreach(var item in ViewBag.CustomerSegmentCodeList)
+    {
+       CustomerSegmentCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    CustomerSegmentCodeList.Add(new SelectListItem { Text = "ALL", Value = "ALL" });
+    
+    List<SelectListItem> CustomerSubSegmentCodeList = new List<SelectListItem>();
+    foreach (var item in ViewBag.CustomersubSegmentCodeList)
+    {
+        CustomerSubSegmentCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    CustomerSubSegmentCodeList.Add(new SelectListItem { Text = "ALL", Value = "ALL" });
+    
+    List<SelectListItem> TransactionCodeList = new List<SelectListItem>();
+    foreach (var item in ViewBag.TransactionCodeList)
+    {
+        TransactionCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    List<SelectListItem> FirstBillingList = new List<SelectListItem>();
+    foreach (var item in ViewBag.FirstBillingList)
+    {
+        FirstBillingList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    List<SelectListItem> InterestCalculationList = new List<SelectListItem>();
+    foreach (var item in ViewBag.InterestCalculationList)
+    {
+        InterestCalculationList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+
+
+@section featured
+    {
+    
+    }
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+
+        $("#CreditSegmentCode").change(function () {
+
+            if ($('#CreditSegmentCode').val() != '') {
+
+                $.getJSON("/Master/GetSBIFRate",
+                    function (SBIFRate) {
+                        $("#SBIFInterest").val(SBIFRate);
+                        $("#InterestRate").val(SBIFRate);               
+                        $.ajaxSetup({ cache: false });
+                    });
+
+                if ($('#CreditSegmentCode option:selected').val() == 'E') {
+
+                    $('#rowCreditLimit').hide();
+                    document.getElementById('ProductCode').disabled = true;
+                    document.getElementById('CustomerSegmentCode').disabled = true;
+                    document.getElementById('CustomerSubSegmentCode').disabled = true;
+                    $("#TransactionCode option[value=" + '@CC_Ingenio.Common.Utils.Utils.EMITransactionCode' + "]").prop("selected", "selected");
+                    $("#hidTransactionCode").val('@CC_Ingenio.Common.Utils.Utils.EMITransactionCode');
+                    $("#TransactionCode").valid();
+
+                    $("#FirstBilling option[value=" + '@CC_Ingenio.Common.Utils.Utils.EMIFirstBilling' + "]").prop("selected", "selected");
+                    $("#hidFirstBilling").val('@CC_Ingenio.Common.Utils.Utils.EMIFirstBilling');
+                    $("#FirstBilling").valid();
+
+                    $("#InterestCalculation option[value=" + '@CC_Ingenio.Common.Utils.Utils.EMIInterestCalculation' + "]").prop("selected", "selected");
+                    $("#hidInterestCalculation").val('@CC_Ingenio.Common.Utils.Utils.EMIInterestCalculation');
+                    $("#InterestCalculation").valid();
+                    
+                   // $("#SBIFInterest").attr("readonly", "readonly");
+                   // $("#TransactionCode").attr("disabled", "disabled");
+                    $("#FirstBilling").attr("disabled", "disabled");
+                    $("#InterestCalculation").attr("disabled", "disabled");
+                                                            
+                }
+                else {
+                    $('#rowCreditLimit').show();
+                    document.getElementById('ProductCode').disabled = false;
+                    document.getElementById('CustomerSegmentCode').disabled = false;
+                    document.getElementById('CustomerSubSegmentCode').disabled = false;
+                    $("#TransactionCode").val("");
+                    $("#FirstBilling").val("");
+                    $("#InterestCalculation").val("");
+
+                   // $("#SBIFInterest").removeAttr("readonly");
+                   // $("#TransactionCode").removeAttr("disabled");
+                    $("#FirstBilling").removeAttr("disabled");
+                    $("#InterestCalculation").removeAttr("disabled");
+                }
+            };
+            
+        });
+
+
+        $("#frmPlanMasterSave").submit(function (e) {
+
+            if (parseFloat($('#CreditLimitFrom').val().trim()) > parseFloat($('#CreditLimitTo').val().trim())) {
+                $('#CreditLimitTo_Validate').text("@Html.Raw(string.Format(Resources.MsgErrValueShouldBeLessThan,Resources.CreditLimitFrom,Resources.CreditLimitTo))");
+                e.preventDefault();
+            }
+
+            var val1 = Globalize(resourceProvider.ResourceCulture).parseFloat($('#InterestRate').val().trim());
+            var val2 = Globalize(resourceProvider.ResourceCulture).parseFloat($('#SBIFInterest').val().trim());
+
+            if (val1 > val2) {
+                $('#InterestRate_Validate').text("@Html.Raw(string.Format(Resources.MsgErrValueShouldBeLessThan,Resources.InterestRate, Resources.SBIFInterestRate))");
+                            e.preventDefault();
+            }
+
+        });
+
+        $('#CreditLimitFrom').focusin(function () {
+
+            $('#CreditLimitTo_Validate').text("");
+        });
+        $('#CreditLimitTo').focusin(function () {
+
+            $('#CreditLimitTo_Validate').text("");
+        });
+
+        $('#InterestRate').focusin(function () {
+            $('#InterestRate_Validate').text("");
+        });
+
+        $('#SBIFInterest').focusin(function () {
+            $('#InterestRate_Validate').text("");
+        });
+
+    });
+
+
+</script>        
+
+
+
+
+<section class="featured">
+     <div class="PageTitle">@ViewBag.Title</div>
+     <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"PlanMasterList","Master" )</li>
+            }
+            <li class="active"><a href="#tab1">@Resources.DetailsPageHeading</a></li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("PlanMasterSave", "Master", new { Id = Convert.ToString(Model.PlanID), }, FormMethod.Post, new { id = "frmPlanMasterSave", name = "frmPlanMasterSave" }))
+                {
+                <div class="tab-content" id="tab1">
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatusDesc))
+                            { 
+                                <text>@String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+                      
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.CreditSegment</div>
+                                <div class="Field">
+                                    @if (!string.IsNullOrWhiteSpace(Model.CreditSegmentCode))
+                                    {
+                                         @Html.DropDownListFor(x => x.CreditSegmentCode, CreditSegmentCodeListItems, new { id = "CreditSegmentCode", name="CreditSegmentCode" , @disabled = "disabled" })  
+                                    }
+                                    else
+                                    { 
+                                         @Html.DropDownListFor(x => x.CreditSegmentCode, CreditSegmentCodeListItems, new { id = "CreditSegmentCode", name="CreditSegmentCode" })  
+                                    }
+                                    @Html.Hidden("CreditSegmentCode", Model.CreditSegmentCode)
+                                    @Html.ValidationMessageFor(x => x.CreditSegmentCode)
+                                </div>
+                            </div>
+                            <div class="TwoColumn" id = "divProductCode">
+                                <div class="label">@Resources.Product</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.ProductCode, ProductCodeList, new { id = "ProductCode" })  
+                                    @Html.ValidationMessageFor(x => x.ProductCode)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn" id = "divCustomerSegmentCode">
+                                <div class="label ">@Resources.CustomerSegment</div>
+                                <div class="Field">
+                                   @Html.DropDownListFor(x=> x.CustomerSegmentCode,CustomerSegmentCodeList, new { id = "CustomerSegmentCode" })
+                                   @Html.ValidationMessageFor(x => x.CustomerSegmentCode)
+                                </div>
+                            </div>
+                            <div class="TwoColumn" id = "divCustomerSubSegmentCode">
+                                <div class="label">@Resources.CustomerSubSegment</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x=> x.CustomerSubSegmentCode,CustomerSubSegmentCodeList, new { id = "CustomerSubSegmentCode" })
+                                    @Html.ValidationMessageFor(x => x.CustomerSubSegmentCode)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.TransactionCode</div>
+                                <div class="Field">
+                                   @Html.DropDownListFor(x=> x.TransactionCode,TransactionCodeList, new { id = "TransactionCode" })
+                                   @Html.ValidationMessageFor(x => x.TransactionCode)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.SBIFInterestRatePercentage</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.SBIFInterest, String.Format("{0:N2}", Model.SBIFInterest), new {id = "SBIFInterest", @class = "NumericWithDecimalPlace", maxlength="6", onblur = "FormatOnBlurWithDecimal(event)"})
+                                    @*@Html.TextBoxFor(x => x.SBIFInterest, String.Format("{0:N}",Model.SBIFInterest), new { id = "SBIFInterest", maxlength = 6, @class = "NumericWithDecimalPlace" })*@
+                                    @Html.ValidationMessageFor(x => x.SBIFInterest)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id ="rowCreditLimit">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.CreditLimitFrom</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CreditLimitFrom, @String.Format("{0:N0}", Model.CreditLimitFrom), new { @class = "NumberCommaDot", id = "CreditLimitFrom", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                    @Html.ValidationMessageFor(x => x.CreditLimitFrom)  
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label ">@Resources.CreditLimitTo</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CreditLimitTo, @String.Format("{0:N0}", Model.CreditLimitTo), new { @class = "NumberCommaDot", id = "CreditLimitTo", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                    @Html.ValidationMessageFor(x => x.CreditLimitTo)  
+                                    <label id="CreditLimitTo_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Tenure</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TenureTo, new { id="TenureTo", name="TenureTo", maxlength = 3, @class = "Number", onkeypress = "return OnlyNumeric(event)"})
+                                    @Html.ValidationMessageFor(x => x.TenureTo)
+                                    <label id="TenureTo_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.EffectiveFromDate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ValidFromDate, new {id = "FromDate", @class ="datepicker", @readonly="true", Value = Model.ValidFromDate.ToShortDateString() })
+                                    @Html.ValidationMessageFor(x => x.ValidFromDate)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.InterestRate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ExpectedInterestRate, String.Format("{0:N2}", Model.ExpectedInterestRate), new {id = "InterestRate", @class = "NumericWithDecimalPlace", maxlength="6", onblur = "FormatOnBlurWithDecimal(event)"})
+                                    @*@Html.TextBoxFor(x => x.ExpectedInterestRate, String.Format("{0:0.00}",Model.ExpectedInterestRate), new { id = "InterestRate", maxlength = 6, @class = "NumericWithDecimalPlace" })*@
+
+                                    @Html.ValidationMessageFor(x => x.ExpectedInterestRate)
+                                    <label id="InterestRate_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                        <div class="TwoColumn">
+                             <div class="label">@Resources.DeferredPayment</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DeferredPayment,String.Format("{0:N0}",Model.DeferredPayment), new { maxlength = 2,@class = "Number NumericOnly" })
+                                    @Html.ValidationMessageFor(x => x.DeferredPayment)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.InterestCalculation</div>
+                                <div class="Field">
+                                     @Html.DropDownListFor(x => x.InterestCalculation, InterestCalculationList, new { id="InterestCalculation"})
+                                    @Html.ValidationMessageFor(x => x.InterestCalculation)
+                                </div>
+                            </div>
+                        <div class="TwoColumn">
+                             <div class="label">@Resources.FirstBilling</div>
+                                <div class="Field">
+                                     @Html.DropDownListFor(x=> x.FirstBilling, FirstBillingList, new { id="FirstBilling"})
+                                    @Html.ValidationMessageFor(x => x.FirstBilling)
+                                </div>
+                            </div>
+                        </div>
+
+                                        <div>
+                    @Html.HiddenFor(x => x.TransactionCode, new { id="hidTransactionCode"})
+                                            @Html.HiddenFor(x => x.InterestCalculation, new { id="hidInterestCalculation"})
+                                            @Html.HiddenFor(x => x.FirstBilling, new { id="hidFirstBilling"})
+
+                </div>
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+        if ($('#CreditSegmentCode option:selected').val() == 'E') {
+            $('#rowCreditLimit').hide();
+            document.getElementById('ProductCode').disabled = true;
+            document.getElementById('CustomerSegmentCode').disabled = true;
+            document.getElementById('CustomerSubSegmentCode').disabled = true;
+          //  $("#SBIFInterest").attr("readonly", "readonly");
+            //$("#TransactionCode").attr("disabled", "disabled");
+            $("#FirstBilling").attr("disabled", "disabled");
+            $("#InterestCalculation").attr("disabled", "disabled");
+        }
+        else {
+            $('#rowCreditLimit').show();
+            document.getElementById('ProductCode').disabled = false;
+            document.getElementById('CustomerSegmentCode').disabled = false;
+            document.getElementById('CustomerSubSegmentCode').disabled = false;
+          //  $("#SBIFInterest").removeAttr("readonly");
+            //$("#TransactionCode").removeAttr("disabled");
+            $("#FirstBilling").removeAttr("disabled");
+            $("#InterestCalculation").removeAttr("disabled");
+        }
+    })
+</script>
+
+
+

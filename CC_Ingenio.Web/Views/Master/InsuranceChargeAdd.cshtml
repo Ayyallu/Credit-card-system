@@ -1,0 +1,297 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@model InsuranceChargeDTO
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.InsuranceCharges, " ", Resources.Add });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    List<SelectListItem> contractList = new List<SelectListItem>();
+    List<SelectListItem> productList = new List<SelectListItem>();
+    List<SelectListItem> insuranceTypeList = new List<SelectListItem>();
+    List<SelectListItem> insuranceOptionList = new List<SelectListItem>();
+    List<SelectListItem> currencyList = new List<SelectListItem>();
+    List<SelectListItem> generalSpecialList = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+    
+    //foreach (SelectListItem item in ViewBag.ContractList) 
+    //{
+    //    contractList.Add(new SelectListItem() { Text = item.Text, Value = item.Value });
+    //}
+    foreach (SelectListItem item in ViewBag.ProductList)
+    {
+        productList.Add(new SelectListItem() { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (SelectListItem item in ViewBag.InsuranceTypeList)
+    {
+        insuranceTypeList.Add(new SelectListItem() { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (SelectListItem item in ViewBag.InsuranceOptionList)
+    {
+        insuranceOptionList.Add(new SelectListItem() { Text = item.Text, Value = item.Value });
+    }
+
+    foreach (SelectListItem item in ViewBag.CurrencyList)
+    {
+        currencyList.Add(new SelectListItem() { Text = item.Text, Value = item.Value });
+    }
+    foreach (SelectListItem item in ViewBag.GeneralSpecialList)
+    {
+        generalSpecialList.Add(new SelectListItem() { Text = item.Text, Value = item.Value });
+    }
+    if (ViewBag.Privileges != null)
+    {
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+@section featured{}
+<script type="text/javascript">
+    $(".datepicker").datepicker("setDate", new Date());
+
+    
+    function setProductCurrency(productCode) {
+        $.getJSON("/Master/GetProductCurrency?AProductCode=" + $('#Product').val(),
+            function (modeldata) {
+                $("#Currency").val(modeldata.currencyCode);
+                $("#Currency").change();
+                $("#Currency").valid();
+            });
+    };
+
+
+    $(document).ready(function () {
+        $("#Product").change(function () {
+            var productCode = $("#Product").val();
+            var select = $("[id = Contract]");
+            select.empty();
+            if(productCode){
+                PopulateDropDownViaAjax("#Contract", "/Master/GetContractByProductCode?AProductCode=" + productCode);
+                setProductCurrency($('#Product').val());
+            }
+            else{
+                $("[id=Contract]").append($('<option/>',
+                  {
+                      value: "",
+                      text: '@Html.Raw(@Resources.SelectOne)'
+                  }));
+            }
+        });      
+    });
+    $(function () {
+        $('#Reset').click(function () {
+            window.location.reload();                
+        });})
+</script>
+<style>
+    .inline
+    {
+        text-align:left;
+	    display:inline;
+	    float:left;
+	    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+    }
+    .radio
+    {
+	    text-align:left;
+	    width:10em;
+	    display:inline;
+	    float:left;
+        font-size: .85em;
+        font-weight: 800;
+	    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+    }
+</style>
+
+<section class ="featured">
+     <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"InsuranceChargeList","Master" )</li>
+            }
+            <li class="active"><a href="#tab1">@Resources.DetailsPageHeading</a></li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("InsuranceChargeSave", "Master", new { Id = Model.InsuranceChargeId, }, FormMethod.Post))
+                {
+                <div class="tab-content" id="tab1">
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatusDesc))
+                            { 
+                                <text>@String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc })</text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+                         <div class="row">
+                            <div class="TwoColumn">                                
+                                    <div class="label">@Resources.EffectiveDate</div>
+                                    <div class="Field">
+                                        @Html.TextBoxFor(x => x.EffectiveDate, new { @class ="datepicker", @readonly="true", Value = Model.EffectiveDate.ToShortDateString() })
+                                        @Html.ValidationMessageFor(x => x.EffectiveDate)
+                                    </div>                                
+                             </div>
+                            <div class="TwoColumn">                                
+                                    <div class="label">@Resources.Product</div>
+                                    <div class="Field">
+                                        @Html.DropDownListFor(x => x.ProductCode, productList, new { id="Product", name = "Product"})
+                                        @Html.ValidationMessageFor(x => x.ProductCode)
+                                    </div> 
+                            </div> 
+                        </div> 
+                        <div class="row">
+                            <div class="TwoColumn">                                
+                                    <div class="label">@Resources.Contract</div>
+                                    <div class="Field">
+                                        @Html.DropDownListFor(x => x.ContractCode, contractList, new { id = "Contract", name = "Contract"})
+                                        @Html.ValidationMessageFor(x => x.ContractCode)
+                                    </div>                               
+                            </div>
+                            <div class="TwoColumn">                                   
+                                    <div class="label">@Resources.InsuranceType</div>
+                                    <div class="Field">
+                                        @Html.DropDownListFor(x => x.InsuranceType, insuranceTypeList)
+                                        @Html.ValidationMessageFor(x => x.InsuranceType)
+                                    </div>
+                            </div> 
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">                                    
+                                    <div class="label">@Resources.InsuranceOption</div>
+                                    <div class="Field">
+                                        @Html.DropDownListFor(x => x.InsuranceOption, insuranceOptionList)
+                                        @Html.ValidationMessageFor(x => x.InsuranceOption)
+                                    </div>
+                            </div>  
+                            <div class="TwoColumn">
+                                    <div class="label">@Resources.InsuranceAmount</div>
+                                    <div class="Field">
+                                        @Html.TextBoxFor(x => x.InsuranceAmount, @String.Format("{0:N0}", Model.InsuranceAmount), new { @class = "NumberCommaDot", id = "InsuranceAmount", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                        @Html.ValidationMessageFor(x => x.InsuranceAmount)
+                                    </div>
+                            </div>
+                        </div>
+
+                           <div class="row">
+                             <div class="TwoColumn">
+                                    <div class="label fontmandatory">@Resources.EligibilityAge</div>
+                                    <div class="Field">
+                                        <span>@Html.TextBoxFor(x => x.EligibilityAgeYears, new { id = "EligibilityAgeYears", name = "EligibilityAgeYears",maxlength=2,onkeypress="return OnlyNumeric(event);", @class = "inline Number", style="font-size:.99em;width:30%; height:13px; border: 1px solid #455f28;" })</span>
+                                        <span><label class="inline" style="font-size:.99em;padding:6px 20px 0px 2px"> @Resources.Years </label></span>
+                                        <span>@Html.TextBoxFor(x => x.EligibilityAgeDays, new { id = "EligibilityAgeDays", name = "EligibilityAgeDays",maxlength=3,onkeypress="return OnlyNumeric(event);", @class = "inline Number", style="font-size:.99em;width:30%; height:13px; border: 1px solid #455f28;" })</span>
+                                        <span><label class="inline" style="font-size:.99em;padding:6px 20px 0px 2px"> @Resources.Days </label></span>
+                                    
+                                        <span class="Field">
+                                        @Html.ValidationMessageFor(x => x.EligibilityAgeDays,string.Empty, new { style="font-size:1.2em"})
+                                        @Html.ValidationMessageFor(x => x.EligibilityAgeYears,string.Empty, new { style="font-size:1.2em"})
+                                        </span>
+                                    </div>
+                             </div>
+                             <div class="TwoColumn">                                
+                                    <div class="label fontmandatory">@Resources.MaximumCoverAge</div>
+                                    <div class="Field">
+                                        <span>@Html.TextBoxFor(x => x.MaxCoverAgeYears, new { id = "MaxCoverAgeYears", name = "MaxCoverAgeYears",maxlength=2,onkeypress="return OnlyNumeric(event);", @class = "inline Number", style="font-size:.99em;width:30%; height:13px; border: 1px solid #455f28;" })</span>
+                                        <span><label class="inline" style="font-size:.99em;padding:6px 20px 0px 2px"> @Resources.Years </label></span>
+                                        <span>@Html.TextBoxFor(x => x.MaxCoverAgeDays, new { id = "MaxCoverAgeDays", name = "MaxCoverAgeDays",maxlength=3,onkeypress="return OnlyNumeric(event);", @class = "inline Number", style="font-size:.99em;width:30%; height:13px; border: 1px solid #455f28;" })</span>
+                                        <span><label class="inline" style="font-size:.99em;padding:6px 20px 0px 2px"> @Resources.Days </label></span>
+                                        <span class="Field">
+                                        @Html.ValidationMessageFor(x => x.MaxCoverAgeDays,string.Empty, new { style="font-size:1.2em"})
+                                        @Html.ValidationMessageFor(x => x.MaxCoverAgeYears,string.Empty, new { style="font-size:1.2em"})
+                                        </span>
+                                    </div>                                
+                             </div> 
+                         </div>
+
+                        
+                        <div class="row">   
+                         <div class="TwoColumn">                                  
+                                    <div class="label">@Resources.GeneralOrSpecial</div>
+                                    <div class="Field">
+                                        @Html.DropDownListFor(x => x.IsGeneralOrSpecial, generalSpecialList)
+                                        @Html.ValidationMessageFor(x => x.IsGeneralOrSpecial)
+                                    </div>
+                            </div>        
+                            <div class="TwoColumn">                                  
+                                    <div class="label">@Resources.Currency</div>
+                                    <div class="Field">
+                                        @Html.DropDownListFor(x => x.CurrencyCode, currencyList, new { id ="Currency"})
+                                        @Html.ValidationMessageFor(x => x.CurrencyCode)
+                                    </div>  
+                            </div>
+                         </div> 
+
+                        
+                            <div class="row">
+                            <div class="TwoColumn">                                 
+                                    <div class="label">@Resources.PolicyCode</div>
+                                    <div class="Field">
+                                        @Html.TextBoxFor(x => x.PolicyCode, new { id ="PolicyCode", name ="PolicyCode", maxlength = 15 })
+                                        @Html.ValidationMessageFor(x => x.PolicyCode)
+                                    </div>                               
+                            </div>
+                            <div class="TwoColumn"> 
+                                    <div class="label">@Resources.PolicyDetails</div>
+                                    <div class="Field">
+                                        @Html.TextAreaFor(x => x.PolicyDetails, new { id ="PolicyDetails", name ="PolicyDetails", maxlength = 100 })
+                                        @Html.ValidationMessageFor(x => x.PolicyDetails)
+                                    </div>
+                                 
+                            </div> 
+ 
+                          </div> 
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+                    </div>
+                </div>
+                 }
+
+            </div>
+    </div>
+
+</section>
+
+<script type="text/javascript">
+    var model = @Html.Raw(Json.Encode(Model));
+    if (model.InsuranceChargeId > 0) {
+        var productCode = $("#Product").val();
+        $.getJSON("/Master/GetContractByProductCode?AProductCode=" + productCode,
+               function (modeldata) {
+                   var select = $("[id = Contract]");
+                   select.empty();
+                   $.each(modeldata, function (index, itemData) {
+                       select.append($('<option/>', {
+                           value: itemData.Value,
+                           text: itemData.Text
+                       }));
+                   });
+                   select.val(model.ContractCode);
+               });
+    }
+    else {
+        $("[id=Contract]").append($('<option/>',
+           {
+               value: "",
+               text: '@Html.Raw(@Resources.SelectOne)'
+           }));
+    }
+   
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+             DisableBtnAuthorize();
+         }
+     })
+</script>

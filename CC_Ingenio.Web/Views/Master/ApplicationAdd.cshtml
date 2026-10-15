@@ -1,0 +1,120 @@
+﻿@using CC_Ingenio_Resources;
+@{
+    ViewBag.Title = Resources.Customer;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section featured
+{
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#Search").click(function () {
+            var RUTNumber = document.getElementById("RUT").value + '-' + document.getElementById("CheckDigit").value;
+
+            $.ajax({
+                type: 'POST',
+                url: '/Master/CheckIfValidCard',
+                data: { Id: RUTNumber },
+                success: function (returnData) {
+                    if (returnData.RedirectUrl.length > 0) {
+                        window.location.href = json.RedirectUrl;
+                    }
+                    else {
+                        if (returnData.Isvalid) {
+                            var RUTNumber = document.getElementById("RUT").value + '' + document.getElementById("CheckDigit").value;
+
+                            $.ajax({
+                                type: 'GET',
+                                url: '/master/CheckIfAlreadyExistsCard',
+                                data: { ARUTNumber: RUTNumber },
+                                success: function (returnData) {
+
+                                    if (returnData.RedirectUrl.length > 0) {
+
+                                        window.location.href = returnData.RedirectUrl;
+                                        return true;
+                                    }
+                                    else if (returnData.CardNumber != '') {
+                                        //var objCardNumber = $('#CardNumber');
+                                        // objCardNumber.value = returnData.CardNumber;                                       
+                                        document.getElementById("CardNumber").value = returnData.CardNumber;
+                                        return true;
+                                    }
+                                }
+
+                            });
+                            return;
+                        }
+                            //    alert(returnData.CardNumber);
+                        else {
+                            alert("Invalid RUT")
+                        }
+                    }
+                    return false;
+                }
+            });
+
+        });
+    });
+
+</script>
+
+<style>
+.TextField
+{
+    border: 1px solid #455f28;
+	text-align: left;
+	font-size: .85em;
+	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+}
+</style>
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+        <div class="tabs-container">
+  
+                <div class="tab-content" id="tab1">
+                    <div class="row">
+                        <fieldset class="double">
+                            <legend></legend>
+
+                            <div class="row">
+                                <div class="label">@Resources.RUT</div>
+                                <div>
+                                   <span> @Html.TextBox("RUT","", new { maxlength = 9, @class="TextField",@style="height:14px; width:60%; float:left"}) </span>
+                                   <span><label style="width:1%; float:left;padding: 6px 3px 0px 3px">-</label></span>
+                                   <span> @Html.TextBox("CheckDigit","", new { maxlength = 1, @class="TextField",@style="height:14px; width:4%; float:left"})</span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="label">@Resources.CardNumber</div>
+                                <div id="CardNo" disabled ="true" class="Field">
+                                    @Html.TextBox("CardNumber")
+                                </div>
+                            </div>
+
+                        </fieldset>
+                        <span>
+                            <input id="Search" name="" value="@Resources.Search" type="submit" class="Greenbutton" />
+                        </span>
+                    </div>
+                    <div class="row">
+                    </div>
+                </div>
+
+        </div>
+
+
+
+    </div>
+      <script>
+          $(function () {
+              $("#CardNumber").attr("disabled", "true");
+
+          })
+        </script>
+</section>

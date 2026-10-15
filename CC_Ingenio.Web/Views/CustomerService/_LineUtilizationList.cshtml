@@ -1,0 +1,77 @@
+﻿@using CC_Ingenio.Web.ViewModel.CustomerService;
+@model LineUtilizationViewModel
+@using CC_Ingenio_Resources;
+@{
+
+    List<SelectListItem> SegmentItems = new List<SelectListItem>();
+    foreach (var itm in Model.objCreditSegment)
+    {
+        SegmentItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    SegmentItems.RemoveAt(0);
+    SegmentItems.Insert(0, new SelectListItem { Text = string.Empty, Value = string.Empty });
+
+    var LineGrid = new WebGrid(Model.objLineUtilization, canPage: true, rowsPerPage: 5, ajaxUpdateContainerId: "container-body");
+    LineGrid.Pager(WebGridPagerModes.All);
+    }
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        if ('@Model.Segment' != "") {
+            var segmentItem = '@Model.Segment';
+            $('#SegmentItems').val(segmentItem);
+        }
+
+        $("#SegmentItems").change(function () {
+
+            var objSegment = $('#SegmentItems').val();
+            $('#partialViewDiv').html('');
+            $.ajax({
+                url: '/CustomerService/GetLineUtilizationDetails',
+                type: 'GET',
+                data: { ACardNumber: JSON.stringify(@Model.CardNumber), ASegment: objSegment },
+                dataType: 'html',
+                success: function (data) {                
+                if (data.length > 0) {                    
+                    $('#partialViewDiv').html(data);
+                }               
+            }
+        });
+        });
+    });
+</script>
+<div class="row">
+    <div class=" BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.LineUtilizationDetails</div>
+        @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmLineUtilization", Name = "frmLineUtilization" }))
+        {
+            <div class="row">
+                <div class="SearchBox">
+                    <div class="row">
+                        <div class="TwoColumn">
+                            <div class="label">@Resources.Segment</div>
+                            <div class="Field">
+                                @Html.DropDownListFor(x => x.objCreditSegment, SegmentItems, new { id = "SegmentItems", @class = "entryControls" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+        <div style="width: 100%;" class="VerticalScrollBar">
+            <div class="standard-table">
+                @LineGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+             alternatingRowStyle: "alt",
+             columns: LineGrid.Columns(
+                    LineGrid.Column("Segment", Resources.Segment),
+                    LineGrid.Column("Limit", Resources.Limit, format: (item) => string.Format("{0:N0}", item.Limit)),
+                    LineGrid.Column("UtilizedAmount", Resources.UtilizedAmount, format: (item) => string.Format("{0:N0}", item.UtilizedAmount)),
+                     LineGrid.Column("UtilizedPercentage", Resources.LineUtilizationPercentage, format: (item) => string.Format("{0:N2}", item.UtilizedPercentage))
+
+                ))
+            </div>
+        </div>
+    </div>
+
+</div>

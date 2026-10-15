@@ -1,0 +1,194 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+
+@model SystemMaintenanceConfigurationDTO
+@{
+    List<SelectListItem> CurrencyList = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+
+    foreach (var item in ViewBag.CurrencyList)
+    {
+        CurrencyList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+
+@{
+    ViewBag.Title = "Add SystemMaintenanceConfiguration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section featured
+    {
+    
+    }
+
+<section class="featured">
+     <div class="PageTitle">Add SystemMaintenanceConfiguration </div>
+     <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink("Search","SystemMaintenanceConfigurationList","Master" )</li>
+            }
+            <li class="active"><a href="#tab1">Details</a></li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("SystemMaintenanceConfigurationSave", "Master", new { Id = Model.BaseCurrency, }, FormMethod.Post))
+                {
+                <div class="tab-content" id="tab1">
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatusDesc))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+                      
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">Base Currency</div>
+                                <div class="Field">
+                                   @Html.DropDownListFor(x => x.BaseCurrency,CurrencyList)
+                                @*    @Html.ValidationMessageFor(x => x.BaseCurrency)*@
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label"> Weekly Global Count</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x. WeeklyGlobalCount)  
+                               @*     @Html.ValidationMessageFor(x => x. WeeklyGlobalCount)*@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label ">WeeklySetUp</div>
+                                <div class="Field">
+                                   @Html.TextBoxFor(x=> x.WeeklySetUp)
+                                  @*  @Html.ValidationMessageFor(x => x.WeeklySetUp)*@
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">Cash Limit</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x=> x.CashLimit)
+                                  @*  @Html.ValidationMessageFor(x => x.CashLimit)*@
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">Credit Limit</div>
+                                <div class="Field">
+                                   @Html.TextBoxFor(x=> x.CreditLimit)
+                                   @* @Html.ValidationMessageFor(x => x.CreditLimit)*@
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">Default Boost</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DefaultBoost)
+                                 @*   @Html.ValidationMessageFor(x => x.DefaultBoost)*@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">Reissue Damaged</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ReissueDamaged)                                   
+                                @*    @Html.ValidationMessageFor(x => x.ReissueDamaged)*@
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label ">Closed Damaged</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ClosedDamaged, new { id="TenureFrom", name="TenureFrom", maxlength = 50})
+                                  @*  @Html.ValidationMessageFor(x => x.ClosedDamaged)*@
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">Default MerchantCharge Type</div>
+                                <div class ="Field">
+                                    @Html.TextBoxFor(x => x.DefaultMerchantChargeType)
+                                 @*   @Html.ValidationMessageFor(x => x.DefaultMerchantChargeType)*@
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">DefaultCharge TypeDescrption</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DefaultChargeTypeDescrption)
+                                  @*  @Html.ValidationMessageFor(x => x.DefaultChargeTypeDescrption)*@
+                                </div>
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">MinimumDueMerchantCode</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.MinimumDueMerchantCode)
+                                 @*   @Html.ValidationMessageFor(x => x.MinimumDueMerchantCode)*@
+                                </div>
+                            </div>
+                            
+                        <div class="TwoColumn">
+                             <div class="label">NumberOfSegments</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.NumberOfSegments)
+                                  @*  @Html.ValidationMessageFor(x => x.NumberOfSegments)*@
+                                </div>
+                            </div>
+                        </div>
+                        
+                            
+                       
+                        
+                            
+                        
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>
+
+
+

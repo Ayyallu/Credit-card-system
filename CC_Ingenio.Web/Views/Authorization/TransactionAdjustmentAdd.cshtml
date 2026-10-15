@@ -1,0 +1,227 @@
+﻿@using CC_Ingenio.DataTranfer.AuthorizationInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.TransactionAdjustment });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model TransactionAdjustmentDTO
+@{
+    List<string> lstPriv = new List<string>();
+    
+    if (ViewBag.Privileges != null)
+    {
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+<style>
+    input[id="CardNumber"],input[id="RUT"],input[id="TransactionAdjustmentCode"],[id="AdjustmentCode"],[id="AuthorizationCode"],[id="TransactionCode"],[id="InvoiceNo"],[id="TransactionAmount"],[id="AdjustedAmount"][readonly],[id="PostedDate"][readonly], [id="TransactionSubCode"][readonly], [id="BalanceAmount"][readonly],
+    select[readonly]
+    {
+         background:#e9e7e7;    
+    }
+</style>
+
+<script>
+
+    $(document).ready(function () {
+        
+      
+        $('#frmTransAdjustmentSave').on('submit', function (e) {
+
+            var varAdjustedAmount = Globalize(resourceProvider.ResourceCulture).parseFloat($('#AdjustedAmount').val());
+            var varAmountToAdjust = Globalize(resourceProvider.ResourceCulture).parseFloat($('#AmountToAdjust').val());
+            var varTransAmount = Globalize(resourceProvider.ResourceCulture).parseFloat($('#TransactionAmount').val());
+            
+            if (parseFloat(varAmountToAdjust) > (parseFloat(varTransAmount) - parseFloat(varAdjustedAmount))) {
+                $('#AmountToAdjust_Validate').text("@Html.Raw(String.Format(Resources.MsgErrValueShouldBeLessThan, Resources.AmountToAdjust, Resources.TransactionAmount))");
+                e.preventDefault();
+            }
+        });
+
+
+        $('#AmountToAdjust').focusin(function () {
+            $('#AmountToAdjust_Validate').text("");
+        });
+
+        $('input[id="New"]').hide();
+        $('input[id="Submit"]').hide();
+        $('input[id="Delete"]').hide();
+       
+
+    });
+    
+</script>
+
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+        
+        <!-- Tabs Content -->
+
+            <div class="tabs-container">
+                 @using (Html.BeginForm("TransactionAdjustmentSave", "Authorization", FormMethod.Post, new { id = "frmTransAdjustmentSave", name = "frmTransAdjustmentSave" }))
+                {
+                <div class="tab-content" id="tab1">
+
+                    <div class="row">
+
+
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">@Resources.CardNumber</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CardNumber, new {id = "CardNumber", name="CardNumber", maxlength = 16, @readonly = "true", onfocus="this.blur()" })
+                                    @Html.ValidationMessageFor(x => x.CardNumber)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">@Resources.RUT</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.RUT, new { id = "RUT", name="RUT", maxlength = 11, @readonly = "true", onfocus="this.blur()"})
+                                    @Html.ValidationMessageFor(x => x.RUT)
+                                </div>
+                            </div>
+                        </div>
+                                                                                                
+
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">@Resources.TransactionCode</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TransactionCode, new { id = "TransactionCode", name="TransactionCode", maxlength = 50, @readonly = "true", onfocus="this.blur()"})
+                                    @Html.ValidationMessageFor(x => x.TransactionCode)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">@Resources.TransactionSubCode</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TransactionSubCode , new {id = "TransactionSubCode", name="TransactionSubCode", maxlength = 30, @readonly = "true", onfocus="this.blur()" })
+                                    @Html.ValidationMessageFor(x => x.TransactionSubCode)
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">@Resources.AdjustmentCode</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.AdjustmentCode, new { id = "AdjustmentCode", name = "AdjustmentCode", maxlength = 4, @readonly = "true", onfocus="this.blur()" })
+                                    @Html.ValidationMessageFor(x => x.AdjustmentCode)
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">@Resources.TransactionAdjustmentCode</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TransactionAdjustmentCode, new {id = "TransactionAdjustmentCode", name="TransactionAdjustmentCode", maxlength = 6, @readonly = "true", onfocus="this.blur()" })
+                                    @Html.ValidationMessageFor(x => x.TransactionAdjustmentCode)
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">@Resources.AuthCode</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.AuthorizationCode, new {id = "AuthorizationCode", name="AuthorizationCode", maxlength = 30, @readonly = "true", onfocus="this.blur()" })
+                                    @Html.ValidationMessageFor(x => x.AuthorizationCode)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">@Resources.PostedDate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.PostedDate, "{0: dd/MM/yyyy}", new { id = "PostedDate", @readonly = "true" })
+                                    @Html.ValidationMessageFor(x => x.PostedDate)
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">@Resources.TransactionAmount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TransactionAmount, @String.Format("{0:N0}", Model.TransactionAmount), new { @class = "NumberCommaDot", id = "TransactionAmount", @readonly = "true", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)", onfocus="this.blur()" })
+                                    @Html.ValidationMessageFor(x => x.TransactionAmount)
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label ">@Resources.AdjustedAmount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.AdjustedAmount, @String.Format("{0:N0}", Model.AdjustedAmount), new { @class = "NumberCommaDot", id = "AdjustedAmount", @readonly = "true", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)", onfocus="this.blur()" })
+                                    @Html.ValidationMessageFor(x => x.AdjustedAmount)
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">                           
+                            <div class="TwoColumn">
+                                <div class="label ">@Resources.BalanceAmount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.BalanceAmount, @String.Format("{0:N0}", Model.BalanceAmount), new { @class = "NumberCommaDot", id = "BalanceAmount", maxlength = 11, @readonly = "true", @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                    @Html.ValidationMessageFor(x => x.BalanceAmount)   
+                             
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label ">@Resources.AmountToAdjust</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.AmountToAdjust, @String.Format("{0:N0}", Model.AmountToAdjust), new { @class = "NumberCommaDot", id = "AmountToAdjust", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                    @Html.ValidationMessageFor(x => x.AmountToAdjust)   
+                                    <label id="AmountToAdjust_Validate" class="validationMessage"></label>                                 
+                                </div>
+                            </div>
+                        </div>
+
+
+                          <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label ">@Resources.Remarks</div>
+                                <div class="Field">
+                                    @Html.TextAreaFor(x => x.Remarks,new { style = "height:6em",id = "Remarks", name="Remarks", maxlength = 500})
+                                    @Html.ValidationMessageFor(x => x.Remarks)    
+                                </div>
+                            </div>
+                        </div> 
+                        
+                                                   
+                        @Html.HiddenFor(x => x.TransType, new { id = "TransType", name = "TransType"})
+                        @Html.HiddenFor(x => x.AuthorizationCode, new { id = "AuthorizationCode", name = "AuthorizationCode"})
+                        @Html.HiddenFor(x => x.InvoiceNo, new { id = "InvoiceNo", name = "InvoiceNo"})
+                        @Html.HiddenFor(x => x.TransactionAmount, new { id = "TransactionAmount", name = "TransactionAmount"})
+                        @Html.HiddenFor(x => x.AdjustedAmount, new { id = "AdjustedAmount", name = "AdjustedAmount"})
+                        @Html.HiddenFor(x => x.TransType, new { id = "TransType", name = "TransType"})
+
+                    </div>
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                     
+                 }
+
+            </div>
+        </div>
+        
+</section>

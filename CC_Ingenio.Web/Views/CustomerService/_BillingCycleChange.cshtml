@@ -1,0 +1,121 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@model BillingCycleChangeDTO
+@{       
+    List<SelectListItem> billingCycleList = new List<SelectListItem>();
+    foreach (var item in ViewBag.BillingCycleList)
+    {
+        billingCycleList.Add(new SelectListItem { Text = item.Description, Value = item.BillingCycleCode });
+    }
+    
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+<link href="~/Content/PopUpStyle.css" rel="stylesheet" />
+<script src="~/Scripts/PopUpScript.js"></script> 
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#BillingCycleCode').change(function () {
+
+            $.ajax({
+                url: '/CustomerService/FillBillingCycle/',
+                type: 'POST',
+                data: { ACustomerId: JSON.stringify(@Model.CustomerId), ACardNumber: JSON.stringify(@Model.CardNumber), ABillingCycle: $('#BillingCycleCode').val() },
+                    cache: false,
+                    success: function (data) {
+                        if (data != 'Undefined') {
+                            $('#partialViewDiv').html(data);
+                        }
+                    }
+                });
+
+        });
+        $('#Save').click(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/CustomerService/BillingCycleSave/',
+                type: 'POST',
+                data: $('#frmBillingCycleChange').serialize(),
+                cache: false,
+                success: function (data) {                   
+                    if (data != 'Undefined') {
+                        $('#partialViewDiv').html(data);                       
+                    }
+                }
+            });
+
+        });
+
+            if ('@Model.IsSaved' == 'True') {
+                ShowSimpleModalDialog("@Html.Raw(string.Format(Resources.MsgInfoSaveSuccess,Resources.BillingCycle))", "");
+            }      
+          
+        $('input[id="New"]').hide();
+        $('input[id="Submit"]').hide();
+        $('input[id="Delete"]').hide();
+
+        }); 
+</script>
+<div class="row" >
+    <div class="BorderColumn"  style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.ChangeBillingCycle</div>
+            @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmBillingCycleChange", Name = "frmBillingCycleChange", @class = "VerticalScrollBar", @style = "height: 120px;" }))
+            {
+                <div class="row">
+                    <div class="row">
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatusDesc))
+                            {                                 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc })</text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label" style="width: 40%">@Resources.BillingCycle</div>
+                            <div class="Field" style="width: 52.5%">
+                                 @if (ViewData["FormStatus"].ToString() == "P")
+                                 {
+                                    @Html.DropDownListFor(x => x.BillingCycleCode, billingCycleList, new { id = "BillingCycleCode", @class = "entryControls", @disabled = "disabled" })
+                                    @Html.HiddenFor(x => x.BillingCycleCode, new { id="hidBillingCycleCode",name="hidBillingCycleCode"})
+                                 }
+                                 else
+                                 {
+                                    @Html.DropDownListFor(x => x.BillingCycleCode, billingCycleList, new { id = "BillingCycleCode", @class = "entryControls" })
+                                 }
+                                 @Html.ValidationMessageFor(x => x.BillingCycleCode, "", new { id = "Validation_MessageType" })
+                            </div>
+                        </div>
+                    </div>
+                    <div>@Html.Raw(Html.BasicButtons(lstPriv))  </div>
+                </div>
+                <div>
+                        @Html.HiddenFor(x => x.CardNumber)
+                        @Html.HiddenFor(x => x.CustomerId)
+                        @Html.HiddenFor(x => x.ApprovalStatus)
+                </div>
+            }
+    </div>
+</div>
+<script>
+    $(function () {
+        if ('@ViewData["FormStatus"]' != "P") {
+            DisableBtnAuthorize();
+        }
+
+        EnableDisableControls('@ViewData["FormStatus"]');
+    })
+</script>

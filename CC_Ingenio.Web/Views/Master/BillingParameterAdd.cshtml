@@ -1,0 +1,191 @@
+﻿
+@using CC_Ingenio_Resources;
+
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.MT_BILLING_PARAMETER });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+
+@model BillingParameterDTO
+@{
+    List<SelectListItem> productCodeList = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+
+    foreach (var item in ViewBag.ProductList)
+    {
+        productCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    
+
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+
+
+
+
+<section class="featured">
+     <div class="PageTitle">@ViewBag.Title</div>
+     <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+               <li> @Html.ActionLink(Resources.SearchPageHeading,"BillingParameterList","Master" )</li>
+            }
+            <li class="active"><a href="#tab1">@Resources.DetailsPageHeading</a></li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("BillingParameterSave", "Master", new { Id = Model.ProductCode, }, FormMethod.Post))
+                {
+                <div class="tab-content" id="tab1">
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+                      
+                         <div class="TwoColumn">                           
+                                <div class="label">@Resources.Product</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.ProductCode, productCodeList)
+                                    @Html.ValidationMessageFor(x => x.ProductCode)
+                                </div>
+                            </div>
+                                                  
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.ThresholdRevolvingBalance</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ThresholdRevolvingBalance, @String.Format("{0:N0}", Model.ThresholdRevolvingBalance), new { @class = "NumberCommaDot", id = "InsuranceAmount", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                    @Html.ValidationMessageFor(x => x.ThresholdRevolvingBalance)
+                                </div>
+                            </div>
+                        </div>
+                        
+                            
+                            <div class="row">
+                           <div class="TwoColumn">
+                                <div class="label">@Resources.MinTotalAmount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.MinTotalAmount, @String.Format("{0:N0}", Model.MinTotalAmount), new { @class = "NumberCommaDot", id = "InsuranceAmount", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                    @Html.ValidationMessageFor(x => x.MinTotalAmount)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.MinTotalDebt</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.MinTotalDebt, @String.Format("{0:N0}", Model.MinTotalDebt), new { @class = "NumberCommaDot", id = "InsuranceAmount", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                    @Html.ValidationMessageFor(x => x.MinTotalDebt)
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.MinOCLCharge</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.MinOCLCharge, @String.Format("{0:N0}", Model.MinOCLCharge), new { @class = "NumberCommaDot", id = "InsuranceAmount", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                    @Html.ValidationMessageFor(x => x.MinOCLCharge)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label ">@Resources.MaxOCLCharge</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.MaxOCLCharge, @String.Format("{0:N0}", Model.MaxOCLCharge), new { @class = "NumberCommaDot", id = "InsuranceAmount", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                    @Html.ValidationMessageFor(x => x.MaxOCLCharge)
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.OCLChargePercentage</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.OCLChargePercentage, new {@class="NumericWithDecimalPlace",id = "OCLChargePercentage", name="OCLChargePercentage", maxlength = 6 })
+                                    @Html.ValidationMessageFor(x => x.OCLChargePercentage)
+                                    
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label ">@Resources.MinDelinquencyAmount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.MinDelinquencyAmount, @String.Format("{0:N0}", Model.MinDelinquencyAmount), new { @class = "NumberCommaDot", id = "InsuranceAmount", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                    @Html.ValidationMessageFor(x => x.MinDelinquencyAmount)
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.MinCollectionCharges</div>
+                                 <div class="Field">
+                                    @Html.TextBoxFor(x => x.MinCollectionCharges, @String.Format("{0:N0}", Model.MinCollectionCharges), new { @class = "NumberCommaDot", id = "InsuranceAmount", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                    @Html.ValidationMessageFor(x => x.MinCollectionCharges)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.MaxCollectionCharges</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.MaxCollectionCharges, @String.Format("{0:N0}", Model.MaxCollectionCharges), new { @class = "NumberCommaDot", id = "InsuranceAmount", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                    @Html.ValidationMessageFor(x => x.MaxCollectionCharges)
+                                </div>
+                            </div>
+                         </div>
+
+                        <div class="row">
+                             <div class="TwoColumn">
+                                <div class="label">@Resources.OCLIncludedInTotalMinDue</div>
+                                 <div>
+                                    @Html.CheckBoxFor(x => x.IsOCLIncludedInTotalMinDue)
+                                    @Html.ValidationMessageFor(x => x.IsOCLIncludedInTotalMinDue)
+                                </div>
+                            </div>
+                           
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.DelinquencyBucketCountForWriteOff</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DelinquencyBucketCountForWriteOff, new { id="DelinquencyBucketCountForWriteOff", name="DelinquencyBucketCountForWriteOff", maxlength = 3, @class = "Number NumericOnly"})
+                                    @Html.ValidationMessageFor(x => x.DelinquencyBucketCountForWriteOff)
+                                </div>
+                            </div>
+                        </div>
+             
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>
+
+
+

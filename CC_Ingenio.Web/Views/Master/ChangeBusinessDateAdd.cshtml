@@ -1,0 +1,127 @@
+﻿@{
+    ViewBag.Title = Resources.ChangeBusinessDate;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@model ChangeBusinessDateDTO
+@{
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+    }
+
+
+<script type="text/javascript">
+
+    function setCalenderDates() {
+
+        var fromDate = $('#FromDate').val();
+        var toDate = $('#ToDate').val();
+
+        $('#FromDate').datepicker("option", "maxDate", toDate);
+        $('#ToDate').datepicker("option", "minDate", fromDate);
+    }
+
+
+    function setNextWorkingDate() {
+        
+        $.ajax({
+            url: '/Master/GetNextWorkingDate/',
+            type: 'POST',
+            data: $('#frmChangeBusinessDate').serialize(),
+            cache: false,
+            success: function (data) {
+
+                var date1 = new Date(parseInt(data.NextWorkingDate.substr(6)));
+
+                $('#ToDate').val($.datepicker.formatDate('dd/mm/yy', date1));
+
+            }
+        });
+
+    }
+
+
+
+    $(document).ready(function () {
+
+        $('input[id="New"]').hide();
+        $('input[id="Save"]').hide();
+        $('input[id="Delete"]').hide();
+        document.getElementById("DivCurrentDate").style.display = 'none'; 
+
+        $('#FromDate').datepicker("option", "onSelect", setCalenderDates);
+        $('#ToDate').datepicker("option", "onSelect", setCalenderDates);
+
+        $("#frmChangeBusinessDate").submit(function (e) {
+            return true;
+            // validations pending.
+        });
+
+    });
+
+
+
+</script>
+
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active"> @Html.ActionLink(Resources.DetailsPageHeading,"BusinessDateList","Master" )</li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("BusinessPasswordSave", "Master", FormMethod.Post, new { id = "frmChangeBusinessDate", name = "frmChangeBusinessDate" }))
+                 {
+                <div class="tab-content" id="tab1">
+
+                    <div class="row">
+                         
+                         <div class="row">
+                            <div class="TwoColumn" id ="DivCurrentDate">
+                                <div class="label">@Resources.CurrentBusinessDate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.OldBusinessDate, new {id = "FromDate", @class ="datepicker", @readonly="true", Value = Model.OldBusinessDate.ToShortDateString() })
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.NewBusinessDate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.BusinessDate, new {id = "ToDate", @class ="datepicker", @readonly="true", Value = Model.BusinessDate.ToShortDateString() })
+                                </div>
+                            </div>
+                         </div>
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>
+<script>
+    $(function () {
+        setCalenderDates();
+
+    })
+</script>

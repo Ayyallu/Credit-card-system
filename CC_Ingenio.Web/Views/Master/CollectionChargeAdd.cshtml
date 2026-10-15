@@ -1,0 +1,274 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using System.Web.Script.Serialization;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.CollectionCharges });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="@Url.Content("~/Scripts/globalize/globalize.js")" type="text/javascript"></script>
+<script src="/Scripts/globalize/cultures/globalize.culture.@(System.Threading.Thread.CurrentThread.CurrentCulture).js" type="text/javascript"></script>
+
+<script src="/Scripts/Master/CollectionCharge.js"></script>
+
+
+@model CollectionChargeDTO
+@{
+
+    List<string> lstPriv = new List<string>();
+
+    List<SelectListItem> ProductListItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.ProductList)
+    {
+        ProductListItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> CurrencyItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Currency)
+    {
+        CurrencyItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+    
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+
+<script type="text/javascript">
+
+    var precision = "";
+    var currency = "";
+    
+
+    function OnCommissionChange(){
+              
+        var objDelinquencyAmountFromList = $('[id = DelinquencyAmountFrom]');
+
+        $.each(
+            viewModel.CollectionCharge.CollectionChargeDetailsDTO._latestValue, function (index, values) {
+
+                //var amount = viewModel.CollectionCharge.CollectionChargeDetailsData()[index].DelinquencyAmountFrom._latestValue;
+                //var newAmount = amount.substring(amount.indexOf(".") + 1);
+                //alert(amount);
+                //alert(newAmount);
+                $(objDelinquencyAmountFromList[index]).val("");
+                //viewModel.CollectionCharge.CollectionChargeDetailsData()[index].DelinquencyAmountFrom = ko.observable("").extend({ required: {params:true,message:"Please enter amount"}});
+                //viewModel.CollectionCharge.CollectionChargeDetailsData()[index].DelinquencyAmountFrom.IsValid = 'false';
+            })
+
+ 
+        }
+
+
+
+    function setProductCurrency(productCode) {
+        $.getJSON("/Master/GetProductCurrency?AProductCode=" + $('#Product').val(),
+            function (modeldata) {
+                $("#Currency option[value=" + modeldata.currencyCode + "]").prop("selected","selected");
+                $("#Currency").change();
+                $.ajaxSetup({ cache: false });
+                precision = parseInt(modeldata.precision);
+            });
+    };
+
+    function setCurrencyPrecision() {
+        $.getJSON("/Master/GetCurrencyPrecision?ACurrencyCode=" + $('#Currency').val(),
+        function (modeldata) {
+            $.ajaxSetup({ cache: false });
+            precision = parseInt(modeldata.precision);
+        });
+    };
+
+
+    $(document).ready(function () {
+
+        $("#frmCollectionChargeSave").submit(function (e) {
+            if (parseFloat($('#DelinquencyAmountFrom').val().trim()) > parseFloat($('#DelinquencyAmountTo').val().trim())) {
+                $('#DelinqAmountTo_Validate').text("@Html.Raw(string.Format(Resources.MsgErrValueShouldBeLessThan, Resources.DelinquencyAmountFrom, Resources.DelinquencyAmountTo))");
+                e.preventDefault();
+            }
+        });
+
+        $('#Product').change(function(){
+            if($('#Product').val() != ''){
+                setProductCurrency($('#Product').val());
+                //OnCommissionChange();
+            }        
+        });
+
+        $('#Currency').change(function(e){
+            setCurrencyPrecision();
+        });
+
+        $('#DelinquencyAmountTo').focusin(function () {
+            $('#DelinqAmountTo_Validate').text("");
+        });
+
+        $('#DelinquencyAmountFrom').focusin(function () {
+            $('#DelinqAmountTo_Validate').text("");
+        });
+
+    });
+</script>    
+
+
+<script type="text/javascript">
+
+    var productListDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(ProductListItems));
+    var currencyListDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(CurrencyItems));   
+    var collectionCharges =  @Html.Raw(ViewBag.CollectionCharges);
+    
+</script>
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+        
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"CollectionChargeList","Master" )</li>
+            }
+            <li class="active">@Html.ActionLink(Resources.DetailsPageHeading,"CollectionChargeAdd","Master" )</li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm())
+                 {
+                <div class="tab-content" id="tab1">
+                     <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div> 
+                                                         
+                         <div class ="row">
+
+                            <div class="row">
+                                <div class="TwoColumn"> 
+                                <div class="label">@Resources.Product</div>
+                                    <div class="Field" style="padding-top : 4px">
+                                        <select id ="Product", data-bind="options: productListDDL, optionsText: 'Text', optionsValue: 'Value', value: CollectionCharge.ProductCode"></select>
+                                    </div>
+                            </div>
+                                  <div class="TwoColumn">
+                                    <div class="label">@Resources.EffectiveDate</div>
+                                    <div class="Field">
+                                        <input type="text" id="DateOfBirth" class="datepicker" readonly="true" data-bind="value: CollectionCharge.EffectiveDate" />
+                                    </div>
+                                </div>
+                                </div>
+                          
+                            <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Currency</div>
+                                <div class="Field">
+                                    <select id = "Currency", data-bind="options: currencyListDDL, optionsText: 'Text', optionsValue: 'Value', value: CollectionCharge.CurrencyCode"></select>
+                                </div>
+                            </div>
+                            </div>
+
+                            <div class="row">
+                                 <script id="CollectionChargeDetailsTemplate" type="text/html">
+                                <tr>
+                                    <td>
+                                        <input id="DelinquencyAmountFrom" data-bind="value: DelinquencyAmountFrom" maxlength="17", onkeypress = "return AllowOnlyAmountByCurrencyPrecision(this,event, precision);", class = "gridfield", style="text-align:right; width:80%", onblur = "FormatOnBlurWithDecimal(event)" />
+@*                                        <input id="DelinquencyAmountFrom" data-bind="value: DelinquencyAmountFrom" maxlength="9", onkeypress = "return AllowOnlyAmountByCurrencyPrecision(this,event, precision);" class = "gridfield", style="text-align:right; width:100%" />*@
+                                    </td>
+                                    <td>
+                                        <input id="DelinquencyAmountTo" data-bind="value: DelinquencyAmountTo" maxlength="17", onkeypress = "return AllowOnlyAmountByCurrencyPrecision(this,event, precision);", class = "gridfield", style="text-align:right; width:80%", onblur = "FormatOnBlurWithDecimal(event)" />
+                                    </td>
+                                    <td>
+                                        <input id="CollectionChargeAmount" data-bind="value: CollectionChargeAmount" maxlength="6", onkeypress="return validateFloatKeyPress(this,event);", class = "gridfield", style="text-align:right; width:80%" />
+                                    </td>
+                                    
+                                    <td><a href='#' data-bind='click: $root.remove'>@Resources.Delete</a></td>
+                                </tr>
+                            </script>
+                            <div class="standard-table">
+                               <table>
+                                    <thead>
+                                        <tr>
+                                            <th>@Resources.DelinquencyAmountFrom</th>
+                                            <th>@Resources.DelinquencyAmountTo</th>
+                                            <th>@Resources.CollectionChargeAmountPercentage</th>
+                                            <th>@Resources.Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-bind="template: { name: 'CollectionChargeDetailsTemplate', foreach: CollectionCharge.CollectionChargeDetailsData }"></tbody>
+                              </table>
+
+                                    <span><button class="Greenbutton" data-bind='click: AddItem'>@Resources.AddNew</button></span>
+
+                            </div>
+                        </div>
+                                                     
+                        <div class="rowbtn">
+                            @Html.Raw(Html.KnockoutButtons(lstPriv, true))
+                        </div>
+
+                    </div>
+                    
+                </div>
+                                        
+                 }
+
+            </div>
+        
+    </div>
+
+
+        <script>
+            $(function () {
+                $("input#New").on('click', function () {
+                    window.location.href = "/Master/CollectionChargeAdd";
+                })
+            });
+            var url = window.location.pathname;
+            var CollectionChargeId = GetQueryStrings();
+            var viewModel;
+        
+            if (CollectionChargeId["ACollectionChargeId"] && CollectionChargeId["ACollectionChargeId"] != 0)
+            {
+                viewModel = new CollectionChargeVM(collectionCharges);
+            }
+            else
+            {
+                viewModel = new CollectionChargeVM();
+            }
+
+            $(function ()
+            {
+
+                ko.validation.configure({
+                    registerExtenders: true,
+                    insertMessages: true,
+                    messagesOnModified: false
+                });
+
+                ko.applyBindings(viewModel);
+                setCurrencyPrecision();
+            
+            });
+    </script>
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>

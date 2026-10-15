@@ -1,0 +1,375 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@using CC_Ingenio_Resources;
+@model BlockSegmentCardDTO 
+@{
+    List<SelectListItem> BlockCodes = new List<SelectListItem>();
+    if (Model.PageStatus == "block") {  
+    foreach (var item in ViewBag.BlockCodeList)
+    {
+        BlockCodes.Add(new SelectListItem()
+        {
+            Text = item.Text,
+            Value = item.Value 
+        });
+       }
+       BlockCodes.RemoveAt(0);
+    }
+     else {
+         foreach (var item in ViewBag.BlockCodeList)
+         {
+             BlockCodes.Add(new SelectListItem()
+             {
+                 Text = item.Description,
+                 Value = item.Code
+             });
+         }
+    }
+ 
+    List<SelectListItem> Segments = new List<SelectListItem>();
+     if (Model.PageStatus == "block") { 
+    foreach (var item in ViewBag.SegmentList)
+    {
+        Segments.Add(new SelectListItem()
+        {
+            Text = item.CreditSegmentName,
+            Value = item.CreditSegmentCode
+        });
+    }
+     }
+      else {
+          foreach (var item in ViewBag.SegmentList)
+          {
+              Segments.Add(new SelectListItem()
+              {
+                    Text = item.CardSegmentName,
+            Value = item.CardSegmentCode 
+                
+              });
+          }
+     }
+    Segments.Insert(0, new SelectListItem { Text = Resources.SelectOne, Value = string.Empty });
+    
+    var SelectedType = string.Empty;
+    List<SelectListItem> SelectedBlockCodes = new List<SelectListItem>();
+    bool RbtnCardType = true;
+    bool RbtnSegmentType = false;
+    if(ViewBag.SelectedRbtn=="S")
+    {
+         RbtnCardType = false;
+         RbtnSegmentType = true;
+    }
+}
+
+<style type="text/css"> 
+        label.RadioBlockedType {
+        /* font-size: .82em; */
+        text-align: left;
+        width: 10%;
+        padding-right:30px;
+        display: inline-flexbox;
+        float: left;
+        }
+         .custom-errors {
+	      color:#db2a2a ;
+          font-family: 'Segoe UI', Arial, sans-serif;
+	      font-weight: bold;
+	      font-size: .90em;
+          padding-left : 10.5em;
+        }
+    </style>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        if ('@Model.PageStatus' == 'block') {
+            $("#Save").show();
+            $("#UnBlock").hide();
+            $("#divBlock").show();
+            $("#divUnBlock").hide();
+        }
+        else {
+            $("#Save").hide();
+            $("#UnBlock").show();
+            $("#divBlock").hide();
+            $("#divUnBlock").show();
+        }
+
+
+        var Selected = $("input[name='Type']:checked").val()
+        if (Selected == "Card") {
+            $('[id$=CreditSegmentCode]').prop('disabled', true)
+        }
+        else {
+            $('[id$=CreditSegmentCode]').prop('disabled', false)
+        }
+ 
+        //Load blockcodes when blocked type change 
+        $("input[name$='Type']").click(function () {
+            var SelType = $(this).val();
+            if (SelType == "Card") {
+                $('[id$=CreditSegmentCode]').prop('disabled', true)
+            }
+            else {
+                $('[id$=CreditSegmentCode]').prop('disabled', false)
+            }
+            var SelectedType = $("input[name='Type']:checked").val();
+            $('#hdnBlockedType').val(SelectedType);
+
+            var strUrl = null;
+            if ('@Model.PageStatus' == 'block') {
+                strUrl = '/CustomerService/BlockCodesList';
+            }
+            else {
+                strUrl = '/CustomerService/UnBlockCodesList';
+            }
+            // load blocked and  unblocked blockcodes
+                $.ajax({
+                    url: strUrl,
+                    type: 'POST',
+                    data: $('#frmBlockCardSeg').serialize(),
+                    cache: false,
+                    success: function (data) {
+                        if (data != 'Undefined') {
+                            resetList();
+                            $('#partialViewDiv').html(data);
+                        }
+                    }
+                });
+        });
+    });
+
+    // Load Unblocked blockcodes wrt segment
+    $(document).ready(function () {
+        $("#CreditSegmentCode").change(function () {
+            var SelectedType = $("input[name='Type']:checked").val();
+            $('#hdnBlockedType').val(SelectedType);
+            var strSegmentUrl = null;
+            if ('@Model.PageStatus' == 'block') {
+                strSegmentUrl = '/CustomerService/BlockCodesList';
+             }
+             else {
+                strSegmentUrl = '/CustomerService/UnBlockCodesList';
+             }
+                $.ajax({
+                    url: strSegmentUrl,
+                    type: 'POST',
+                    data: $('#frmBlockCardSeg').serialize(),
+                    cache: false,
+                    success: function (data) {
+                        if (data != 'Undefined') {
+                            resetList();
+                            $('#partialViewDiv').html(data);
+                        }
+                    }
+                });
+        });
+    });
+
+
+    $(document).ready(function () {
+        var originalItems;
+        var selectedItems;
+        window.globalVar = $("#lstBlockCodes option");
+        originalItems = $("#lstBlockCodes option");
+        var originalItemsCopy = originalItems;
+        $('#btnRight').click
+         (function (e) {
+             var selectedItem = $('#lstBlockCodes option:selected');
+             if (selectedItem.length == 0) {
+                 alert("@Resources.MsgInfoNoItemSelected");
+                 e.preventDefault;
+             }
+             else {
+                 $("#lstBlockCodes > option:selected").appendTo("#lstSelectedBlockCodes");
+                 $("#lstSelectedBlockCodes")[0].selectedIndex = -1;
+                 $('#MSg_Validate').text("");
+             };
+         });
+
+        $('#btnLeft').click(function (e) {
+            var selectedItemLeft = $('#lstSelectedBlockCodes option:selected');
+            if (selectedItemLeft.length == 0) {
+                alert("@Resources.MsgInfoNoItemSelected");
+            }
+            else {
+                $('#lstSelectedBlockCodes > option:selected').appendTo("#lstBlockCodes");
+                resetList();
+                $("#lstBlockCodes")[0].selectedIndex = -1;
+            }
+        });
+
+    });
+
+
+    function resetList() {
+        selectedItems = $("#lstSelectedBlockCodes option");
+        originalItemsCopy = globalVar.slice();
+
+        for (var i = 0; i < selectedItems.length; i++) {
+            removeFromArray(selectedItems[i].value);
+        }
+
+        function removeFromArray(arrElem) {
+            for (var i = originalItemsCopy.length - 1; i--;) {
+                if (originalItemsCopy[i].value === arrElem) originalItemsCopy.splice(i, 1);
+            }
+        };
+        var result = originalItemsCopy;
+        var finalArray = result.get();
+        $("#lstBlockCodes").html(finalArray);
+    }
+
+    function clearList() {
+        selectedItems = $("#lstSelectedBlockCodes option");
+        originalItemsCopy = globalVar.slice();
+        var result = originalItemsCopy;
+        var finalArray = result.get();
+        $("#lstBlockCodes").html(finalArray);
+        $("#lstSelectedBlockCodes").empty()
+    }
+
+    $(document).ready(function () {
+        $('#Save').click(function (e) {
+         e.preventDefault();
+         SaveDetails(this);
+        });
+
+        $('#UnBlock').click(function (e) {
+            e.preventDefault();
+            SaveDetails(this);
+        });
+        function SaveDetails(btn) {
+            var CurrentClick = btn.value;
+            var SelectedType = $("input[name='Type']:checked").val();
+            $('#hdnBlockedType').val(SelectedType);
+            $("#lstSelectedBlockCodes option").prop("selected", "selected");
+            var Validate = true;
+            if (SelectedType == "Segment") {
+                if ($('#CreditSegmentCode').val() == "") { 
+                    $('#MSg_Validate').text("@Html.Raw(string.Format(Resources.MsgErrPleaseSelect, Resources.Segment))");
+                    Validate = false;
+                }
+                else Validate = true;
+            }
+
+            if ($('#lstSelectedBlockCodes option:selected').length == 0) {
+                $('#MSg_Validate').text("@Html.Raw(string.Format(Resources.MsgErrPleaseSelect, Resources.BlockCode))");
+                Validate = false;
+            }
+
+            if ($('#lstSelectedBlockCodes option:selected').length > 1) {
+                $('#MSg_Validate').text("@Html.Raw(string.Format(Resources.MsgErrSelectOnlyOne, Resources.BlockCode))");
+                Validate = false;
+            }
+
+            if (Validate == true && '@Model.PageStatus' == 'block' && CurrentClick=="@Resources.Block") {
+                $.ajax({
+                    url: '/CustomerService/BlockCardOrSegment',
+                    type: 'POST',
+                    data: $('#frmBlockCardSeg').serialize(),
+                    cache: false,
+                    success: function (data) {
+                        if (data != 'Undefined') {
+                            $('#partialViewDiv').html(data);
+                        }
+                    }
+                });
+            }
+            else if (Validate == true && '@Model.PageStatus' == 'unblock' && CurrentClick == "@Resources.Unblock") {
+                $.ajax({
+                    url: '/CustomerService/UnBlockCardOrSegment',
+                    type: 'POST',
+                    data: $('#frmBlockCardSeg').serialize(),
+                    cache: false,
+                    success: function (data) {
+                        if (data != 'Undefined') {
+                            $('#partialViewDiv').html(data);
+                        }
+                    }
+                });
+            }
+        }
+
+        if ('@Model.IsSaved' == 'True') {
+            ShowSimpleModalDialog("@Html.Raw(string.Format(Resources.MsgInfoSaveSuccess,""))", "");
+           
+        }
+        $('#Clear').click(function () {
+             clearList();
+             $('#MSg_Validate').text("");
+
+        });
+    });
+</script>
+
+
+<div class="row">
+    <div class="BorderColumn" style="width: 98.6% ;height:330px">
+        <div class="CustomerColumnTitle" id="divBlock">@Resources.BlockCardOrSegment</div>
+        <div class="CustomerColumnTitle" id="divUnBlock">@Resources.UnBlockCardOrSegment</div>
+
+        @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmBlockCardSeg", Name = "frmBlockCardSeg", @style = "height: 250px;" }))
+        {
+            <div class="row">
+                <div class="row">
+                    <div class="TwoColumn" style="width: 60%; float: left">
+                        <div class="label">@Resources.Type</div>
+                        <div class="Field">
+                            <div class="row">
+                                <label class="RadioBlockedType" for="Card">@Resources.Card @Html.RadioButton("Type", RbtnCardType, RbtnCardType, new { @name = "Type", @id = "Card", @Value = "Card" }) </label>
+                                <label class="RadioBlockedType" for="Segment">@Resources.Segment  @Html.RadioButton("Type", RbtnSegmentType, RbtnSegmentType, new { @name = "Type", @id = "Segment", @Value = "Segment" })</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="divSegment">
+                    <div class="TwoColumn" style="width: 60%; float: left">
+                        <div class="label">@Resources.Segment</div>
+                        <div class="Field">
+                            @Html.DropDownListFor(x => x.CreditSegmentCode, Segments, new { id = "CreditSegmentCode", @class = "entryControls" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="TwoColumn" style="width: 60%; float: left">
+                        <div class="label">@Resources.BlockCodes</div>
+                        <div class="Field">
+                            <div class="ListBoxField">
+                                @Html.ListBoxFor(m => m.BlockCodeList, new SelectList(BlockCodes, "Value", "Text"), new { @Id = "lstBlockCodes", @style = "width:150px;height:120px;" })
+                            </div>
+                            <div class="ListBoxButton">
+                                <div>
+                                    <input id="btnRight" name="Command" value="" class="moveright" type="button" style="width: 45px; border: none" />
+                                </div>
+                                <div>
+                                    <input id="btnLeft" name="Command" value="" class="moveleft" type="button" style="width: 45px; border: none" />
+                                </div>
+                            </div>
+                            <div class="ListBoxField">
+                                @Html.ListBoxFor(m => m.SelectedBlockCodeList, new SelectList(SelectedBlockCodes, "Value", "Text"), new { @Id = "lstSelectedBlockCodes", @style = "width:150px;height:120px;" })
+                            </div>
+                        </div>
+                        <label id="MSg_Validate" class="custom-errors"></label>
+                    </div>
+                </div>
+                <div class="row">
+                     <div class="TwoColumn" style="width: 60%; float: left">
+                <div class="rowbtn" style="float:left; width:57%">
+                <input type="submit" class="Greenbutton" id="Save" value="@Resources.Block" style="width:20%" />
+                <input type="submit" class="Greenbutton" id="UnBlock" value="@Resources.Unblock" style="width:20% !important" />
+                <input type="button" class="Greenbutton" id="Clear" value="@Resources.Clear" style="width:20%" />
+                    </div>
+                    </div>
+                </div>
+                <div>
+                    @Html.HiddenFor(x => x.CardNumber)
+                    @Html.HiddenFor(x => x.AccountNumber)
+                    @Html.HiddenFor(x => x.BlockedType, new { @Id = "hdnBlockedType" })
+
+                </div>
+            </div>
+           
+        }
+    </div>
+</div>

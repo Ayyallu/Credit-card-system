@@ -1,0 +1,94 @@
+﻿@using CC_Ingenio_Resources;
+
+
+@{
+    ViewBag.Title = Resources.UserGroupDetails;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.DataTranfer.UserInfo;
+@using CC_Ingenio.Web.Helpers;
+
+@model UserGroupDTO
+@{    
+    
+    
+    List<string> lstPriv = new List<string>();
+
+    if (ViewBag.Privileges != null)
+    {
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+<script type="text/javascript">
+  
+    $(document).ready(function () {
+        $('#GroupCode').focusin(function () {
+            $('#GroupCode_Validate').text("");
+        });
+
+        $('input[id="Save"]').hide();
+
+    });
+</script>
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">           
+            <li>@Html.ActionLink(Resources.SearchPageHeading, "UserGroupSearch", "User")</li> 
+            <li class="active">@Html.ActionLink(Resources.DetailsPageHeading, "UserGroupDetails", "User")</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            @using (Html.BeginForm("UserGroupSave", "User", new { Id = Model.GroupCode, }, FormMethod.Post, new { id = "frmUserGrpAdd", name = "frmAdd" }))            
+            {
+                <div class="tab-content" id="tab1">                
+                    <div class="row">
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.GroupCode</div>
+                                <div class="Field">
+                                    @if (!string.IsNullOrWhiteSpace(Model.GroupCode))
+                                    {
+                                        @Html.TextBoxFor(x => x.GroupCode, new { id = "GroupCode", name = "GroupCode", maxlength = 5, @readonly = "readonly" })
+                                    }
+                                    else
+                                    { 
+                                        @Html.TextBoxFor(x => x.GroupCode, new {id = "GroupCode", name = "GroupCode", maxlength = 5 })
+                                    }
+                                    @Html.ValidationMessageFor(x => x.GroupCode)
+                                    <label id="GroupCode_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.GroupName</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.GroupName, new { id = "GroupName", name = "GroupName", maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.GroupName)
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="standard-table">                              
+                            </div>
+                        </div>
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</section>

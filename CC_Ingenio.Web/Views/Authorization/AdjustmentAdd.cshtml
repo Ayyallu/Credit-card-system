@@ -1,0 +1,161 @@
+﻿@{
+    ViewBag.Title = "Transaction Adjustment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.DataTranfer.AuthorizationInfo
+@using CC_Ingenio.Web.Helpers;
+@model AdjustmentDTO
+@{
+    List<SelectListItem> MCCCodeList = new List<SelectListItem>();
+    foreach (var item in ViewBag.MCCCodeList)
+    {
+        MCCCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+        
+    List<string> lstPriv = new List<string>();
+    
+    if (ViewBag.Privileges != null)
+    {
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+<script>
+
+    $(document).ready(function () {
+        
+        if ($('#New').length) {
+            document.getElementById('New').disabled = true;
+            document.getElementById('New').style.display = 'none';
+        };
+                
+        //$(window).bind('beforeunload', function () {
+        //    return '';
+        //});
+
+        $("#frmAdjustmentSave").submit(function (e) {
+            if (parseFloat($('#AdjustedAmount').val().trim()) > parseFloat($('#ActualAmount').val().trim())) {
+                $('#AdjustedAmount_Validate').text("Adjust Amount should be less than Actual Amount");
+                e.preventDefault();
+            }
+        });
+
+        $('#AdjustedAmount').focusin(function () {
+            $('#AdjustedAmount_Validate').text("");
+        });
+        
+        formmodified = 0;
+
+        $("input[type='text']").keydown(function () {
+            formmodified = 1;
+            return true;
+        });
+
+        window.onbeforeunload = confirmExit;
+        function confirmExit() {
+            if (formmodified == 1) {
+                return "New information not saved. Do you wish to leave the page?";
+            }
+        }
+
+        $("input[type='submit']").click(function () {
+            formmodified = 0;
+        });
+
+    });
+    
+</script>
+
+<style>
+    input[type=text][readonly]{
+        background: #d0cbcb;
+    }
+    
+</style>
+
+<section class="featured">
+    <div class="PageTitle">Transaction Adjustment</div>
+    <div class="PageRow">
+      
+        <!-- Tabs Content -->
+
+            <div class="tabs-container">
+                 @using (Html.BeginForm("AdjustmentSave", "Authorization", new { Id = Model.AuthCode, }, FormMethod.Post, new { id = "frmAdjustmentSave", name = "frmAdjustmentSave" }))
+                {
+                <div class="tab-content" id="tab1">
+
+                    <div class="row">
+                                                                        
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">Adjustment Code</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.AdjustmentCode, new {id = "AdjustmentCode", name="AdjustmentCode", maxlength = 5 })
+                                    @Html.ValidationMessageFor(x => x.AdjustmentCode)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">Adjustment Narration</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.AdjustmentNarration, new { id = "AdjustmentNarration", name="AdjustmentNarration", maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.AdjustmentNarration)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">Auth Code</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.AuthCode, new {id = "AuthCode", name="AuthCode", maxlength = 30, @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(x => x.AuthCode)
+                                </div>
+                            </div>
+                        </div>
+ 
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label">Card Number</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CardNumber, new {id = "CardNumber", name="CardNumber", maxlength = 30, @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(x => x.CardNumber)
+                                </div>
+                            </div>
+                        </div>   
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label ">Actual Amount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ActualAmount, String.Format("{0:N0}", Model.ActualAmount), new {id = "ActualAmount", name="ActualAmount", maxlength = 9, @readonly = "readonly", @class ="Number", @style="text-align:right" })
+                                    @Html.ValidationMessageFor(x => x.ActualAmount)
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label ">Adjust Amount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.AdjustedAmount, String.Format("{0:N0}", Model.AdjustedAmount), new {id = "AdjustedAmount", name="AdjustedAmount", maxlength = 9, @class ="Number", @style="text-align:right" })
+                                    @Html.ValidationMessageFor(x => x.AdjustedAmount)
+                                    <label id="AdjustedAmount_Validate" style="color: red; display:inline;font-size: .95em;text-align:justify" class="validation"></label>
+                                </div>
+                            </div>
+                        </div>                          
+                                                                      
+                    </div>
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                     
+                 }
+
+            </div>
+        </div>
+        
+</section>

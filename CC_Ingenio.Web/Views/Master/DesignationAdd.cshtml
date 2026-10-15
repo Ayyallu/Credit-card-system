@@ -1,0 +1,202 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.Designation });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model DesignationDTO
+@{
+   
+    List<SelectListItem> PositionItems = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+
+    foreach (var item in ViewBag.Position)
+    {
+        PositionItems.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+
+<script type="text/javascript">
+
+    function setCalenderDates() {
+
+        var fromDate = $('#FromDate').val();
+        var toDate = $('#ToDate').val();
+
+        $('#FromDate').datepicker("option", "maxDate", toDate);
+        $('#ToDate').datepicker("option", "minDate", fromDate);
+    }
+
+    $(document).ready(function () {
+
+        $("#FromDate").datepicker({
+            changeYear: true,
+            changeMonth: true,
+            yearRange: '2000:2020',
+            dateFormat: "@Resources.FormatDateJS",
+            onSelect: setCalenderDates
+        });
+        $("#ToDate").datepicker({
+            changeYear: true,
+            changeMonth: true,
+            yearRange: '2000:2020',
+            dateFormat: "@Resources.FormatDateJS",
+            onSelect: setCalenderDates
+        });
+
+        $("#frmDesignatioon").submit(function (e) {
+
+            if ($('#DesignationCode').val().trim() <= parseFloat(0)) {
+                $('#DesignationCode_Validate').text("@Html.Raw(string.Format(Resources.MsgErrValueNotZero,Resources.Designation))");
+                e.preventDefault();
+            }
+        })
+
+        $('#DesignationCode').focusin(function () {
+            $('#DesignationCode_Validate').text("");
+        });
+
+    });
+</script>
+
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"DesignationList","Master" )</li>
+            }
+            <li class="active"> @Html.ActionLink(Resources.DetailsPageHeading,"DesignationAdd","Master" )</li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("DesignationSave", "Master", new { ADesignationCode = Model.DesignationCode, AOrganizationCode = Model.OrganizationCode }, FormMethod.Post, new { Id = "frmDesignatioon", name = "frmDesignatioon" }))
+                 {
+                <div class="tab-content" id="tab1">
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+     
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.DesignationCode</div>
+                                <div class="Field">
+                                    @if (!string.IsNullOrWhiteSpace(Model.DesignationCode))
+                                    {
+                                        @Html.TextBoxFor(x => x.DesignationCode, new { id = "DesignationCode", name = "DesignationCode", maxlength = 5, @readonly = "readonly" })
+                                    }
+                                    else
+                                    { 
+                                        @Html.TextBoxFor(x => x.DesignationCode, new { id = "DesignationCode", name = "DesignationCode", maxlength = 5 })
+                                    }
+                                        
+                                    
+                                    @Html.ValidationMessageFor(x => x.DesignationCode)
+                                      <label id="DesignationCode_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.DesignationDescription</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DesignationDescription, new { id = "DesignationDescription", name = "DesignationDescription", maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.DesignationDescription)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.Position</div>
+                                <div class="Field">
+                                     @Html.DropDownListFor(x => x.Position, PositionItems.AsEnumerable())
+                                    @Html.ValidationMessageFor(x => x.Position)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.Rank</div>
+                                <div class="Field">
+                                   @Html.TextBoxFor(x => x.Rank, new { id = "Rank", name = "Rank", maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.Rank)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.HRP</div>
+                               
+                                   @Html.CheckBoxFor(x => x.HRP)
+                                    @Html.ValidationMessageFor(x => x.HRP)
+                                </div>
+                            
+                            <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.NTP</div>
+                                
+                                   @Html.CheckBoxFor(x => x.NTP)
+                                    @Html.ValidationMessageFor(x => x.NTP)
+                                
+                            </div>
+                        </div>
+                  @*      
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">Effective From Date</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.EffectiveFromDate,"{0:dd/MM/yyyy}", new { id="FromDate", @readonly = "true"})
+                                    @Html.ValidationMessageFor(x => x.EffectiveFromDate)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">Effective To Date</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.EffectiveToDate,"{0:dd/MM/yyyy}", new { id="ToDate", @readonly = "true"})
+                                    @Html.ValidationMessageFor(x => x.EffectiveToDate)
+                                </div>
+                            </div>
+                        </div>*@
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>
+<script>
+    $(function () {
+        setCalenderDates();
+
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>

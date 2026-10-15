@@ -1,0 +1,77 @@
+﻿@using CC_Ingenio_Resources;
+@using CC_Ingenio.DataTranfer.CardBookingInfo;
+@model CardMasterDTO 
+
+<div class="row" style="width: auto">
+    <div class="BorderColumn" style="width:98.6%;" >
+        <div class="CustomerColumnTitle">@Resources.RenegotiationDetails</div>
+<div style="min-height: 150px; overflow-y:scroll; overflow-x:hidden;">
+        <div class="row">
+            <div class="row">
+                <div class="TwoColumn" style="width: 45%">
+                    <div class="label" style="width: 70%">@Resources.MaximumPermittedRenegoCount</div>
+                    <div class="Field" style="width: 10%">
+                        @Html.TextBoxFor(x => x.MaxPermitRenegoCount, new { id = "RUT", name = "RUT", maxlength = 16, @readonly = "readonly" })
+                        @Html.ValidationMessageFor(x => x.MaxPermitRenegoCount)
+                    </div>
+                </div>
+
+                <div class="TwoColumn" style="width: 45%">
+                    <div class="label" style="width: 70%">@Resources.MaximumDueRenegoCount</div>
+                    <div class="Field" style="width:10%">
+                        @Html.TextBoxFor(x => x.MaxDueRenegoCount, new { id = "RUT", name = "RUT", maxlength = 16, @readonly = "readonly" })
+                        @Html.ValidationMessageFor(x => x.RUT)
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="TwoColumn" style="width: 45%">
+                    <div class="label" style="width: 70%">@Resources.CustomerDueRenegoCount</div>
+                    <div class="Field" style="width: 10%">
+                        @Html.TextBoxFor(x => x.CustomerDueRenegoCount, new { id = "RUT", name = "RUT", maxlength = 16, @readonly = "readonly" })
+                        @Html.ValidationMessageFor(x => x.CustomerDueRenegoCount)
+                    </div>
+                </div>
+
+                <div class="TwoColumn" style="width: 45%">
+                    <div class="label" style="width: 70%">@Resources.MaximumOverDueRenegoCount</div>
+                    <div class="Field" style="width: 10%">
+                        @Html.TextBoxFor(x => x.MaxOverDueRenegoCount, new { id = "RUT", name = "RUT", maxlength = 16, @readonly = "readonly" })
+                        @Html.ValidationMessageFor(x => x.MaxOverDueRenegoCount)
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="TwoColumn" style="width: 45%">
+                    <div class="label" style="width: 70%">@Resources.CustomerOverDueRenegoCount</div>
+                    <div class="Field" style="width: 10%">
+                        @Html.TextBoxFor(x => x.CustomerOverDueRenegoCount, new { id = "RUT", name = "RUT", maxlength = 16, @readonly = "readonly" })
+                        @Html.ValidationMessageFor(x => x.CustomerOverDueRenegoCount)
+                    </div>
+                </div>
+
+                <div class="TwoColumn" style="width: 45%">
+                    <div class="label" style="width: 70%">@Resources.MaximumWriteOffRenegoCount</div>
+                    <div class="Field" style="width: 10%">
+                        @Html.TextBoxFor(x => x.MaxWriteOffRenegoCount, new { id = "RUT", name = "RUT", maxlength = 16, @readonly = "readonly" })
+                        @Html.ValidationMessageFor(x => x.MaxWriteOffRenegoCount)
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="TwoColumn" style="width: 45%">
+                    <div class="label" style="width: 70%">@Resources.CustomerWriteOffRenegoCount</div>
+                    <div class="Field" style="width: 10%">
+                        @Html.TextBoxFor(x => x.CustomerWriteOffRenegoCount, new { id = "RUT", name = "RUT", maxlength = 16, @readonly = "readonly" })
+                        @Html.ValidationMessageFor(x => x.CustomerWriteOffRenegoCount)
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="clear"></div>
+    </div></div>
+
+</div>
+
+   

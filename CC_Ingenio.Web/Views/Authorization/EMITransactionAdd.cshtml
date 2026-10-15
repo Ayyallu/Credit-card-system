@@ -1,0 +1,176 @@
+﻿@using CC_Ingenio.DataTranfer.AuthorizationInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@model EMITransactionDTO 
+@{
+   
+    List<SelectListItem> MerchantCodeList = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+    foreach (var item in ViewBag.MerchantCodeList)
+    {
+        MerchantCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    List<SelectListItem> PlanIdList = new List<SelectListItem>();
+    foreach (var item in ViewBag.PlanIdList)
+    {
+        PlanIdList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    
+    if (ViewBag.Privileges != null)
+    {
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }    
+}
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.EMITransaction});
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+
+    function setCalenderDates() {
+
+        var fromDate = $('#LoanBookedDate').val();
+        
+   
+    }
+    function onchangeevent() {
+
+        var CardNo = $('#CardNumber').val();
+        if (CardNo != '') {
+            $.ajax({
+                type: 'GET',
+                url: '/CardBooking/CardNumberAcountNoExists',
+                data: { ACardNumber: CardNo },
+                success: function (returnData) {
+                    if (returnData.CardNumber != CardNo) {
+
+                        alert("Invalid CardNo.");
+                        document.getElementById("CardNumber").value = returnData.AccountNo;
+                        return true;
+                    }
+                    else if (returnData.AccountNo != '') {
+
+                        document.getElementById("AccountNo").value = returnData.AccountNo;
+                        return true;
+                    }
+                }
+
+            })
+        }
+    }
+
+
+    $(document).ready(function () {
+       
+        $("#LoanBookedDate").datepicker({
+            changeYear: true,
+            changeMonth: true,
+            yearRange: '2000:2020',
+            dateFormat: "@Resources.FormatDateJS",
+            onSelect: setCalenderDates
+            
+        });
+       
+    });
+</script>
+@section featured
+    {
+    
+    }
+
+<section class="featured">
+     <div class="PageTitle">@ViewBag.Title </div>
+     <div class="PageRow">
+
+
+       <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active"> @Html.ActionLink(Resources.DetailsPageHeading,"EMITransactionAdd","Authorization" )</li>
+            <li > @Html.ActionLink(Resources.SearchPageHeading,"EMITransactionList","Authorization" )</li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("EMITransactionSave", "Authorization", new { Id = Model.AuthCode, }, FormMethod.Post))
+                {
+                <div class="tab-content" id="tab1">                   
+                    
+                      <div class="TwoColumn">
+                           <div class="row">
+                                <div class="label">@Resources.CardNumber</div>
+                                <div class="Field">
+                                      @Html.TextBoxFor(x => x.CardNumber, new {@class="number", id = "CardNumber", name="CardNumber" , maxlength = 16 })
+                                    @Html.ValidationMessageFor(x => x.CardNumber)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">@Resources.PlanId</div>
+                                <div class="Field">
+                                  @Html.DropDownListFor(x => x.PlanId,PlanIdList)
+                                    @Html.ValidationMessageFor(x => x.PlanId)
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="TwoColumn">
+                            <div class="row">
+                                <div class="label ">@Resources.TotalInstallment</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TotalInstallment,new {id = "TotalInstallment", name="TotalInstallment", maxlength = 15  })
+                                    @Html.ValidationMessageFor(x => x.TotalInstallment)
+                                </div>
+                            </div>
+                                                  
+                            <div class="row">
+                                
+                                <div class="label">@Resources.LoanDate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.LoanBookedDate,"{0:dd/MM/yyyy}", new { @class ="datepicker", @readonly="true" })
+                                    @Html.ValidationMessageFor(x => x.LoanBookedDate)
+                                </div>
+                            </div>
+                        </div>             
+                            
+                      
+                        
+                        <div class="TwoColumn">                            
+                            <div class="row">
+                                <div class="label ">@Resources.LoanAmount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.LoanAmount, new { @class="decimal",id = "LoanAmount", name="LoanAmount", maxlength = 10  })
+                                    @Html.ValidationMessageFor(x => x.AuthCode)
+                                </div>
+                            </div>
+                        
+                        
+                        <div class="row">
+                                <div class="label ">@Resources.MerchantCode</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.MerchantCode,MerchantCodeList)
+                                    @Html.ValidationMessageFor(x => x.MerchantCode)
+                                </div>
+                            </div>
+                            </div>
+
+
+                       
+                     </div>
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                
+                 }
+
+            </div>
+        
+
+   </div>
+</section>
+
+
+

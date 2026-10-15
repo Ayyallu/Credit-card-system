@@ -1,0 +1,260 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using System.Web.Script.Serialization;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.InterestMaster });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model InterestMasterDTO
+@{
+    List<SelectListItem> InterestDefinitionItems = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+    
+    foreach (var itm in ViewBag.InterestDefinition)
+    {
+        InterestDefinitionItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> ProductListItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.ProductList)
+    {
+        ProductListItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });    
+    }
+    
+    List<SelectListItem> CustomerSegmentItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.CustomerSegment)
+    {
+        CustomerSegmentItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> CustomerSubSegmentItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.CustomerSubSegment)
+    {
+        CustomerSubSegmentItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+    
+
+<script src="/Scripts/Master/InterestMaster.js"></script>    
+
+<script type="text/javascript">
+
+    var productListDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(ProductListItems));
+    var customerSegmentListDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(CustomerSegmentItems));
+    var customerSubSegmentListDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(CustomerSubSegmentItems));
+    var interestDefinitionListDDL =  @Html.Raw(new JavaScriptSerializer().Serialize(InterestDefinitionItems));
+    
+    var interestmasters =  @Html.Raw(ViewBag.InterestMasters);
+    
+    function setCurrencyPrecision() {
+        $.getJSON("/Master/GetCurrencyPrecision?ACurrencyCode=" + "UF",
+        function (modeldata) {
+            $.ajaxSetup({ cache: false });
+            precision = parseInt(modeldata.precision);
+        });
+    };
+
+    $(document).ready(function () {
+        
+        setCurrencyPrecision();
+    });
+    //$(function () {
+    //    $("input#Delete").on('click', function (e) {
+    //        e.preventDefault();
+    //    })
+    //});
+
+</script>
+
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"InterestMasterList","Master" )</li>
+            }
+            <li class="active">@Html.ActionLink(Resources.DetailsPageHeading,"InterestMasterAdd","Master" )</li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("InterestMasterSave", "Master", new { Id = Convert.ToString(Model.InterestMasterId), }, FormMethod.Post, new { id = "frmInterestMasterSave", name = "frmInterestMasterSave" }))
+                 {
+                <div class="tab-content" id="tab1">
+                       <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text>@String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>     
+                                  
+                    <div class ="row">
+                        <div class="row">
+
+                        <div class="row">
+                            <div class="TwoColumn"> 
+                            <div class="label">@Resources.Product</div>
+                                <div class="Field">
+                                    <select data-bind="options: productListDDL,
+                                        optionsText: 'Text',
+                                        optionsValue: 'Value',
+                                        value: InterestMaster.ProductCode">
+                                    </select>
+                                </div>
+                        </div>
+                        <div class="TwoColumn"> 
+                            <div class="label">@Resources.CustomerSegment</div>
+                                <div class="Field">
+                                    <select data-bind="options: customerSegmentListDDL,
+                                        optionsText: 'Text',
+                                        optionsValue: 'Value',
+                                        value: InterestMaster.CustomerSegmentCode">
+                                    </select>
+                                </div>
+                        </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn"> 
+                                <div class="label">@Resources.CustomerSubSegment</div>
+                                <div class="Field">
+                                    <select data-bind="options: customerSubSegmentListDDL,
+                                        optionsText: 'Text',
+                                        optionsValue: 'Value',
+                                        value: InterestMaster.CustomerSubSegmentCode">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.EffectiveDate</div>
+                                <div class="Field">
+                                    <input type="text" id="ValidFrom" class="datepicker" readonly="true" data-bind="value: InterestMaster.EffectiveDate" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn"> 
+                                <div class="label">@Resources.MaxInterestDefinitionFor</div>
+                                <div class="Field">
+                                    <select data-bind="options: interestDefinitionListDDL,
+                                        optionsText: 'Text',
+                                        optionsValue: 'Value',
+                                        value: InterestMaster.MaxInterestDefinitionFor">
+                                    </select>
+                                </div>
+                            </div>
+@*                            <div class="TwoColumn">
+
+                            </div>*@
+                        </div>
+
+                        </div>
+                          
+                        <div class="row">
+                                <script id="InterestMasterDetailsTemplate" type="text/html">
+                            <tr>
+                                <td>
+                                    <input id="CreditLimitFrom" data-bind="value: CreditLimitFrom" maxlength="17", onkeypress = "return AllowOnlyAmountByCurrencyPrecision(this,event, precision);", class = "gridfield", style="text-align:right; width:80%", onblur = "FormatOnBlurWithDecimal(event)" />
+                                    @*<input id="CreditLimitFrom" data-bind="value: CreditLimitFrom" maxlength="11", onkeypress = "return AllowOnlyAmountWithoutDot(event)", class = "gridfield", style="text-align:right; width:80%", onblur = "FormatOnBlur(event)" />*@
+                                </td>
+                                <td>
+                                    <input id="CreditLimitTo" data-bind="value: CreditLimitTo" maxlength="17", onkeypress = "return AllowOnlyAmountByCurrencyPrecision(this,event, precision);", class = "gridfield", style="text-align:right; width:80%", onblur = "FormatOnBlurWithDecimal(event)" />
+@*                                    <input id="CreditLimitTo" data-bind="value: CreditLimitTo" maxlength="11", onkeypress = "return AllowOnlyAmountWithoutDot(event)", class = "gridfield", style="text-align:right; width:80%", onblur = "FormatOnBlur(event)" />*@
+                                </td>
+                                <td>
+                                    <input id="InterestRatePercent" data-bind="value: InterestRatePercent" maxlength="6", onkeypress="return validateFloatKeyPress(this,event);", class = "gridfield", style="text-align:right; width:80%" />
+                                </td>
+
+                                <td><a href='#' data-bind='click: $root.remove'>@Resources.Delete</a></td>
+                            </tr>
+                        </script>
+                        <div class="standard-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>@Resources.CreditLimitFromUF</th>
+                                        <th>@Resources.CreditLimitToUF</th>
+                                        <th>@Resources.InterestRatePercentage</th>
+                                        <th>@Resources.Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-bind="template: { name: 'InterestMasterDetailsTemplate', foreach: InterestMaster.InterestMasterDetailsData }"></tbody>
+                            </table>
+
+                                <span><button class="Greenbutton" data-bind='click: AddItem' style="width:8%">@Resources.AddNew</button></span>
+
+                        </div>
+                        </div>
+                                                     
+                        <div class="rowbtn">
+                            @Html.Raw(Html.KnockoutButtons(lstPriv, true))
+                        </div>
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+
+    
+        <script>
+            $(function () {
+                $("input#New").on('click', function () {
+                    window.location.href = "/Master/InterestMasterAdd";
+                })
+            });
+            var url = window.location.pathname;
+            var InterestMasterId = GetQueryStrings();
+            var viewModel;
+        
+            if (InterestMasterId["AInterestMasterId"] && InterestMasterId["AInterestMasterId"] != 0)
+            {
+                viewModel = new InterestMasterVM(interestmasters);
+            }
+            else
+            {
+                viewModel = new InterestMasterVM();
+            }
+            $(function ()
+            {
+                ko.applyBindings(viewModel);
+  
+            
+            });
+    </script>
+
+
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+    })
+</script>

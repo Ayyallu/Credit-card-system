@@ -1,0 +1,391 @@
+﻿@using CC_Ingenio.DataTranfer.BillingInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.ReNegotiation });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model RenegotiationDTO
+@{
+    List<SelectListItem> TransactionCodeList = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+
+    foreach (var item in ViewBag.TransactionCodes)
+    {
+        TransactionCodeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    
+    if (ViewBag.Privileges != null)
+    {
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+}
+
+
+@section featured
+    {
+    
+    }
+
+<style>
+    input[type="text"][readonly],
+    select[disabled]
+    {
+         background:#e9e7e7;    
+    }
+</style>
+
+<script type="text/javascript">
+    $(document).ready( function(){
+        $("#DiscountPercentage").change(function (e) {
+            $("#DiscountAmount").val(Math.round(this.value * Globalize(resourceProvider.ResourceCulture).parseInt($("#NetAmount").val()) * 0.01))
+            $("#NetRenegotiatedAmount").val(Globalize(resourceProvider.ResourceCulture).parseInt($("#NetAmount").val()) - Globalize(resourceProvider.ResourceCulture).parseInt($("#DiscountAmount").val()))
+            $("#NetRenegotiatedAmount").change();
+            $("#DiscountAmount").change();
+        });
+        $("#DownPayment").change(function (e) {
+            if (Globalize(resourceProvider.ResourceCulture).parseFloat($('#DownPayment').val().trim()) > Globalize(resourceProvider.ResourceCulture).parseFloat($('#GrossAmount').val().trim())) {
+                $('#DownPayment_Validate').text("@Html.Raw(string.Format(Resources.MsgErrValueShouldBeLessThan,Resources.DownPayment,Resources.GrossAmount))");
+                $('#DownPayment').focus();
+                return false;
+            }
+            else
+            {
+                $('#DownPayment_Validate').text("");
+            }
+            if ($("#DownPayment").val() != "")
+            {
+                $("#NetAmount").val(Globalize(resourceProvider.ResourceCulture).parseInt($("#GrossAmount").val()) - Globalize(resourceProvider.ResourceCulture).parseInt($("#DownPayment").val()))
+                //$("#NetAmount").val(Globalize(resourceProvider.ResourceCulture).format($("#NetAmount").val(), resourceProvider.FormatAmountJSn0))
+                
+            }
+            
+            $("#NetAmount").change();
+            $("#DiscountPercentage").change();
+        });
+        $("#NetAmount").change(function (e) {
+            FormatOnBlur(e);
+            $("#NetRenegotiatedAmount").val(Globalize(resourceProvider.ResourceCulture).parseInt($("#NetAmount").val()) - Globalize(resourceProvider.ResourceCulture).parseInt($("#DiscountAmount").val()))
+            $("#NetRenegotiatedAmount").change();
+        });
+
+        $("#NetRenegotiatedAmount").change(function (e) {
+            FormatOnBlur(e);
+            if (Globalize(resourceProvider.ResourceCulture).parseFloat($('#NetRenegotiatedAmount').val().trim()) <= parseFloat(0)) {
+                $('#NetRenegotiatedAmount_Validate').text("@Html.Raw(string.Format(Resources.MsgErrValueGreaterThanZero,Resources.NetRenegotiatedAmount,"0"))");
+                return false;
+            }
+            else {
+                $('#NetRenegotiatedAmount_Validate').text("");
+            }
+        });
+
+        $("#DiscountAmount").change(function (e) {
+            FormatOnBlur(e);
+        });
+
+        $("#frmRenegotiationSave").submit(function (e) {
+
+            if (Globalize(resourceProvider.ResourceCulture).parseFloat($('#DownPayment').val().trim()) > Globalize(resourceProvider.ResourceCulture).parseFloat($('#GrossAmount').val().trim())) {
+                $('#DownPayment_Validate').text("@Html.Raw(string.Format(Resources.MsgErrValueShouldBeLessThan,Resources.DownPayment,Resources.GrossAmount))");
+                $('#DownPayment').focus();
+                e.preventDefault();
+            }
+            if (Globalize(resourceProvider.ResourceCulture).parseFloat($('#NetRenegotiatedAmount').val().trim()) <= parseFloat(0)) {
+                $('#NetRenegotiatedAmount_Validate').text("@Html.Raw(string.Format(Resources.MsgErrValueGreaterThanZero,Resources.NetRenegotiatedAmount,"0"))");
+                e.preventDefault();
+            }
+        });
+        //$('#DownPayment').focusin(function () {
+        //    $('#DownPayment_Validate').text("");
+        //});
+        $("#NetAmount").change();
+        $('#Submit').hide();
+        $('#New').hide();
+    });
+    
+</script>
+
+<section class="featured">
+     <div class="PageTitle">@ViewBag.Title</div>
+     <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li> @Html.ActionLink(Resources.SearchPageHeading, "RenegotiationList", "Billing")</li>
+            <li class="active"> @Html.ActionLink(Resources.DetailsPageHeading,"RenegotiationAdd","Billing" )</li>            
+        </ul>
+
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("RenegotiationSave", "Billing", FormMethod.Post, new { id = "frmRenegotiationSave", name = "frmRenegotiationSave" }))
+                 {
+                <div class="tab-content" id="tab1">
+
+                    <div class="row">
+                      
+                        <h3 class="green">@Resources.CardDetails</h3>
+                        <div class="row">
+                            <div class="TwoColumn" >
+                                <div class="label">@Resources.Product</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ProductCode, new { @readonly = "readonly", @class = "readonly"})
+                                </div>
+                            </div>
+                            <div class="TwoColumn" >
+                                <div class="label">@Resources.CustomerSegment</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CustomerSegmentCode, new { @readonly = "readonly", @class = "readonly"})
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn" >
+                                <div class="label">@Resources.CustomerSubSegment</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CustomerSubSegmentCode, new { @readonly = "readonly", @class = "readonly"})
+                                </div>
+                            </div>
+                            <div class="TwoColumn" >
+                                <div class="label">@Resources.CardNumber</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CardNumber, new { @readonly = "readonly", @class = "readonly"})
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.RUT</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.RUT, new { @readonly = "readonly", @class = "readonly"})
+                                </div>
+                            </div>
+                             <div class="TwoColumn">
+                                <div class="label">@Resources.CardHolderName</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CustomerCardName, new { @readonly = "readonly", @class = "readonly"})
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                 <div class="label">@Resources.Due</div>
+                                 <div class="Field">
+                                     <span>@Html.TextBoxFor(x => x.Due, new { @readonly = "readonly", @class = "inline", style="width:24%"})</span>
+                                     <span><label class="inline" style="font-size:100%; padding:6px 20px 0px 40px"> @Resources.ActualDue</label></span>
+                                     <span>@Html.TextBoxFor(x => x.ActualDue, new { @readonly = "readonly", @class = "inline", style="width:24%; float:right"})</span>
+                                 </div>
+                            </div>
+                            <div class="TwoColumn">
+                                 <div class="label">@Resources.OverDue</div>
+                                 <div class="Field">
+                                     <span>@Html.TextBoxFor(x => x.OverDue, new { @readonly = "readonly", @class = "inline", style="width:24%"})</span>
+                                     <span><label class="inline" style="font-size:100%; padding:6px 20px 0px 40px">@Resources.ActualOverDue</label></span>
+                                     <span>@Html.TextBoxFor(x => x.ActualOverDue, new { @readonly = "readonly", @class = "inline", style="width:24%; float:right"})</span>
+                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                 <div class="label">@Resources.WriteOff</div>
+                                 <div class="Field">
+                                     <span>@Html.TextBoxFor(x => x.WriteOff, new { @readonly = "readonly", @class = "inline", style="width:24%"})</span>
+                                     <span><label class="inline" style="font-size:100%; padding:6px 20px 0px 40px">@Resources.ActualWriteOff</label></span>
+                                     <span>@Html.TextBoxFor(x => x.ActualWriteOff, new { @readonly = "readonly", @class = "inline", style="width:24%; float:right"})</span>
+                                 </div>
+                            </div>
+                            <div class="TwoColumn">
+                                 <div class="label">@Resources.OverAll</div>
+                                 <div class="Field">
+                                     <span>@Html.TextBoxFor(x => x.OverAll, new { @readonly = "readonly", @class = "inline", style="width:24%"})</span>
+                                     <span><label class="inline" style="font-size:100%; padding:6px 20px 0px 40px">@Resources.ActualOverAll</label></span>
+                                     <span>@Html.TextBoxFor(x => x.ActualOverAll, new { @readonly = "readonly", @class = "inline", style="width:24%; float:right"})</span>
+                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label ">@Resources.DPDCount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DPDCount, new { @readonly = "readonly", @class = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <h3 class="green">@Resources.FinancialDetails</h3>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.BilledOS</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.BilledOS, String.Format("{0:N0}", Model.BilledOS), new { @readonly = "readonly", @class = "readonly", @style = "text-align:right"})
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.UnBilledOS</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.UnBilledOS, String.Format("{0:N0}", Model.UnBilledOS), new { @readonly = "readonly", @class = "readonly", @style = "text-align:right"})
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.TotalOS</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TotalOS, String.Format("{0:N0}", Model.TotalOS), new { @readonly = "readonly", @class = "readonly", @style = "text-align:right"})
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.PrincipalAmount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.PrincipalAmount, String.Format("{0:N0}", Model.PrincipalAmount), new { @readonly = "readonly", @class = "readonly", @style = "text-align:right"})
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.InterestAmount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.InterestAmount, String.Format("{0:N0}", Model.InterestAmount), new { @readonly = "readonly", @class = "readonly", @style = "text-align:right"})
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.CollectionCharges</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CollectionCharges, String.Format("{0:N0}", Model.CollectionCharges), new { @readonly = "readonly", @class = "readonly", @style = "text-align:right"})
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.DelinquencyInterest</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DelinqInterest, String.Format("{0:N0}", Model.DelinqInterest), new { @readonly = "readonly",  @class = "readonly", @style = "text-align:right"})
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                            <div class="label">&nbsp;</div>
+                                <div class="Field">&nbsp;&nbsp;</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                        <h3 class="green">@Resources.RenegotiationDetails</h3>
+                            </div>
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.GrossAmountForRenegotiation</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.TotalOS, String.Format("{0:N0}", Model.TotalOS), new { id = "GrossAmount", @readonly = "readonly",  @class = "readonly", @style = "text-align:right"})
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.DownPaymentAmount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DownPayment, @String.Format("{0:N0}", Model.DownPayment), new { @class = "NumberCommaDot", id = "DownPayment", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })
+                                    @Html.ValidationMessageFor(x => x.DownPayment)
+                                    <label id="DownPayment_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.NetAmount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.NetAmount, String.Format("{0:N0}", Model.NetAmount), new {id = "NetAmount",  @readonly = "readonly", @class = "readonly", @style = "text-align:right"})
+                                    @Html.ValidationMessageFor(x => x.NetAmount)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.DiscountPercentage</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DiscountPercentage, new {id = "DiscountPercentage", @class = "NumericWithDecimalPlace", maxlength="5"})
+                                    @Html.ValidationMessageFor(x => x.DiscountPercentage)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.DiscountAmount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DiscountAmount, new { id = "DiscountAmount", @readonly = "readonly", @class = "readonly", @style = "text-align:right"})
+                                    @Html.ValidationMessageFor(x => x.DiscountAmount)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.NetRenegotiatedAmount</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.NetRenegotiatedAmount, String.Format("{0:N0}", Model.NetRenegotiatedAmount), new {id = "NetRenegotiatedAmount",  @readonly = "readonly", @class = "readonly", @style = "text-align:right"})
+                                    @Html.ValidationMessageFor(x => x.NetRenegotiatedAmount)
+                                    <label id="NetRenegotiatedAmount_Validate" class="validationMessage"></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Tenure</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Tenure, new {id = "Tenure", onkeypress="return OnlyNumeric(event);", @class = "Number", maxlength="3"})
+                                    @Html.ValidationMessageFor(x => x.Tenure)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.TransactionCode</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.TransactionCode, TransactionCodeList.AsEnumerable(), new { @disabled="disabled"})
+                                    @Html.HiddenFor(x => x.TransactionCode)
+                                    @Html.ValidationMessageFor(x => x.TransactionCode)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.InterestRatePercentage</div>
+                                <div class="Field">
+                                     @Html.TextBoxFor(x => x.InterestPercentage, new {id = "InterestPercentage",   @class = "NumericWithFiveDecimalPlace", maxlength="10"})
+                                    @*  @Html.TextBoxFor(x => x.InterestPercentage, String.Format("{0:N5}", Model.InterestPercentage), new {id = "UFRate", onkeypress="return validateFiveDecFloatKeyPress(this,event);", maxlength="17", onblur = "FormatOnBlur(event)"})*@
+                                    @Html.ValidationMessageFor(x => x.InterestPercentage)
+                                </div>
+                            </div>
+                        </div>
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+                 
+            </div>
+         </div>
+</section>
+<script>
+
+</script>
+
+
+
+
+

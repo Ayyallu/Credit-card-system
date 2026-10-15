@@ -1,0 +1,129 @@
+﻿
+
+@using CC_Ingenio_Resources;
+@using CC_Ingenio.Web.ViewModel.Master
+@model BlockCodeSearch
+@{
+    var grid = new WebGrid(Model.SearchResults, canPage: true, rowsPerPage: CC_Ingenio.Common.Utils.Utils.GRD_ROWS_PER_PAGE, selectionFieldName: "", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+        
+ }
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Search, " ", Resources.BlockCode });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="feature">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li class="active">@Html.ActionLink(Resources.SearchPageHeading,"BlockCodeList","Master" )</li>
+            <li> @Html.ActionLink(Resources.DetailsPageHeading,"BlockCodeAdd","Master" )</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("BlockCodeList", "Master", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    { 
+                        <div class="SearchBox">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.BlockCode</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x=>x.Code, new { maxlength = 5})
+                                        </div>                                       
+                                    </div>
+                                    <div class="TwoColumn">
+                                        <div class="label">@Resources.Description</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x=>x.Description, new { maxlength = 100})
+                                        </div>
+                                    </div>
+                                            </div>                                                             
+                                <div class="SearchColumnbtn">
+                                    <span>
+                                        <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value= "@Resources.Search" />
+                                    </span>
+                                    <span>
+                                        <input id="Button2" type="submit" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    }
+
+                </div>
+                <div class="row">
+                   
+                    <div class="standard-table">
+
+                        @grid.GetHtml(alternatingRowStyle:"alt",columns:grid.Columns(
+                                    grid.Column("Code",Resources.BlockCode),
+                                    grid.Column("Description", Resources.Description),
+                                    grid.Column("ApprovalStatusDesc", Resources.Status),
+                                    grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                if(item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R"))
+                                                {
+                                                    return Html.Raw(Html.ActionLink(Resources.Edit, "BlockCodeAdd", "Master", new { id = item.Code }, null));
+                                                    
+                                                }   
+                                                else
+                                                {
+                                                    return Html.Raw(Html.Raw(Html.ActionLink(Resources.View, "BlockCodeView", "Master", new { id = item.Code }, null)));
+                                                }
+                                            }),
+                                    grid.Column(Resources.Delete,   format: 
+                                        (item) =>
+                                                 {
+                                                     if (lstPriv.Contains("Delete"))
+                                                     {
+                                                         if (item.ApprovalStatus.Equals("D") || item.ApprovalStatus.Equals("R") || item.ApprovalStatus.Equals("A"))
+                                                         {
+                                                             return Html.Raw(Html.ActionLink(Resources.Delete, "BlockCodeDelete", "Master", new { id = item.Code }, new { @class = "delete-link" }));
+                                                         }
+                                                         else
+                                                         {
+                                                             return Html.Raw("");
+                                                         }
+                                                     }
+                                                     else
+                                                     {
+                                                         return Html.Raw("");
+                                                     }
+                                            })
+                    ))                
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

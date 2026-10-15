@@ -1,0 +1,29 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@using CC_Ingenio_Resources;
+@model List<CustomerTransactionDetailsDTO>  
+@{
+    var disputedTransactionGrid = new WebGrid(Model, canPage: true, rowsPerPage: 5, ajaxUpdateContainerId: "container-body");
+    disputedTransactionGrid.Pager(WebGridPagerModes.All);   
+}
+
+<div class="row">
+    <div class=" BorderColumn" style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.DisputedTransactions</div>           
+        <div style="width: 100%; overflow:scroll">
+            <div class="standard-table">
+                @disputedTransactionGrid.GetHtml(htmlAttributes: new { id = "container-body" },
+                alternatingRowStyle: "alt",
+                columns: disputedTransactionGrid.Columns(
+                    disputedTransactionGrid.Column("MerchantCode", Resources.MerchantCode),
+                    disputedTransactionGrid.Column("MerchantName", Resources.MerchantName),
+                    disputedTransactionGrid.Column("TransactionCode",Resources.TransactionCode),   
+                    disputedTransactionGrid.Column("TxnDate", Resources.TransactionDate, format: @<text>@item.TxnDate.ToShortDateString()</text>),
+                    disputedTransactionGrid.Column("CardNumber",Resources.CardNumber),                                     
+                    disputedTransactionGrid.Column("Amount", Resources.Amount),
+                    disputedTransactionGrid.Column("ARNNo",Resources.ARNNumber))  )                
+                   
+            </div>
+        </div>
+    </div>
+</div>
+

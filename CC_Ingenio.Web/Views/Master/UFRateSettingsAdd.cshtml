@@ -1,0 +1,100 @@
+﻿@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.UFRATE_SETTINGS });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@model UFRateSettingsDTO
+@{
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+    }
+
+
+<script type="text/javascript">
+        
+    $(document).ready(function () {
+
+        $('input[id="Save"]').hide();
+        $('input[id="Delete"]').hide();
+        
+        $('#frmUFRateSettings').on('submit', function (e) {
+
+            if (parseFloat($('#UFRate').val().trim()) <= parseFloat(0)) {
+                $('#lblUFRateValidation').text("@Html.Raw(@String.Format(Resources.MsgErrValueGreaterThanZero, Resources.UFRate))");
+                e.preventDefault();
+            }
+
+        });
+
+        $('#UFRate').focusin(function () {
+
+            $('#lblUFRateValidation').text("");
+        });
+        
+    });
+    
+</script>
+
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li> @Html.ActionLink(Resources.SearchPageHeading,"UFRateSettingsList","Master" )</li>
+            <li  class="active"> @Html.ActionLink(Resources.DetailsPageHeading,"UFRateSettingsAdd","Master" )</li>
+        </ul>
+
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("UFRateSettingsSave", "Master", FormMethod.Post, new { id = "frmUFRateSettings", name = "frmUFRateSettings" }))
+                 {
+                <div class="tab-content" id="tab1">
+
+                    <div class="row">
+                         
+                         <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.EffectiveDate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.EffectiveDate, new {id = "EffectiveDate", @class ="datepicker", @readonly="true", Value = Model.EffectiveDate.ToShortDateString() })
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.UFRate</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.UFRate, String.Format("{0:N5}", Model.UFRate), new {id = "UFRate", onkeypress="return validateFiveDecFloatKeyPress(this,event);", maxlength="17", onblur = "FormatOnBlurWithDecimal(event)"})
+                                      @*@Html.TextBoxFor(x => x.UFRate,  new {id = "UFRate",   @class = "NumericWithFiveDecimalPlace" , maxlength="11"})*@
+                                    @Html.ValidationMessageFor(x => x.UFRate)
+                                    <label id="lblUFRateValidation" class="validationMessage"></label>
+                                </div>
+                            </div>
+                         </div>
+
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+        
+
+    </div>
+</section>
+<script>
+
+</script>

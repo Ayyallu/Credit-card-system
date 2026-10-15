@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B54C676E-BE71-44C3-9467-D68F8E2B51EC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CC_Ingenio.Manager</RootNamespace>
+    <AssemblyName>CC_Ingenio.Manager</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApprovalQueueManager.cs" />
+    <Compile Include="CardBookingManager.cs" />
+    <Compile Include="CommonManager.cs" />
+    <Compile Include="ContactManager.cs" />
+    <Compile Include="Contracts\IAuthorizationManager.cs" />
+    <Compile Include="Contracts\IApprovalQueueManager.cs" />
+    <Compile Include="Contracts\ICardBookingManager.cs" />
+    <Compile Include="Contracts\IContactManager.cs" />
+    <Compile Include="Contracts\ICustomerServiceManager.cs" />
+    <Compile Include="Contracts\IMasterManager.cs" />
+    <Compile Include="Contracts\ILookUpManager.cs" />
+    <Compile Include="Contracts\IBillingManager.cs" />
+    <Compile Include="Contracts\IUserManager.cs" />
+    <Compile Include="Conversion\Mapping.cs" />
+    <Compile Include="AuthorizationManager.cs" />
+    <Compile Include="CustomerServiceManager.cs" />
+    <Compile Include="LookUpManager.cs" />
+    <Compile Include="MasterManager.cs" />
+    <Compile Include="BillingManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CC_Ingenio.Common\CC_Ingenio.Common.csproj">
+      <Project>{7492d44e-db7b-42b5-9b47-8280f8ca9ffc}</Project>
+      <Name>CC_Ingenio.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CC_Ingenio.Core\CC_Ingenio.Core.csproj">
+      <Project>{262b0f31-0326-48b5-9946-1cefc19e0ff3}</Project>
+      <Name>CC_Ingenio.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CC_Ingenio.DataTranfer\CC_Ingenio.DataTranfer.csproj">
+      <Project>{ac35b5f1-68de-40d6-8e4b-179d92df7c27}</Project>
+      <Name>CC_Ingenio.DataTranfer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CC_Ingenio.Data\CC_Ingenio.Data.csproj">
+      <Project>{9a92527f-a096-4ac3-8593-9dc6cdbefbc3}</Project>
+      <Name>CC_Ingenio.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CC_Ingenio.Repository\CC_Ingenio.Repository.csproj">
+      <Project>{66ec81b1-1c87-4194-bceb-c49ba39757e6}</Project>
+      <Name>CC_Ingenio.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CC_Ingenio_Resources\CC_Ingenio_Resources.csproj">
+      <Project>{f92320c6-0a4d-4309-9130-a0c107431869}</Project>
+      <Name>CC_Ingenio_Resources</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

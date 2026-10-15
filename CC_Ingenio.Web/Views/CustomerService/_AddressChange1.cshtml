@@ -1,0 +1,264 @@
+﻿@using CC_Ingenio.DataTranfer.CustomerServiceInfo
+@using System.Web.Script.Serialization;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+@model UpdatedCustomerAddressDTO
+@{    
+    List<SelectListItem> addressTypeList = new List<SelectListItem>();
+    List<SelectListItem> residenceClearanceList = new List<SelectListItem>();
+    List<SelectListItem> regionList = new List<SelectListItem>();
+    List<SelectListItem> communaList = new List<SelectListItem>();
+    List<SelectListItem> cityList = new List<SelectListItem>();
+
+    foreach (var item in ViewBag.AddressTypeList)
+    {
+        addressTypeList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    foreach (var item in ViewBag.ResidenceClearanceList)
+    {
+        residenceClearanceList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    foreach (var item in ViewBag.RegionList)
+    {
+        regionList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    foreach (var item in ViewBag.CityCategoryList)
+    {
+        cityList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    foreach (var item in ViewBag.CommunaList)
+    {
+        communaList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+}
+
+<link href="~/Content/PopUpStyle.css" rel="stylesheet" />
+<script src="~/Scripts/PopUpScript.js"></script> 
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#AddressTypeCode').change(function () {        
+                          
+                $.ajax({
+                    url: '/CustomerService/FillCustomerAddress/',
+                    type: 'POST',
+                    data: { ACustomerId: JSON.stringify(@Model.CustomerId), ACardNumber: JSON.stringify(@Model.CardNumber), ACountryCode: '@Model.CountryCode', AAddressType: $('#AddressTypeCode').val() },
+                    cache: false,
+                    success: function (data) {
+                        if (data != 'Undefined') {
+                            $('#partialViewDiv').html(data);
+                        }
+                    }
+                });         
+      
+        });
+
+
+
+        $('#Save').click(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/CustomerService/SaveChangedCustomerAddress/',
+                type: 'POST',
+                data: $('#frmAddressChange').serialize(),
+                cache: false,
+                success: function (data) {                   
+                    if (data != 'Undefined') {
+                        $('#partialViewDiv').html(data);                       
+                    }
+                }
+            });
+
+        });
+
+            if ('@Model.IsSaved' == 'True') {
+                ShowSimpleModalDialog("@Html.Raw(string.Format(Resources.MsgInfoSaveSuccess,Resources.CustomerAddress))");
+            }      
+          
+        $('input[id="New"]').hide();
+        $('input[id="Submit"]').hide();
+        $('input[id="Delete"]').hide();
+
+        }); 
+</script>
+ 
+<div class="row" >
+    <div class="BorderColumn"  style="width: 98.6%">
+        <div class="CustomerColumnTitle">@Resources.ChangeCustomerAddress</div>
+            @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmAddressChange", Name = "frmAddressChange", @class = "VerticalScrollBar", @style = "height: 350px;" }))
+            {
+                <div class="row">
+                    <div class="row">
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatusDesc))
+                            {                                 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc })</text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label" style="width: 40%">@Resources.AddressType</div>
+                            <div class="Field" style="width: 52.5%">
+                                 @if (ViewData["FormCall"] == "ApprovalQueue")
+                                 {
+                                    @Html.DropDownListFor(x => x.AddressTypeCode, addressTypeList, new { id = "AddressTypeCode", @class = "entryControls", @disabled = "disabled" })
+                                    @Html.HiddenFor(x => x.AddressTypeCode, new { id="hidAddressTypeCode",name="hidAddressTypeCode"})
+                                 }
+                                 else
+                                 {
+                                    @Html.DropDownListFor(x => x.AddressTypeCode, addressTypeList, new { id = "AddressTypeCode", @class = "entryControls" })
+                                 }
+                                 @Html.ValidationMessageFor(x => x.AddressTypeCode, "", new { id = "Validation_MessageType" })
+                            </div>
+                        </div>
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label" style="width: 40%">@Resources.TypeOfResidenceClearance</div>
+                            <div class="Field" style="width: 52.5%">
+                                @Html.DropDownListFor(x => x.TypeOfResidenceClearance, residenceClearanceList, new { id = "TypeOfResidenceClearance", @class = "entryControls" })
+                                @Html.ValidationMessageFor(x => x.TypeOfResidenceClearance, "", new { id = "Validation_MessageType" })
+                            </div>
+                        </div>
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label" style="width: 40%">@Resources.Region</div>
+                            <div class="Field" style="width: 52.5%">
+                                @Html.DropDownListFor(x => x.RegionCode, regionList, new { id = "RegionCode", @class = "entryControls" })
+                                @Html.ValidationMessageFor(x => x.RegionCode, "", new { id = "Validation_MessageType" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label" style="width: 40%">@Resources.Communa</div>
+                            <div class="Field" style="width: 52.5%">
+                                @Html.DropDownListFor(x => x.CommunaCode, communaList, new { id = "CommunaCode", @class = "entryControls" })
+                                @Html.ValidationMessageFor(x => x.CommunaCode, "", new { id = "Validation_MessageType" })
+                            </div>
+                        </div>
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label" style="width: 40%">@Resources.City</div>
+                            <div class="Field" style="width: 52.5%">
+                                @Html.DropDownListFor(x => x.CityCode, cityList, new { id = "CityCode", @class = "entryControls" })
+                                @Html.ValidationMessageFor(x => x.CityCode, "", new { id = "Validation_MessageType" })
+                            </div>
+                        </div>
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label" style="width: 40%">@Resources.Street</div>
+                            <div class="Field" style="width: 50%">
+                                @Html.TextBoxFor(x => x.Street, new { id = "Street", name = "Street", maxlength="50" })
+                                @Html.ValidationMessageFor(x => x.Street)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label" style="width: 40%">@Resources.Number</div>
+                            <div class="Field" style="width: 50%">
+                                @Html.TextBoxFor(x => x.Number, new { id = "Number", name = "Number", maxlength="10" })
+                                @Html.ValidationMessageFor(x => x.Number)
+                            </div>
+                        </div>
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label fontmandatory" style="width: 40%">@Resources.Block</div>
+                            <div class="Field" style="width: 50%">
+                                @Html.TextBoxFor(x => x.Block, new { id = "Block", name = "Block",maxlength="50" })
+                                @Html.ValidationMessageFor(x => x.Block)
+                            </div>
+                        </div>
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label fontmandatory" style="width: 40%">@Resources.ComplementOfAddress</div>
+                            <div class="Field" style="width: 50%">
+                                @Html.TextBoxFor(x => x.ComplementOfAddress, new { id = "ComplementOfAddress", name = "ComplementOfAddress",maxlength="50" })
+                                @Html.ValidationMessageFor(x => x.ComplementOfAddress)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label fontmandatory" style="width: 40%">@Resources.Town</div>
+                            <div class="Field" style="width: 50%">
+                                @Html.TextBoxFor(x => x.Town, new { id = "Town", name = "Town",maxlength="50" })
+                                @Html.ValidationMessageFor(x => x.Town)
+                            </div>
+                        </div>
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label fontmandatory" style="width: 40%">@Resources.Landmark</div>
+                            <div class="Field" style="width: 50%">
+                                @Html.TextBoxFor(x => x.Landmark, new { id = "Landmark", name = "Landmark",maxlength="50" })
+                                @Html.ValidationMessageFor(x => x.Landmark)
+                            </div>
+                        </div>
+
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label fontmandatory" style="width: 40%">@Resources.PostalCode</div>
+                            <div class="Field" style="width: 50%">
+                                @Html.TextBoxFor(x => x.PostalCode, new { id = "PostalCode", name = "PostalCode",maxlength="15" })
+                                @Html.ValidationMessageFor(x => x.PostalCode)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label fontmandatory" style="width: 40%">@Resources.POBox</div>
+                            <div class="Field" style="width: 50%">
+                                @Html.TextBoxFor(x => x.POBox, new { id = "POBox", name = "POBox",maxlength="15" })
+                                @Html.ValidationMessageFor(x => x.POBox)
+                            </div>
+                        </div>
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label fontmandatory" style="width: 40%">@Resources.Phone</div>
+                            <div class="Field" style="width: 50%">
+                                @Html.TextBoxFor(x => x.Phone, new { id = "Phone", name = "Phone", maxlength="15" })
+                                
+                            </div>
+                        </div>
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label fontmandatory" style="width: 40%">@Resources.Mobile</div>
+                            <div class="Field" style="width: 50%">
+                                @Html.TextBoxFor(x => x.Mobile, new { id = "Mobile", name = "Mobile",maxlength="15" })
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="TwoColumn" style="width: 28%; float: left">
+                            <div class="label fontmandatory" style="width: 40%">@Resources.Fax</div>
+                            <div class="Field" style="width: 50%">
+                                @Html.TextBoxFor(x => x.Fax, new { id = "Fax", name = "Fax", maxlength="15" })
+                                @Html.ValidationMessageFor(x => x.Fax)
+                            </div>
+                        </div>
+                        <div class="TwoColumn" style="width: 60%; float: left">
+                        </div>
+                    </div>
+                    <div>@Html.Raw(Html.BasicButtons(lstPriv))  </div>
+                </div>
+                <div>
+                        @Html.HiddenFor(x => x.CardNumber)
+                        @Html.HiddenFor(x => x.CustomerId)
+                        @Html.HiddenFor(x => x.CountryCode)
+                        @Html.HiddenFor(x => x.ApprovalStatus)
+                </div>
+            }
+    </div>
+</div>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+
+        EnableDisableControls('@ViewData["FormStatus"]');
+    })
+</script>

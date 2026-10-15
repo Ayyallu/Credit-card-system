@@ -1,0 +1,298 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    $(function ()
+    {
+        
+       
+
+        $lstType = $('select[id*="Type"]');
+        
+        $lstType.change(function ()
+        {
+          
+            if ($lstType.val() == "BT")
+            {                
+          
+                $("#AccountNo").removeAttr("disabled", "").css("background-color", 'white');
+                $("#CardNo").removeAttr("disabled", "").css("background-color", 'white');
+                $("#BatchNo").removeAttr("disabled", "").css("background-color", 'white');
+            }
+            else if ($lstType.val() == "ML")
+            {
+                $("#AccountNo").removeAttr("disabled", "").css("background-color", 'white');
+                $("#CardNo").removeAttr("disabled", "").css("background-color", 'white');
+                $("#BatchNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+            }
+            else
+            {
+                $("#AccountNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+                $("#CardNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+                $("#BatchNo").attr("disabled", "disabled").css("background-color", 'lightgrey');
+            }
+        });
+    });
+    var index = 1;
+    $(document).ready(function () {
+        $("#allBox").click(function () {
+            var type = $lstType.val();
+
+            alert( $(".checkbox").attr("checked", $(this).attr("checked")));
+            var all = $(".select").attr("checked") ? true : false;
+            alert(all);
+            $(".select").attr("checked", $(this).attr("checked") ? true : false);
+            $.ajax({
+                url: '/Authorization/UpdatingForceSessionAll/',
+                data: { ischecked: all, Type: type },
+                type: 'get',
+                cache: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    //  alert(data);
+                }
+            });
+        });
+        $("input.select").each(function () {
+            $(this).data('row', index);
+            $(this).click(function () {
+               // var type = $lstType.val();
+                var tr = $(this).parents('tr:first');
+                var CardNumber = tr.find("#EMIAuthNo").text();
+                var type = tr.find("#InstallmentNo").text();
+                var Isprinted = tr.find('#IsChecked').attr('checked') ? "True" : "False";
+
+
+                alert(Isprinted);
+                $.ajax({
+                    url: '/Authorization/UpdatingEMIInstallmentSession/',
+                    data: { CardNumber: CardNumber, ischecked: Isprinted, Type: type },
+                    type: 'get',
+                    cache: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                       
+                        //  alert(data);
+                    }
+                });
+            });
+            index++;
+        });
+        $("input.PPA").each(function () {
+            $(this).data('row', index);
+            $(this).change(function () {
+                // var type = $lstType.val();
+                var tr = $(this).parents('tr:first');
+                var CardNumber = tr.find("#EMIAuthNo").text();
+                var installmentNo = tr.find("#InstallmentNo").text();
+                var PPA = tr.find("#PPA").val();
+                var PIA = tr.find("#PIA").val();
+                var Isprinted = "True"; //tr.find('#IsChecked').attr('checked') ? "True" : "False";
+
+                $.ajax({
+                    url: '/Authorization/UpdatingEMIMasterInstallmentSession/',
+                    data: { CardNumber: CardNumber, ischecked: Isprinted, PrincipalAmt: PPA, InterestAmt: PIA, InstallmentNo: installmentNo },
+                    type: 'get',
+                    cache: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+
+                        //  alert(data);
+                    }
+                });
+            });
+            index++;
+        });
+
+        $("#SearchButton").click(function () {
+
+            $.ajax({
+                type: 'POST',
+                url: '/Authorization/DeletingEMIMasterInstallmentData',
+                success: function (returnData) {
+
+                    if (returnData.RedirectUrl.length > 0) {
+
+                        window.location.href = returnData.RedirectUrl;
+                        return true;
+                    }
+
+                }
+
+            });
+
+        });
+
+
+
+    })
+
+</script>
+@using CC_Ingenio.Web.ViewModel.Authorization;
+@model EMITransactionInstallmentSearch 
+@{
+        
+    var grid = new WebGrid(Model.SearchResults,
+                defaultSort: "AuthCode",
+                rowsPerPage: 25);
+
+   
+
+    List<SelectListItem> TypeItems = new List<SelectListItem>();
+    TypeItems.Add(new SelectListItem { Text = "Select", Value = String.Empty });
+    TypeItems.Add(new SelectListItem { Text = "Batch", Value = "BT" });
+    TypeItems.Add(new SelectListItem { Text = "Manual", Value = "ML" });
+    
+
+
+    
+
+
+    
+}
+@using System.Web.Script.Serialization;
+@section featured {
+}
+
+
+<script type="text/javascript">
+    $(function () {
+        $("#AuthPost").click(function (e) {
+
+            e.preventDefault();
+            $("#dialog").dialog({
+                resizable: false,
+                height: 160,
+                width: 'auto',
+                modal: true,
+                title: '@Resources.ApplicationName',
+                buttons: {
+                    "Yes": function () {
+
+                        $("#dialog").dialog("close");
+
+                        $("#frmAuthPost").submit();
+                     
+
+                    },
+                    "No": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
+            $("#dialog").text("Do you want to save the transactions.");
+
+            $("#dialog").dialog("open");
+
+
+        });
+
+        $("#Reset").click(function (e) {
+
+            $("#Type").attr("value", String.Empty);
+            $("#Type").attr("Text", "Select");
+
+            $("#AccountNo").attr("value", "");
+            $("#CardNo").attr("value", "");
+            $("#BatchNo").attr("value", ""); 
+            $("#TxnToDate").attr("value", ""); 
+            $("#TxnDate").attr("value", "");           
+           
+           
+        });
+    });
+</script>
+
+<section class="featured">
+    <div class="PageTitle">EMI Installlment</div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+         
+            @using (Html.BeginForm("EMIMasterInstallmentAdd", "Authorization", FormMethod.Get, new { Id = Model.EMIAuthNo, }))
+            {
+                @*<div class="tab-content" id="tab1">
+
+                    <div class="row">
+
+                        <fieldset class="double">
+                            <legend></legend>                             
+                            <div class="row">
+                                <div class="label">Card No</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.CardNumber, new { id = "CardNumber", name = "CardNumber", maxlength = 16 })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="label">From</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.EMIAuthNo, new  { id = "EMIAuthNo", name = "CardNumber", maxlength = 16 })
+                                    @Html.ValidationMessageFor(x => x.EMIAuthNo)
+                                </div>
+                            </div>
+                          
+                        </fieldset>                        
+
+
+                        <div class="rowbtn">
+                            <span>
+                                <input id="SearchButton" name="SearchButton" value="Search" type="submit" class="Greenbutton" /></span>
+                            <span>
+                                <input id="Reset" type="reset" class="Greenbutton" value="Cancel" /></span>
+                        </div>
+                    </div>
+                </div>*@
+            }
+
+        </div>
+
+        <div class="row">
+
+            <div class="standard-table">
+                    @grid.GetHtml(columns: grid.Columns(
+                   //grid.Column(columnName: "IsCheck", header: "{CheckBoxHeading}", 
+                             
+                        
+                   // format: (item) =>
+                   //                 {
+                   //                     if(item.ISPosted )
+                   //                     {
+                   //                         return Html.Raw("");
+                   //                     }   
+                   //                     else
+                   //                     {
+
+                   //                         return @Html.Raw("<input type='checkbox' class = 'select' id='IsChecked'  " + (((item.Value).IsChecked == true) ? "checked" : "") + " />");
+                   //                     }
+                   //                 } )   ,                  
+
+                           
+                                     grid.Column("InstallmentNo", "Installment No",format: @<text><label id="InstallmentNo" style="font-size: .95em;font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.InstallmentNo</label> </text>),                                   
+                                    grid.Column("CardNumber", "Card No"),                                 
+                                  
+                                    //grid.Column("SegmentCode", "Segment Code"),
+                                    grid.Column("TotalPrincipalAmt", "Principal Amount",format: @<text><input type="text", id="PPA", class = "PPA", value="@item.TotalPrincipalAmt" style="font-size: .95em; width:100px ; text-align :right ;  font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';"></text>)        ,
+                                    grid.Column("TotalInterestAmt", "Interest Amount",format: @<text><input type="text", id="PIA", class = "PPA", value="@item.TotalInterestAmt" style="font-size: .95em; width:100px ; text-align :right ;  font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';"></text>)        ,
+                                    grid.Column("EMIAuthNo", "Auth Code",format: @<text><label id="EMIAuthNo" style="font-size: .95em;font-family: 'Segoe UI', 'Verdana', 'Helvetica', 'Sans-Serif';">@item.EMIAuthNo</label> </text>),                                   
+                                    grid.Column("DueDate", "Due Date",format:@<text> @item.DueDate.ToString("dd/MM/yyyy")</text>)                                 
+                                   // grid.Column("AuthCode", "AuthCode")@*,
+                                    //grid.Column("Status", header: "Status", format: @<text>@Html.DropDownList("selection", AuthCodeItems)</text>)*@)
+                       ))
+
+            </div>
+        </div>
+
+        <div class="rowbtn">
+            @using (Html.BeginForm("EMIMasterInstallmentAddPost", "Authorization", FormMethod.Post, new { id = "frmAuthPost", name = "frmAuthPost" }))
+            {
+                <span>
+                    <input type="hidden" id="hidData" name="hidData" value="@Html.Raw(new JavaScriptSerializer().Serialize(TempData["Data"]))" />
+                    <input id="AuthPost" name="AuthPost" value="Save" type="submit" class="Greenbutton" /></span>
+            }
+        </div>
+
+    </div>
+</section>

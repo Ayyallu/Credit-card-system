@@ -1,0 +1,157 @@
+﻿
+@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.SystemParameter });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@model SystemParameterDTO
+@{
+    List<string> lstPriv = new List<string>();
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+    }
+@section featured {
+}
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li> @Html.ActionLink(Resources.SearchPageHeading,"SystemParameterList","Master" )</li>
+            }
+            <li class="active">@Html.ActionLink(Resources.DetailsPageHeading,"SystemParameterAdd","Master" )</li>
+        </ul>
+       
+            <!-- Tabs Content -->
+            <div class="tabs-container">
+                 @using (Html.BeginForm("SystemParameterSave", "Master",  new { Id = Convert.ToString(Model.ParameterId),  }, FormMethod.Post))
+                {
+                <div class="tab-content" id="tab1">
+                    <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc })</text>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+  
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.ParameterName</div>
+                                <div class="Field">
+                                    @if (Model.ApprovalStatus == "A")
+                                    {
+                                        @Html.TextBoxFor(x => x.ParameterName, new { id = "ParameterName", name = "ParameterName", maxlength = 50, @readonly = "readonly" })
+                                    }
+                                    else
+                                    { 
+                                        @Html.TextBoxFor(x => x.ParameterName, new { id = "ParameterName", name = "ParameterName", maxlength = 50 })
+                                    }
+                                    @Html.ValidationMessageFor(x => x.ParameterName)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.ParameterValue</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.ParameterValue, new { id = "ParameterValue", name="ParameterValue",maxlength = 5 })
+                                    @Html.ValidationMessageFor(x => x.ParameterValue)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Meaning</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Description, new { id = "Description", name="Description",maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.Description)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label  fontmandatory">@Resources.DefaultValue</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.DefaultValue, new { id = "DefaultValue", name="DefaultValue",maxlength = 5 })
+                                    @Html.ValidationMessageFor(x => x.DefaultValue)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label  fontmandatory">@Resources.ParameterFunction</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Function, new { id = "Function", name="Function",maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.Function)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label  fontmandatory">@Resources.LowValue</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.LowValue, new { id = "LowValue", name="LowValue",maxlength = 5 })
+                                    @Html.ValidationMessageFor(x => x.LowValue)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label  fontmandatory">@Resources.HighValue</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.HighValue, new { id = "HighValue", name="HighValue",maxlength = 5 })
+                                    @Html.ValidationMessageFor(x => x.HighValue)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">&nbsp;</div>
+                                <div class="Field">
+                                    &nbsp;
+                                    <div class="row">
+                                        &nbsp;
+                                    </div></div>
+                            </div>
+                        </div>
+                        
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+                 }
+
+            </div>
+    </div>
+</section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+        }
+        
+        if ('@ViewData["FormStatus"]' == "A") {
+            if ($("#Submit").length) { $("#Submit").removeClass('BtnDisabled').addClass('Greenbutton'); }
+            $("#Submit").attr('disabled', false);
+
+            if ($("#Delete").length) { $("#Delete").removeClass('Greenbutton').addClass('BtnDisabled'); }
+            $("#Delete").attr('disabled', true);
+        }
+
+    })
+</script>

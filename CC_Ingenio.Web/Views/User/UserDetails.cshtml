@@ -1,0 +1,537 @@
+﻿ @using CC_Ingenio_Resources;
+
+
+@{
+    ViewBag.Title = Resources.USER;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    .checkbox-container input
+    {
+        height: 13px;
+        width: 13px;
+        padding: 0;
+        margin-top: 6px;
+        margin-bottom: 6px;
+        border: none;
+    }
+
+    .checkbox-container label
+    {
+        line-height: 25px;
+    }
+
+    .inline input
+    {
+        float: left;
+    }
+
+
+    .checkbox-container
+    {
+        max-width: 400px;
+    }
+
+        .checkbox-container input
+        {
+            margin-right: 6px;
+        }
+
+    .vertical label
+    {
+        display: block;
+    }
+
+    .horizontal label
+    {
+        display: inline-block;
+        vertical-align: top;
+        margin-right: 10px;
+    }
+
+    .inline-block span
+    {
+        display: inline-block;
+        max-width: 220px;
+    }
+
+    .inline-block input
+    {
+        vertical-align: top;
+    }
+
+    .inline span
+    {
+        display: inline;
+    }
+</style>
+
+@using CC_Ingenio.DataTranfer.UserInfo
+@using CC_Ingenio.Web.Helpers;
+@model UserDTO
+@{    
+    List<SelectListItem> OrganizationList = new List<SelectListItem>();
+    foreach (var item in ViewBag.OrganizationList)
+    {
+        OrganizationList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    List<SelectListItem> CultureList = new List<SelectListItem>();
+    foreach (var item in ViewBag.CultureList)
+    {
+        CultureList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+    }
+
+    List<string> lstPriv = new List<string>();
+
+    if (ViewBag.Privileges != null)
+    {
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+
+    List<SelectListItem> UserGroupList = new List<SelectListItem>();
+    if (ViewBag.UserGroups != null)
+    {
+        foreach (var item in ViewBag.UserGroups)
+        {
+            UserGroupList.Add(new SelectListItem { Text = item.Text, Value = item.Value });
+        }
+    }
+    List<SelectListItem> SelectedGroups = new List<SelectListItem>();
+
+    List<SelectListItem> BranchList = new List<SelectListItem>();
+    if (ViewBag.UserBranches != null)
+    {
+        foreach (var item in ViewBag.UserBranches)
+        {
+            if (item.Value != string.Empty)
+            {
+                BranchList.Add(new SelectListItem { Value = item.Value, Text = item.Text });
+            }
+        }
+    }
+    List<string> AllowedBranches = new List<string>();
+
+    if (Model.UserAllowedBranch != null)
+    {
+        foreach (var item in Model.UserAllowedBranch)
+        {
+            if (item != null && item.Value != string.Empty)
+            {
+                AllowedBranches.Add(item.Text);
+            }
+        }
+    }
+}
+
+
+<script type="text/javascript">
+
+    var result = "";
+
+    $(document).ready(function () {
+
+
+        $('#chkShow').change(function () {
+            var isChecked = $(this).prop('checked');
+            if (isChecked) {
+                $('#ReTypePassword').prop('type', 'text');
+            }
+            else {
+                $('#ReTypePassword').prop('type', 'password');
+            }
+        });
+
+        //------User Groups-----------------
+        var originalUserGroups;
+        var selectedUserGroups;
+
+        window.globalVar1 = $("#lstGroups option");
+        originalUserGroups = $("#lstGroups option");
+        var originalUserGroupsCopy = originalUserGroups;
+        resetGroupList();
+
+        function resetGroupList() {
+            selectedUserGroups = $("#lstUserGroupMembers option");
+            originalUserGroupsCopy = globalVar1.slice();
+
+            for (var i = 0; i < selectedUserGroups.length; i++) {
+                removeFromArray(selectedUserGroups[i].value);
+            }
+
+            function removeFromArray(arrElem) {
+                for (var i = originalUserGroupsCopy.length; i--;) {
+                    if (originalUserGroupsCopy[i].value === arrElem) {
+                        originalUserGroupsCopy.splice(i, 1);
+                        return false;
+                    }
+                }
+            };
+
+            var result = originalUserGroupsCopy;
+            var finalArray = result.get();
+            $("#lstGroups").html(finalArray);
+
+        }
+        //-------Branches------------------     
+        var originalBranches;
+        var selectedBranches;
+
+        window.globalVar2 = $("#lstBranches option");
+        originalBranches = $("#lstBranches option");
+        var originalBranchesCopy = originalBranches;
+        resetBranchList();
+
+        function resetBranchList() {
+            selectedBranches = $("#lstUserAllowedBranches option");
+            originalBranchesCopy = globalVar2.slice();
+
+            for (var i = 0; i < selectedBranches.length; i++) {
+                removeFromArray(selectedBranches[i].value);
+            }
+
+            function removeFromArray(arrElem) {
+                for (var i = originalBranchesCopy.length; i--;) {
+                    if (originalBranchesCopy[i].value === arrElem.substr(0, arrElem.indexOf('-'))) {
+                        originalBranchesCopy.splice(i, 1);
+                        return false;
+                    }
+                }
+            };
+
+            var result = originalBranchesCopy;
+            var finalArray = result.get();
+            $("#lstBranches").html(finalArray);
+
+        }
+        //--------User Groups right /left arrow handling-------------          
+        $('#btnRight1').click
+         (function (e) {
+             var selectedGroup = $('#lstGroups option:selected');
+             if (selectedGroup.length == 0) {
+                 alert("@Resources.MsgInfoNoItemSelected");
+                 e.preventDefault;
+             }
+             else {
+                 $("#lstGroups > option:selected").appendTo("#lstUserGroupMembers");
+                 $("#lstUserGroupMembers")[0].selectedIndex = -1;
+                 $('#UserGroupList_Validate').text("");
+                 $("#lstUserGroupMembers option").prop("selected", "selected"); // Select the selected user groups.for making the submit validation wrk properly
+             };
+         });
+
+        $('#btnLeft1').click(function (e) {
+            var selectedGroupLeft = $('#lstUserGroupMembers option:selected');
+            if (selectedGroupLeft.length == 0) {
+                alert("@Resources.MsgInfoNoItemSelected");
+            }
+            else {
+                $('#lstUserGroupMembers > option:selected').appendTo("#lstGroups");
+                $("#lstGroups")[0].selectedIndex = -1;
+            }
+        });
+
+        //-------Branches right /left arrow handling------------- 
+        $('#btnRight2').click
+         (function (e) {
+             var selectedBranch = $('#lstBranches option:selected');
+             if (selectedBranch.length == 0) {
+                 alert("@Resources.MsgInfoNoItemSelected");
+                 e.preventDefault;
+             }
+             else {
+                 $("#lstBranches > option:selected").appendTo("#lstUserAllowedBranches");
+                 $("#lstUserAllowedBranches")[0].selectedIndex = -1;
+                 $("#lstUserAllowedBranches option").prop("selected", "selected");
+                 $('#UserGroupList_Validate').text("");
+             };
+         });
+
+        $('#btnLeft2').click(function (e) {
+            var selectedBranchesLeft = $('#lstUserAllowedBranches option:selected');
+            if (selectedBranchesLeft.length == 0) {
+                alert("@Resources.MsgInfoNoItemSelected");
+            }
+            else {
+                $('#lstUserAllowedBranches > option:selected').appendTo("#lstBranches");
+                $("#lstBranches")[0].selectedIndex = -1;
+            }
+        });
+        //--------------------------------------------------------
+
+        $('#Password').bind('copy paste cut', function (e) {
+            e.preventDefault();
+        });
+
+        $('#Password').keyup(function () {
+            $('#result').html(checkStrength($('#Password').val()))
+
+            result = $('#result').html();
+            if (result == "@Resources.TooShort" || result == "@Resources.Weak") {
+                $('#result').attr({ 'style': 'color:#e80c4d; font-weight: bold;' });
+            }
+            if (result == "@Resources.Good") {
+                $('#result').attr({ 'style': 'color:Lime;' });
+            }
+            if (result == "@Resources.Strong") {
+                $('#result').attr({ 'style': 'color:Green;' });
+            }
+
+        })
+
+
+        function checkStrength(password) {
+
+            var strength = 0
+
+            if (password.length < 1) {
+                $('#result').removeClass()
+                return ''
+            }
+
+            if (password.length < 8) {
+                $('#result').removeClass()
+                $('#result').addClass('short')
+                return '@Resources.TooShort'
+            }
+
+            if (password.length > 7) strength += 1
+
+            if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) strength += 1
+
+            if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/)) strength += 1
+
+            if (password.match(/([!,%,&,@@,#,$,^,*,?,_,~])/)) strength += 1
+
+            if (password.match(/(.*[!,%,&,@@,#,$,^,*,?,_,~].*[!,%,&,@@,#,$,^,*,?,_,~])/)) strength += 1
+
+            if (strength < 2) {
+                $('#result').removeClass()
+                $('#result').addClass('weak')
+                return '@Resources.Weak'
+            }
+            else if (strength == 2) {
+                $('#result').removeClass()
+                $('#result').addClass('good')
+                return '@Resources.Good'
+            }
+            else {
+                $('#result').removeClass()
+                $('#result').addClass('strong')
+                return '@Resources.Strong'
+            }
+
+        }
+
+
+
+        $("#frmUserDetailsAdd").submit(function (e) {
+            $("#lstUserGroupMembers option").prop("selected", "selected");
+            $("#lstUserAllowedBranches option").prop("selected", "selected");
+
+            if ($('#lstUserGroupMembers option:selected').length == 0) {
+                $('#UserGroupList_Validate').text("@Html.Raw(string.Format(Resources.MsgErrPleaseSelect,Resources.UserGroups))");
+                e.preventDefault;
+                return false;
+            }
+
+            result = $('#result').html();
+
+            if (result) {
+                if (result == "@Resources.Good" || result == "@Resources.Strong") {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
+            
+
+            return true;
+
+        });      
+
+        $('input[id="Save"]').hide();
+
+    });
+
+
+
+
+</script>
+
+
+
+<section class="featured">
+    <div class="PageTitle">@ViewBag.Title</div>
+    <div class="PageRow">
+
+        <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+            <li>@Html.ActionLink(Resources.SearchPageHeading, "UserDetailsSearch", "User")</li>
+            <li class="active">@Html.ActionLink(Resources.DetailsPageHeading, "UserDetails", "User")</li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            @using (Html.BeginForm("SaveUpdatedUserDetails", "User", FormMethod.Post, new { id = "frmUserDetailsAdd", name = "frmUserDetailsAdd" }))
+            {
+                
+                <div class="tab-content" id="tab1">
+                    <div class="row">
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Username</div>
+                                <div class="Field">
+                                    @if (!string.IsNullOrWhiteSpace(Model.Username))
+                                    {
+                                        @Html.TextBoxFor(x => x.Username, new { id = "UserName", name = "UserName", @readonly = "readonly", maxlength = 15 })
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(x => x.Username, new { id = "UserName", name = "UserName", maxlength = 15 }) 
+                                    }
+
+                                    @Html.ValidationMessageFor(x => x.Username)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.FullName</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.FullName, new { id = "FullName", name = "FullName", maxlength = 50 })
+                                    @Html.ValidationMessageFor(x => x.FullName)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.OrganizationCode</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.OrganizationCode, OrganizationList, new { id = "AddressTypeCode", @class = "entryControls" })
+                                    @Html.ValidationMessageFor(x => x.OrganizationCode)
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.Email</div>
+                                <div class="Field">
+                                    @Html.TextBoxFor(x => x.Email, new { id = "Email", name = "Email" })                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Password</div>
+                                <div class="Field">
+                                    @*@if (!string.IsNullOrWhiteSpace(Model.Password))
+                                    {
+                                      @Html.PasswordFor(x => x.Password, new { id = "Password", name = "Password", value = Model.Password, @readonly = "readonly", @class="PasswordValidChars", maxlength = 50  })
+                                    }
+                                    else
+                                    {
+                                      @Html.PasswordFor(x => x.Password, new { id = "Password", name = "Password", value = Model.Password, @class="PasswordValidChars", maxlength = 20 })
+                                        <span id="result"></span>
+                                    }*@
+                                    @Html.PasswordFor(x => x.Password, new { id = "Password", name = "Password", value = Model.Password, @class = "PasswordValidChars", maxlength = 20 })
+                                    <span id="result"></span>
+                                    @Html.ValidationMessageFor(x => x.Password)
+
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Active</div>
+                                <div style="padding-top: 5px">
+                                    @Html.CheckBoxFor(x => x.Active, new { id = "Active", name = "Active" })
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.ConfirmPassword</div>
+                                <div class="Field">
+                                    @*@if (!string.IsNullOrWhiteSpace(Model.Password))
+                                     {
+                                      @Html.PasswordFor(x => x.ReTypePassword, new { id = "ReTypePassword", name = "ReTypePassword", value = Model.Password, @readonly = "readonly" })
+                                     }
+                                     else
+                                     {
+                                      @Html.PasswordFor(x => x.ReTypePassword, new { id = "ReTypePassword", name = "ReTypePassword", value = Model.Password, maxlength = 50  })
+                                     }*@
+                                    @Html.PasswordFor(x => x.ReTypePassword, new { id = "ReTypePassword", name = "ReTypePassword", value = Model.Password, maxlength = 20 })
+                                    @Html.ValidationMessageFor(x => x.ReTypePassword)
+
+                                    <span class="checkbox-container inline-block vertical">
+                                        <label>
+                                            <input type="checkbox" id="chkShow"><span>@Resources.ShowPassword</span></label>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.Language</div>
+                                <div class="Field">
+                                    @Html.DropDownListFor(x => x.CultureCode, CultureList, new { id = "CultureCode", @class = "entryControls" })
+                                    @Html.ValidationMessageFor(x => x.CultureCode)
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.UserGroups</div>
+                                <div class="Field">
+                                    <div class="ListBoxField">
+                                        @Html.ListBox("AllGroups", UserGroupList, new { @Id = "lstGroups", @style = "width:100px;height:120px;" })
+                                    </div>
+                                    <div class="ListBoxButton" style="padding-left: 5px; padding-right: 5px">
+                                        <div>
+                                            <input id="btnRight1" name="Command" value="" class="moveright" type="button" style="width: 30px; border: none; padding-left: 5px; padding-right: 5px" />
+                                        </div>
+                                        <div>
+                                            <input id="btnLeft1" name="Command" value="" class="moveleft" type="button" style="width: 30px; border: none; padding-left: 5px; padding-right: 5px" />
+                                        </div>
+                                    </div>
+                                    <div class="ListBoxField">
+                                        @Html.ListBoxFor(x => x.UserGroupMembers, new SelectList(Model.UserGroupMembers), new { @Id = "lstUserGroupMembers", @style = "width:100px;height:120px;" })
+                                    </div>
+                                </div>
+                                @*<label id="UserGroupList_Validate" class="validationMessage" style="padding-left:11.4em"></label>*@
+                                @Html.ValidationMessageFor(x => x.UserGroupMembers,"",new {@id="UserGroupList_Validate",@style="padding-left:11.4em"})
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label fontmandatory">@Resources.Branches</div>
+                                <div class="Field">
+                                    <div class="ListBoxField">
+                                        @Html.ListBox("AllBranches", BranchList, new { @Id = "lstBranches", @style = "width:120px;height:120px;" })
+                                    </div>
+                                    <div class="ListBoxButton" style="padding-left: 5px; padding-right: 5px">
+                                        <div>
+                                            <input id="btnRight2" name="Command" value="" class="moveright" type="button" style="width: 30px; border: none" />
+                                        </div>
+                                        <div>
+                                            <input id="btnLeft2" name="Command" value="" class="moveleft" type="button" style="width: 30px; border: none" />
+                                        </div>
+                                    </div>
+                                    <div class="ListBoxField">
+                                        @Html.ListBoxFor(x => x.UserAllowedBranchForSave, new SelectList(AllowedBranches), new { @Id = "lstUserAllowedBranches", @style = "width:120px;height:120px;" })
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        @Html.Raw(Html.BasicButtons(lstPriv))
+
+                    </div>
+                </div>
+            }
+
+        </div>
+
+
+    </div>
+
+</section>

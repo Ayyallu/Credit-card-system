@@ -1,0 +1,186 @@
+﻿@using CC_Ingenio.DataTranfer.ApprovalQueueInfo;
+@using System.Web.Script.Serialization;
+@using CC_Ingenio_Resources;
+@{
+    List<SelectListItem> ResonContextItems = new List<SelectListItem>();
+    if (ViewBag.ReasonCodes != null)
+    {
+        foreach (var itm in ViewBag.ReasonCodes)
+        {
+            ResonContextItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+        }
+    }
+    else
+    {
+        ResonContextItems.Add(new SelectListItem { Text = Resources.SelectOne, Value = "" });
+    }
+
+<script type="text/javascript">
+    var ReasonList = @Html.Raw(new JavaScriptSerializer().Serialize(ResonContextItems));
+</script>    
+            
+<script>
+    
+    /* event for close the popup */
+    $("div.close").hover(
+                    function () {
+                        $('span.ecs_tooltip').show();
+                    },
+                    function () {
+                        $('span.ecs_tooltip').hide();
+                    }
+                );
+
+    $("div.close").click(function () {
+        disablePopup();  // function close pop up
+    });
+
+    $(this).keyup(function (event) {
+        if (event.which == 27) { // 27 is 'Ecs' in the keyboard
+            disablePopup();  // function close pop up
+        }
+    });
+
+
+    /************** start: functions. **************/
+    function loading() {
+        $("div.loader").show();
+    }
+    function closeloading() {
+        $("div.loader").fadeOut('normal');
+    }
+
+    var popupStatus = 0; // set value
+
+    function loadPopup() {
+        if (popupStatus == 0) { // if value is 0, show popup
+            closeloading(); // fadeout loading
+            $("#authPopup").fadeIn(0500); // fadein popup div
+            $("#backgroundPopup").css("opacity", "0.7"); // css opacity, supports IE7, IE8
+            $("#backgroundPopup").fadeIn(0001);
+            popupStatus = 1; // and set value to 1
+        }
+    }
+
+    function disablePopup() {
+        if (popupStatus == 1) { // if value is 1, close popup
+            $("#authPopup").fadeOut("normal");
+            $("#backgroundPopup").fadeOut("normal");
+            popupStatus = 0;  // and set value to 0
+            $('#ContextDesc_validate1').text("");
+            $('#ReasonCode_validate1').text("");
+        }
+    }
+    /************** end: functions. **************/
+    
+    $(document).ready(function () {
+
+        $('#href1').click(function (event) {           
+            event.preventDefault();
+            var flag = true;           
+            if ($('#ReasonCode1').val() == "")
+            {               
+                $('#ReasonCode_validate1').text("@Html.Raw(string.Format(Resources.MsgErrPleaseSelect,Resources.Reason))");
+                flag = false;               
+            }
+            if ($('#ContextDesc1').val().trim() == "") {
+                $('#ContextDesc_validate1').text("@Html.Raw(string.Format(Resources.MsgErrPleaseEnter2,Resources.ReasonDescription))");
+                flag = false;
+            }
+            if(flag) {
+                //submit the page
+                $(this).closest('form').submit();
+            }          
+        });
+
+        $('#ContextDesc1').blur(function () {            
+            $('#ContextDesc_validate1').text("");
+        });
+        $('#ReasonCode1').blur(function () {
+            $('#ReasonCode_validate1').text("");
+        });
+
+        $("input[name=AuthorizeOption]:radio").change(function () {
+
+            var objReasonCode = $('#ReasonCode1');
+            objReasonCode.empty();
+
+            objReasonCode.append($('<option/>',
+              {
+                  value: "",
+                  text: "@Resources.SelectOne"
+              }));
+            
+            if ($('input:radio[name=AuthorizeOption]:checked').val() == 'Approve') {
+                $.each(ReasonList, function(index, itemData){
+                    if(itemData["Value"].substring(itemData["Value"].length-1) == "A"){
+                        objReasonCode.append($('<option/>',
+                                {
+                                    value: itemData.Value,
+                                    text: itemData.Text
+                                }));
+                    }            
+                });
+            }
+            else if ($('input:radio[name=AuthorizeOption]:checked').val() == 'Reject') {                
+                $.each(ReasonList, function(index, itemData){
+                    if(itemData["Value"].substring(itemData["Value"].length-1) == "R"){
+                        objReasonCode.append($('<option/>',
+                                {
+                                    value: itemData.Value,
+                                    text: itemData.Text
+                                }));
+                    }            
+                });
+            }    
+        });
+        $('input:radio[name=AuthorizeOption]:checked').trigger("change");
+       
+    });
+</script>    
+    
+    <div id="divApproval">
+       
+                 <div id="authPopup"  class="Popup">
+                    <div class="close"></div>
+                    <span class="ecs_tooltip">@ViewBag.Title<span class="arrow"></span></span>
+                        <div id="popup_content">
+                            @using (Html.BeginForm("AuthorizationByUnderwriter", "Master", new { ACustomerId = ViewBag.CustomerId, ACreditScore = ViewBag.CreditScore, ACreditLimit = ViewBag.CreditLimit, ARemarks = ViewBag.Remarks }, FormMethod.Post, new { id = "frmApproval", name = "frmApproval" }))
+                            {
+                                  <fieldset class="authorize">
+                                    <legend>@Resources.Authorize</legend>
+                                    <div class="PageRowPopup">
+                                        <div class="row">
+                                            <div class="left;"></div>
+                                            <div class="left;"></div>
+                                            <label class="popupauthorize radioButton" for="Approve">Approve @Html.RadioButton("AuthorizeOption", true, true, new { @name = "AuthorizeOption", @id = "Approve", @Value = "Approve" }) </label>
+                                            <label class="popupauthorize radioButton" for="Reject">Reject  @Html.RadioButton("AuthorizeOption", false, false, new { @name = "AuthorizeOption", @id = "Reject", @Value = "Reject" })</label>
+                                          
+                                        </div>
+                                            <div class="row">
+                                            <div class="label">@Resources.Reason</div>
+                                            <div class="Field" style="float: left;">
+                                                @Html.DropDownList("ReasonCode", new List<SelectListItem>(), new { @id = "ReasonCode1", @name = "ReasonCode1" })
+                                                <label id="ReasonCode_validate1" class="validationMessage"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="label">&nbsp;</div>
+                                            <div class="Field">@Html.TextArea("ReasonDescription", new { @id = "ContextDesc1", @name = "ContextDesc1", @class = "required", maxlength = 50 })
+                                                <label id="ContextDesc_validate1" class="validationMessage"></label>
+                                            </div>                            
+                                        </div>
+                                        <div class="PageRowPopupBtn">
+                                            <a href="#" id="href1">@Resources.Submit</a>
+                                        </div>
+                                    </div>
+                                </fieldset>       
+                            }
+                        </div>
+                 </div>
+        
+                <div class="loader"></div>
+                <div id="backgroundPopup"></div>
+    </div>
+    
+}

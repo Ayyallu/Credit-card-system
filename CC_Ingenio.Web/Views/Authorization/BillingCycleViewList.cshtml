@@ -1,0 +1,143 @@
+﻿@using CC_Ingenio_Resources;
+@{
+    ViewBag.Title = String.Concat(new object[] { Resources.TransactionAdjustment, " ", Resources.Search });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using CC_Ingenio.Web.ViewModel.Authorization
+@model BillingCycleViewSearch
+@{
+    var grid = new WebGrid(Model.SearchResults,  canPage: true, rowsPerPage: 5, selectionFieldName: "", ajaxUpdateContainerId: "container-body");
+    grid.Pager(WebGridPagerModes.All);
+}
+
+<script type ="text/javascript">
+    $(document).ready(function () {
+
+        $('#CardNumber').focusin(function () {
+            $('#CardNumber_Validate').text("");
+        });
+
+        $('#SearchButton').click(function (e) {
+            e.preventDefault();
+            if ($('#CardNumber').val().trim() == "") {
+                $('#CardNumber_Validate').text("@Html.Raw(string.Format(Resources.MsgErrPleaseEnter2,Resources.CardNumber))");
+                return false;
+            }
+            $.ajax({
+                url: "/CardBooking/CardNumberExists",
+                data: { ACardNumber: $('#CardNumber').val() },
+                success: function (returnData) {
+                    {
+                        if (returnData == 'False') {
+                            $('#dialog').text("");
+                            $('#dialog').dialog({
+                                resizable: false,
+                                modal: true,
+                                title: '@Resources.ApplicationName',
+                                buttons: [{
+                                    text: "OK",
+                                    style: "font-size: .85em;font-family: 'Segoe UI', Verdana, Helvetica, Sans-Serif;",
+                                    width: 50,
+                                    click: function () {
+                                        $(this).dialog("close");
+                                        $('#CardNumber').focus();
+                                        $("#frmList").submit();
+                                    }
+                                }]
+                            });
+                            $('#dialog').text("@Html.Raw(string.Format(Resources.MsgErrInvalid,Resources.CardNumber))"); 
+                        }
+                        else
+                        {
+                            $("#frmList").submit();
+                        }
+                    }
+                }
+            });
+        });
+
+    });
+</script>
+
+<section class="featured">
+
+    <div class="PageTitle">@ViewBag.Title</div>
+
+    <!-- Tabs
+	================================================== -->
+
+    <div class="PageRow">
+
+        <!-- Tabs Content -->
+        <div class="tabs-container">
+            <div class="tab-content" id="tab1">
+                <div class="row">
+                    @using (Html.BeginForm("BillingCycleViewList", "Authorization", FormMethod.Get, new { id = "frmList", name = "frmList" }))
+                    {
+                        <div class="SearchBox">
+  
+                            <div class="row">
+
+                                <div class="TwoColumn">
+                                    <div class="row">
+                                        <div class="label">@Resources.ChargeSlipDate</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x => x.ChargeSlipDate, "{0:dd/MM/yyyy}", new { @class ="datepicker", @readonly="true" })
+                                            @Html.ValidationMessageFor(x => x.ChargeSlipDate)
+                                        </div>
+                                    </div>
+                                      <div class="row">
+                                        <div class="label">@Resources.CardNumber</div>
+                                        <div class="Field">
+                                            @Html.TextBoxFor(x=>x.CardNumber, new { id = "CardNumber", name="CardNumber", maxlength = 16 })
+                                            <label id="CardNumber_Validate" style="color: red; display:inline;font-size: .95em;text-align:justify" class="validation"></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                                                                      
+                                <div class="SearchColumnbtn">
+                                    <span>
+                                        <input id="SearchButton" name="SearchButton" class="Greenbutton" type="submit" value="@Resources.Search" />
+                                    </span>
+
+                                    <span>
+                                        <input id="Button2" type="submit" name ="ClearButton"  class="Greenbutton" value="@Resources.Clear" />
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="clear"></div>
+
+
+                        </div>
+                    }
+
+                </div>
+                <div class="row">
+                   
+                    <div class="standard-table">
+
+                        @grid.GetHtml(columns:grid.Columns(
+                                    grid.Column("ChargeSlipDate", Resources.ChargeSlipDate, format: (item) => string.Format("{0:dd/MM/yyyy}", item.ChargeSlipDate)),
+                                    grid.Column("AuthCode", Resources.AuthCode),
+                                    grid.Column("CardNumber",Resources.CardNumber),
+                                    grid.Column("Amount", Resources.Amount, format: (item) => string.Format("{0:N0}", item.Amount)),
+                                    grid.Column(Resources.Edit, format: 
+                                        (item) =>
+                                            {
+                                                return Html.Raw(Html.ActionLink(Resources.Update, "AdjustmentAdd", "Authorization", new { id = item.AuthCode }, null));
+                                            })
+                    ))
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+

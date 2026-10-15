@@ -1,0 +1,124 @@
+﻿@using CC_Ingenio.Web.ViewModel.CustomerService
+@using CC_Ingenio_Resources;
+@model InstallmentScheduleDetails
+
+@{
+    var installmentScheduleDetailsGrid = new WebGrid(Model.objInstallmentDetails, canPage: true, rowsPerPage: 5, ajaxUpdateContainerId: "container-body");
+    installmentScheduleDetailsGrid.Pager(WebGridPagerModes.All);
+
+    var strEMIAuthNo = Model.EMIAuthNo.ToString(); 
+    var strInsatllmentNo = Model.InstallmentNo.ToString();
+    //var strInsAmount = Model.InstallmentAmount.ToString();
+    var strBookDate = Model.BookedDate.ToShortDateString();
+    var strTenure = Model.Tenure.ToString();
+    var strTransactionCode = Model.TransactionCode.ToString();
+    //var strROI = Model.RateOfInterest.ToString("0:00.00");
+    var strROI = string.Format("{0:N2}", Model.RateOfInterest);
+    var strInsAmount = string.Format("{0:0.##}", Model.InstallmentAmount);
+    var strSegment = Model.CreditSegment;
+}
+
+<style type="text/css">
+
+    .label {
+    width:35%;
+    }
+</style>
+<script type="text/javascript">
+ $('#Ok').on('click', function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: '/CustomerService/InstallmentSchedule/',
+            type: 'POST',
+            data: {},
+                    cache: false,
+                    success: function (data) {
+                        $('#partialViewDiv').html(data);
+
+                    }
+         });
+ });
+    </script>
+<div class="row">
+
+     <div class=" BorderColumn">
+            <div class="CustomerColumnTitle">@Resources.InstallmentScheduleDetails</div>
+              @using (Html.BeginForm("", "", FormMethod.Post, new { id = "frmInstlScheduleDetails", Name = "frmInstlScheduleDetails" }))
+            {
+                      <div class="CustomerTwoColumn" style="height:100px;width:800px">
+                          <div style="width:35%; float:left">
+       
+                <div class="row">
+                <div class="label">@Resources.AuthorizationCode</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(strEMIAuthNo)
+                </div>
+               </div>
+                                <div class="row">
+                <div class="label">@Resources.Tenure</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(strTenure)
+                </div>
+               </div>
+                                <div class="row">
+                <div class="label">@Resources.TransactionCode</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(strTransactionCode)
+                </div>
+               </div>
+                  </div>
+                            <div style="width:32%; float:left">
+                 <div class="row">
+                <div class="label">@Resources.InstallmentAmount</div>
+                <div class="label" style="display:inline; width:auto">
+                    @strInsAmount
+                </div>
+                </div>
+                                  <div class="row">
+                <div class="label">@Resources.RateOfInterest</div>
+                <div class="label" style="display:inline; width:auto">
+                   @strROI
+                </div>
+                </div>
+            </div>
+
+            <div style="width:33%; float:left">
+                 <div class="row">
+                <div class="label">@Resources.BookedDate</div>
+                <div class="label" style="display:inline; width:auto">
+                    @Html.Label(strBookDate)
+                </div>
+                </div>
+                 <div class="row">
+                <div class="label">@Resources.CreditSegment</div>
+                <div class="label" style="display:inline; width:auto">
+                   @strSegment
+                </div>
+                </div>
+            </div>
+           </div>
+                    <div class="row">
+            <div class="standard-table"> 
+             @installmentScheduleDetailsGrid.GetHtml(htmlAttributes: new {  id = "container-body" },
+             alternatingRowStyle: "alt", 
+             columns:installmentScheduleDetailsGrid.Columns(
+                    /*installmentScheduleDetailsGrid.Column("BillDate","Bill Date",format:@<text>@item.BillDate.ToString("dd/MM/yyyy")</text>),*/
+                    installmentScheduleDetailsGrid.Column("InstallmentNo",Resources.InstallmentNo),
+                    installmentScheduleDetailsGrid.Column("PrincipalAmount",Resources.PrincipalAmount),
+                    installmentScheduleDetailsGrid.Column("InterestAmount",Resources.InterestAmount),
+                    installmentScheduleDetailsGrid.Column("TotalAmount",Resources.TotalAmount),
+                    installmentScheduleDetailsGrid.Column("DueOn",Resources.DueDate,format:@<text>@item.DueOn.ToShortDateString()</text>),
+                    installmentScheduleDetailsGrid.Column("Status",Resources.Status)
+                ))
+            </div>
+                  </div>
+                  
+               
+
+ <div class="row" style="text-align:right"> 
+                 
+        <input type="submit" class="Greenbutton" id="Ok" value="@Resources.OK"/></div>
+              }
+          
+               </div>    
+    </div>

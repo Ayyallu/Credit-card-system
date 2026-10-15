@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title - FINCARD</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv='cache-control' content='no-cache'>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/datatables")
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script src="/Scripts/jquery-ui.min.js"></script>
+
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/common")
+    @Scripts.Render("~/bundles/moment")
+
+    @using CC_Ingenio.Web.Helpers;
+
+    <script>
+        $(function () {
+            $("#dialog").hide();
+            $(".datepicker").datepicker({
+                changeYear: true,
+                changeMonth: true,
+                dateFormat: '@Html.Raw(@DatePickerHelper.ConvertDateFormat(this.Html))',
+                yearRange: '@Html.Raw(@DatePickerHelper.GetYearRange())'
+            });
+       });
+    </script>
+
+</head>
+<body>
+
+
+    <div id="body">
+
+        <div id="dialog" title="Confirmation Required"></div>
+
+        <script type="text/javascript">
+            function ShowAuthorizationDiv(s) {
+                if (s > 0) {
+                    document.getElementById('toPopup').style.display = 'block';
+                    var elems = document.getElementsByClassName('close');
+                    for (var i = 0; i < elems.length; i++) {
+                        elems[i].style.display = 'block';
+                    }
+                }
+                else {
+                    document.getElementById('toPopup').style.display = 'none';
+                    var elems = document.getElementsByClassName('close');
+                    for (var i = 0; i < elems.length; i++) {
+                        elems[i].style.display = 'none';
+                    }
+                }
+            }
+
+        </script>
+        @Html.Partial("~/Views/Shared/_Authorize.cshtml")
+        @if (TempData["Message"] != null)
+        {
+            <div class="ErrorMsg" id="message">
+
+                <span>@TempData["Message"]</span>
+
+            </div>
+        }
+        @RenderSection("featured", required: false)
+        <section class="content-wrapper  clear-fix">
+            @RenderBody()
+        </section>
+    </div>
+    <footer>
+        <div class="content-wrapper">
+            <div class="float-left">
+                <p>&copy; @DateTime.Now.Year - All rights reserved-Fincard Technologies</p>
+            </div>
+        </div>
+    </footer>
+
+
+    @RenderSection("scripts", required: false)
+    @{
+        
+        <text>
+        <script type="text/javascript">EnableDisableControls('@ViewData["FormStatus"]')</script></text>
+       
+    }
+</body>
+</html>

@@ -1,0 +1,205 @@
+﻿@using CC_Ingenio.DataTranfer.MasterInfo;
+@using CC_Ingenio.Web.Helpers;
+@using CC_Ingenio_Resources;
+
+@{
+    
+    
+    ViewBag.Title = String.Concat(new object[] { Resources.Add, " ", Resources.MT_INTERESTRATE });
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    //ViewBag.Title = "StatementInterestAdd";
+}
+
+@model StatementInterestDTO
+@{
+    List<SelectListItem> MonthItems = new List<SelectListItem>();
+    List<string> lstPriv = new List<string>();
+
+    foreach (var itm in ViewBag.Month)
+    {
+        MonthItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    List<SelectListItem> YearItems = new List<SelectListItem>();
+    foreach (var itm in ViewBag.Year)
+    {
+        YearItems.Add(new SelectListItem { Text = itm.Text, Value = itm.Value });
+    }
+
+    if (ViewBag.Privileges != null)
+    {
+
+        foreach (var item in ViewBag.Privileges)
+        {
+            lstPriv.Add(item);
+        }
+    }
+    
+    }
+
+<section class="featured">
+      <div class="PageTitle">@ViewBag.Title</div>
+     <div class="PageRow">
+
+           <!-- Tabs Navigation -->
+        <ul class="tabs-nav">
+             @if (ViewData["FormCall"] != "ApprovalQueue")
+            {
+                <li>@Html.ActionLink(Resources.SearchPageHeading, "StatementInterestList", "Master")</li>                
+            }
+            <li class="active">@Html.ActionLink(Resources.DetailsPageHeading, "StatementInterestAdd", "Master")</li>
+           
+        </ul>
+          <!-- Tabs Content -->
+        <div class="tabs-container">
+
+             @using (Html.BeginForm("StatementInterestSave", "Master", new { ABillingMonth = Model.BillingMonth,ABillingYear =Model.BillingYear, AOrganizationCode = Model.OrganizationCode }, FormMethod.Post, new { id = "frmAdd", name = "frmAdd" }))
+             {
+                   <div class="tab-content" id="tab1">
+
+                        <div>
+                        <span>
+                            @if (!string.IsNullOrWhiteSpace(Model.ApprovalStatus))
+                            { 
+                                <text> @String.Concat(new object[] { Resources.Status, ":", Model.ApprovalStatusDesc }) </text>
+                            }
+                        </span>
+                    </div>
+
+                         <div class="row">
+                               <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.BillMonth</div>
+                                <div class="Field">
+                                    @if ((Model.BillingMonth==0))
+                                    {
+                                       @Html.DropDownListFor(x => x.BillingMonth, MonthItems.AsEnumerable(), new { id = "BillingMonth", @class = "inline", style="width:30%" , @disabled = "disabled"})
+                                    }
+                                    else
+                                    { 
+                                         if (Model.ApprovalStatus == "A")
+                                         {
+                                            
+                                             
+                                          @Html.DropDownListFor(x => x.BillingMonth, MonthItems.AsEnumerable(), new { id = "BillingMonth", @class = "inline", style="width:30%", @disabled = "disabled"})
+                                       
+                                         }
+                                    else
+                                    {
+                                              @Html.DropDownListFor(x => x.BillingMonth, MonthItems.AsEnumerable(), new { id = "BillingMonth", @class = "inline", style="width:30%"})
+                                            
+                                         }
+                                    }
+                                    @Html.ValidationMessageFor(x => x.BillingMonth)
+                                </div>
+                            </div>
+                                    <div class="TwoColumn">
+                                <div class="label">@Resources.BillYear</div>
+                                <div class="Field">
+                                    @if ((Model.BillingYear == 0))
+                                    {
+                                        @Html.DropDownListFor(x => x.BillingYear, YearItems.AsEnumerable(), new { id = "BillingYear", @class = "inline", style="width:30%; float:right", @disabled = "disabled" })
+                                       
+                                    }
+                                    else
+                                    {
+                                        if (Model.ApprovalStatus == "A")
+                                        {
+                                             @Html.DropDownListFor(x => x.BillingYear, YearItems.AsEnumerable(), new { id = "BillingYear", @class = "inline", style="width:30%; float:right", @disabled = "disabled" })
+                                        }
+                                        else
+                                        {
+                                       @Html.DropDownListFor(x => x.BillingYear, YearItems.AsEnumerable(), new { id = "BillingYear", @class = "inline", style="width:30%; float:right" })
+                                    }
+                                    }
+                                    @Html.ValidationMessageFor(x => x.BillingYear)
+                                </div>
+                            </div>
+                           
+                        </div>
+
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.InstallmentInterest</div>
+                                <div class="Field">
+
+                                     @*@Html.TextBoxFor(x => x.InstallmentInterest, String.Format("{0:N2}", Model.InstallmentInterest), new {id = "InstallmentInterest", @class = "NumericWithDecimalPlace", maxlength="6", onblur = "FormatOnBlurWithDecimal(event)"})*@
+                                    @Html.TextBoxFor(x => x.InstallmentInterest, new {@class="NumericWithDecimalPlace",id = "InstallmentInterest", name="InstallmentInterest", maxlength = 6 })
+                                    @Html.ValidationMessageFor(x => x.InstallmentInterest)
+                              
+                                </div>
+                            </div>
+                             <div class="TwoColumn">
+                                <div class="label">@Resources.RevolvingInterest</div>
+                                <div class="Field">
+                                     @*@Html.TextBoxFor(x => x.RevolvingInterest, @String.Format("{0:N0}", Model.RevolvingInterest), new { @class = "NumberCommaDot", id = "RevolvingInterest", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })*@
+                                    @Html.TextBoxFor(x => x.RevolvingInterest, new {@class="NumericWithDecimalPlace",id = "RevolvingInterest", name="RevolvingInterest", maxlength = 6 })
+                                    @Html.ValidationMessageFor(x => x.RevolvingInterest)
+
+                                </div>
+                            </div>
+                        </div>
+                             
+                        <div class="row">
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.RevolvingCAE</div>
+                                <div class="Field">
+                                     @*@Html.TextBoxFor(x => x.RevolvingCAE, @String.Format("{0:N0}", Model.RevolvingCAE), new { @class = "NumberCommaDot", id = "RevolvingCAE", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })*@
+                                   @Html.TextBoxFor(x => x.RevolvingCAE, new {@class="NumericWithDecimalPlace",id = "RevolvingCAE", name="RevolvingCAE", maxlength = 6 })
+                                    @Html.ValidationMessageFor(x => x.RevolvingCAE)
+
+                                </div>
+                            </div>
+                            <div class="TwoColumn">
+                                <div class="label">@Resources.InstallmentCAE</div>
+                                <div class="Field">
+                                     @*@Html.TextBoxFor(x => x.InstallmentCAE, @String.Format("{0:N0}", Model.InstallmentCAE), new { @class = "NumberCommaDot", id = "InstallmentCAE", maxlength = 11, @style = "text-align:right", onblur = "FormatOnBlur(event)" })*@
+                                   @Html.TextBoxFor(x => x.InstallmentCAE, new {@class="NumericWithDecimalPlace",id = "InstallmentCAE", name="InstallmentCAE", maxlength = 6 })
+                                    @Html.ValidationMessageFor(x => x.InstallmentCAE)
+
+                                </div>
+                            </div>
+                        </div>
+
+                       
+                              @Html.Raw(Html.BasicButtons(lstPriv))
+                             </div>
+
+                       </div>
+             }
+            </div>
+
+         </div>
+
+      <script>
+
+          var model = @Html.Raw(Json.Encode(Model));
+
+          bindCommunaValue(model.CountryCode, model.CommunaCode);
+          if(model.CommunaCode)
+          {
+              bindCityValue(model.CommunaCode, model.CityCode);
+              bindRegionValue(model.CommunaCode, model.RegionCode);
+          }
+          
+    </script>
+
+    </section>
+<script>
+    $(function () {
+        if ('@ViewData["FormCall"]' != "ApprovalQueue") {
+            DisableBtnAuthorize();
+
+            if ('@ViewData["FormStatus"]' == "A") {
+
+                if ($("#Submit").length) { $("#Submit").removeClass('BtnDisabled').addClass('Greenbutton'); }
+                $("#Submit").attr('disabled', false);
+
+
+                if ($("#Delete").length) { $("#Delete").removeClass('Greenbutton').addClass('BtnDisabled'); }
+                $("#Delete").attr('disabled', true);
+            }
+        }
+    })
+</script>

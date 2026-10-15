@@ -1,0 +1,36 @@
+﻿@using CC_Ingenio_Resources;
+@using CC_Ingenio.DataTranfer.CustomerServiceInfo;
+@model List<UnbilledTransactionDetailsDTO>  
+
+@{
+    var unbilledTransactionGrid = new WebGrid(Model, canPage: true, rowsPerPage: 5, ajaxUpdateContainerId: "container-body");
+    unbilledTransactionGrid.Pager(WebGridPagerModes.All);
+}
+
+<div class="row">
+        <div class=" BorderColumn" style="width: 98.6%">
+            <div class="CustomerColumnTitle">@Resources.UnbilledTransactionDetails</div>
+            <div style="width:100%; overflow:scroll">
+            <div class="standard-table"> 
+             @unbilledTransactionGrid.GetHtml(htmlAttributes: new {  id = "container-body" },
+             alternatingRowStyle: "alt", 
+             columns:unbilledTransactionGrid.Columns(
+                    unbilledTransactionGrid.Column("MerchantNumber",Resources.MerchantCode),
+                    unbilledTransactionGrid.Column("MerchantName",Resources.MerchantName),
+                    unbilledTransactionGrid.Column("TxnPostDate",Resources.TransactionPostDate,format:@<text>@item.TxnPostDate.ToShortDateString()</text>),
+                    unbilledTransactionGrid.Column("TxnDate",Resources.TransactionDate,format:@<text>@item.TxnDate.ToShortDateString()</text>),
+                    unbilledTransactionGrid.Column("CardNumber",Resources.CardNumber),
+                    unbilledTransactionGrid.Column("MemberType",Resources.MemberType),
+                    unbilledTransactionGrid.Column("TxnCode",Resources.TransactionCode),
+                    unbilledTransactionGrid.Column("Description",Resources.Description),                    
+                    unbilledTransactionGrid.Column("Amount",Resources.Amount,format:@<text> @String.Format("{0:N0}",item.Amount)</text>),
+                    //unbilledTransactionGrid.Column("BonusPoints","Bonus Points"),
+                    unbilledTransactionGrid.Column("ChargeType",Resources.ChargeType),
+                    unbilledTransactionGrid.Column("ARNNumber",Resources.ARNNumber),
+                    unbilledTransactionGrid.Column("RecapNo",Resources.RecapNumber)                    
+                ))
+            </div>
+</div>
+        </div>
+
+    </div>
