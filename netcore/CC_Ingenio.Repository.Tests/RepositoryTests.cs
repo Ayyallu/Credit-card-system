@@ -68,7 +68,12 @@ namespace CC_Ingenio.Repository.Tests
         // operations on these were already unusable; they are only meaningful
         // through UnitOfWork.ExecuteQuery<T> (stored-procedure/raw-SQL result
         // shapes). Kept as an explicit list so a new gap fails this test.
-        private static readonly string[] UnmappedEntityRepositories = new string[0];
+        // CustomerServiceDetails is a flat read model (ServiceID plus customer,
+        // card and address columns) fed by raw SQL, not a table.
+        private static readonly string[] UnmappedEntityRepositories =
+        {
+            "CustomerServiceDetailsRepository"
+        };
 
         [TestMethod]
         public void Repositories_Over_Unmapped_Entities_Are_The_Known_Set()
