@@ -79,3 +79,11 @@ jobs:
       # can reference/load it at all. See PORT_NOTES.md.
       - name: Build CC_Ingenio.Common (net8 port)
         run: dotnet build netcore/CC_Ingenio.Common/CC_Ingenio.Common.csproj --configuration Release
+
+      - name: Build CC_Ingenio.Data (net8 / EF Core port)
+        run: dotnet build netcore/CC_Ingenio.Data/CC_Ingenio.Data.csproj --configuration Release
+
+      # Builds and validates the whole EF Core model offline (no database):
+      # composite keys/FKs, table naming, lazy-loading proxies, DDL generation.
+      - name: Test CC_Ingenio.Data model (net8 / EF Core port)
+        run: dotnet test netcore/CC_Ingenio.Data.Tests/CC_Ingenio.Data.Tests.csproj --configuration Release

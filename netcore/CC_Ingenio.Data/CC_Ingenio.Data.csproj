@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>CC_Ingenio.Data</RootNamespace>
+    <AssemblyName>CC_Ingenio.Data</AssemblyName>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CC_Ingenio.Common\CC_Ingenio.Common.csproj" />
+    <ProjectReference Include="..\CC_Ingenio.Core\CC_Ingenio.Core.csproj" />
+    <ProjectReference Include="..\CC_Ingenio_Resources\CC_Ingenio_Resources.csproj" />
+  </ItemGroup>
+
+</Project>
