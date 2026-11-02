@@ -2,13 +2,21 @@ name: Build
 
 on:
   push:
-    branches: [ master, main, phase-* ]
+    branches: [ master, main, phase-*, modernization/** ]
   pull_request:
-    branches: [ master, main, phase-* ]
+    branches: [ master, main, phase-*, modernization/** ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: windows-latest
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
@@ -51,16 +59,19 @@ jobs:
         run: |
           echo "::notice::CC_Ingenio.Reporting, CC_Ingenio.Manager, and CC_Ingenio.Web require SAP Crystal Reports for Visual Studio, which cannot be installed on a stock GitHub-hosted runner. See PHASE2_NOTES.md for options (self-hosted runner with Crystal Reports installed, or a Crystal Reports replacement). Everything else in the solution, including the test suite, now builds and runs cleanly here."
 
-  # Phase 3: the .NET 8 strangler-fig port, under netcore/. Separate job
-  # because it's a completely independent toolchain (dotnet CLI, not
-  # MSBuild/.NET Framework) with no shared state with the legacy build.
+  # Phase 3: the .NET port under netcore/. Kept separate from the classic
+  # .NET Framework solution so each toolchain has an independent signal.
   build-netcore:
     runs-on: windows-latest
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup .NET 8 SDK
+      # NOTE: the current netcore projects still target .NET 8. Microsoft lists
+      # .NET 8 end of support as 2026-11-10. Do not treat this as a production
+      # target until the coordinated .NET 10 / EF Core 10 upgrade is completed.
+      - name: Setup .NET 8 SDK (legacy migration baseline)
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
@@ -74,32 +85,24 @@ jobs:
       - name: Build CC_Ingenio.DataTranfer (net8 port)
         run: dotnet build netcore/CC_Ingenio.DataTranfer/CC_Ingenio.DataTranfer.csproj --configuration Release
 
-      # GemCryptor.dll (referenced by this project) has no source and is a
-      # .NET 2.0-era binary - this is the real test of whether a .NET 8 app
-      # can reference/load it at all. See PORT_NOTES.md.
+      # GemCryptor.dll has no source and is a .NET 2.0-era binary.
       - name: Build CC_Ingenio.Common (net8 port)
         run: dotnet build netcore/CC_Ingenio.Common/CC_Ingenio.Common.csproj --configuration Release
 
       - name: Build CC_Ingenio.Data (net8 / EF Core port)
         run: dotnet build netcore/CC_Ingenio.Data/CC_Ingenio.Data.csproj --configuration Release
 
-      # Builds and validates the whole EF Core model offline (no database):
-      # composite keys/FKs, table naming, lazy-loading proxies, DDL generation.
       - name: Test CC_Ingenio.Data model (net8 / EF Core port)
         run: dotnet test netcore/CC_Ingenio.Data.Tests/CC_Ingenio.Data.Tests.csproj --configuration Release
 
       - name: Build CC_Ingenio.Repository (net8 port)
         run: dotnet build netcore/CC_Ingenio.Repository/CC_Ingenio.Repository.csproj --configuration Release
 
-      # Constructs all 144 repositories and translates each one's query to SQL
-      # offline (no database).
       - name: Test CC_Ingenio.Repository (net8 port)
         run: dotnet test netcore/CC_Ingenio.Repository.Tests/CC_Ingenio.Repository.Tests.csproj --configuration Release
 
       - name: Build CC_Ingenio.Manager (net8 port)
         run: dotnet build netcore/CC_Ingenio.Manager/CC_Ingenio.Manager.csproj --configuration Release
 
-      # Workbook reader (real .xlsx files), CommonManager characterization,
-      # report seam. No database.
       - name: Test CC_Ingenio.Manager (net8 port)
         run: dotnet test netcore/CC_Ingenio.Manager.Tests/CC_Ingenio.Manager.Tests.csproj --configuration Release
