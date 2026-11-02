@@ -7,12 +7,14 @@ var command = args.Length == 1 ? "init" : args.Length == 2 ? args[0] : string.Em
 var connectionString = args.Length == 1 ? args[0] : args.Length == 2 ? args[1] : string.Empty;
 
 if (string.IsNullOrWhiteSpace(command) || string.IsNullOrWhiteSpace(connectionString) ||
-    command is not ("init" or "seed-synthetic" or "validate-synthetic"))
+    command is not ("init" or "seed-synthetic" or "validate-synthetic" or "seed-synthetic-card" or "validate-synthetic-card"))
 {
     Console.Error.WriteLine("Usage:");
     Console.Error.WriteLine("  dotnet run --project netcore/CC_Ingenio.LocalQa -- \"<local integrated-security connection string>\"");
     Console.Error.WriteLine("  dotnet run --project netcore/CC_Ingenio.LocalQa -- seed-synthetic \"<local integrated-security connection string>\"");
     Console.Error.WriteLine("  dotnet run --project netcore/CC_Ingenio.LocalQa -- validate-synthetic \"<local integrated-security connection string>\"");
+    Console.Error.WriteLine("  dotnet run --project netcore/CC_Ingenio.LocalQa -- seed-synthetic-card \"<local integrated-security connection string>\"");
+    Console.Error.WriteLine("  dotnet run --project netcore/CC_Ingenio.LocalQa -- validate-synthetic-card \"<local integrated-security connection string>\"");
     return 2;
 }
 
@@ -89,6 +91,25 @@ try
 
             await SyntheticDemoSeeder.ValidateAsync(db);
             Console.WriteLine("SUCCESS: all synthetic reference fixtures match the expected deterministic values.");
+            break;
+
+        case "seed-synthetic-card":
+            if (!await db.Database.CanConnectAsync())
+                throw new InvalidOperationException("Ingenio_QA is not reachable. Run the schema initializer first.");
+
+            await SyntheticCardSeeder.SeedAsync(db);
+            await SyntheticCardSeeder.ValidateAsync(db);
+            Console.WriteLine("SUCCESS: synthetic customer and card fixtures are present and validated.");
+            Console.WriteLine("Created/verified: 1 synthetic customer and 1 synthetic card (reusing DEMO_ORG_001).");
+            Console.WriteLine("No real customer PII, real card numbers, balances, or payment records were created.");
+            break;
+
+        case "validate-synthetic-card":
+            if (!await db.Database.CanConnectAsync())
+                throw new InvalidOperationException("Ingenio_QA is not reachable.");
+
+            await SyntheticCardSeeder.ValidateAsync(db);
+            Console.WriteLine("SUCCESS: synthetic customer and card fixtures match the expected deterministic values.");
             break;
     }
 
