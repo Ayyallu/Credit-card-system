@@ -145,9 +145,26 @@ internal static class SyntheticCardSeeder
     private static void EnsureCustomerMatches(CustomerEntity actual)
     {
         if (actual.Name != CustomerName ||
+            actual.PaternalSurname != "SYNTHETIC" ||
+            actual.MaternalSurname != "QA" ||
+            actual.CustomerType != "DEMO" ||
+            actual.ApplicationReferenceNo != CustomerReference ||
             actual.OrganizationCode != OrganizationCode ||
+            actual.CreditScore != 0m ||
+            !actual.IsActive ||
+            actual.IsBlackListed ||
+            !actual.IsCardGenerated ||
+            actual.EmailID is not null ||
+            actual.DateOfBirth is not null ||
+            actual.RUT is not null ||
+            actual.LegacyCardNumber is not null ||
             actual.CreatedBy != Actor ||
-            actual.ApprovalStatus != "A")
+            actual.CreatedOn != SeedTimestamp ||
+            actual.ApprovedBy != Actor ||
+            actual.ApprovedOn != SeedTimestamp ||
+            actual.ApprovalStatus != "A" ||
+            actual.LastUpdatedBy != Actor ||
+            actual.LastUpdatedOn != SeedTimestamp)
         {
             throw new InvalidOperationException(
                 $"Refusing to overwrite customer {CustomerReference}: an existing row does not match the synthetic fixture.");
@@ -156,11 +173,28 @@ internal static class SyntheticCardSeeder
 
     private static void EnsureCardMatches(CardEntity actual, int expectedCustomerId)
     {
-        if (actual.OrganizationCode != OrganizationCode ||
+        if (actual.CardNumber != CardNumber ||
+            actual.OrganizationCode != OrganizationCode ||
             actual.CustomerId != expectedCustomerId ||
             actual.CustomerCardName != CardHolderName ||
+            actual.CardStatusCode != "DEMO" ||
+            actual.ValidFromDate != CardValidFrom ||
+            actual.ProductCode is not null ||
+            actual.CustomerSegmentCode is not null ||
+            actual.CustomerSubSegmentCode is not null ||
+            actual.AccountNo is not null ||
+            actual.CreditLimit != 0m ||
+            actual.CashLimit != 0m ||
+            actual.CreditOTB != 0m ||
+            actual.CashOTB != 0m ||
+            actual.UtilizedOTB != 0m ||
             actual.CreatedBy != Actor ||
-            actual.ApprovalStatus != "A")
+            actual.CreatedOn != SeedTimestamp ||
+            actual.ApprovedBy != Actor ||
+            actual.ApprovedOn != SeedTimestamp ||
+            actual.ApprovalStatus != "A" ||
+            actual.LastUpdatedBy != Actor ||
+            actual.LastUpdatedOn != SeedTimestamp)
         {
             throw new InvalidOperationException(
                 $"Refusing to overwrite card {CardNumber}: an existing row does not match the synthetic fixture.");
