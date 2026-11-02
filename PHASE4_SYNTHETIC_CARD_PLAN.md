@@ -1,6 +1,6 @@
 # Phase 4 plan — synthetic customer → card end-to-end workflow
 
-Status: **design only**. No seeder code is included in this document. This plan
+Status: **Tier 1 implemented on `modernization/phase4-synthetic-card-plan`; pending review and local verification.** This plan
 extends the existing guarded local-QA seeder (`netcore/CC_Ingenio.LocalQa`,
 `SyntheticDemoSeeder.cs`) added in the synthetic-local-qa-data work. It targets
 the local `Ingenio_QA` database only.
@@ -19,11 +19,15 @@ the local `Ingenio_QA` database only.
 ## Key framing finding
 
 Both `CC_Ingenio.Core` and `CC_Ingenio.Data` compile with
-`<Nullable>disable</Nullable>`. As a result **every `string` column is nullable**,
-so every string-based foreign key is an **optional** relationship that the
-database does **not** enforce, and there are **no `[Required]` attributes** in the
-Customer/Card/Master graph. The schema therefore does not force an
-Organization → Product → Customer → Card chain.
+`<Nullable>disable</Nullable>`. This disables C# nullable-reference-type
+annotations; it does **not**, by itself, prove the SQL column or relationship is
+nullable or unenforced. The generated EF Core model and actual SQL Server schema
+must be inspected for each relationship. In particular, nullable string FK
+columns are optional: SQL Server permits NULL, but **enforces the FK whenever a
+non-NULL value is supplied**. The Tier 1 CardMaster product and segment FK
+columns (including the convention-created objProduct shadow FK columns) were
+verified against the generated local schema and are nullable/enforced. Tier 1
+leaves them NULL. Do not generalize this finding to every string FK in the graph.
 
 The only things that actually block an `INSERT` are:
 
@@ -65,11 +69,15 @@ a parent Customer row to exist first.
 
 ### `MT_CardMaster`
 - PK `CardNumber` (string) — set manually.
-- Optional (nullable-string FK) relationships: `objOrganization`
-  (`OrganizationCode` → `Organization`), `objProduct` (convention against
-  Product composite PK), `objCustomerSegment`
-  (`[ForeignKey("CustomerSegmentCode,OrganizationCode")]`),
-  `objCustomerSubSegment` (`[ForeignKey("CustomerSubSegmentCode,OrganizationCode")]`).
+- Nullable FK relationships include `objOrganization` (`OrganizationCode` →
+  `Organization`), `objProduct` (convention-created shadow FK columns against
+  Product's composite PK), `objCustomerSegment`
+  (`[ForeignKey("CustomerSegmentCode,OrganizationCode")]`), and
+  `objCustomerSubSegment`
+  (`[ForeignKey("CustomerSubSegmentCode,OrganizationCode")]`). These are
+  **optional because NULL is allowed, but enforced when populated**. The
+  `objProduct` composite FK and all four CardMaster FK child columns were
+  verified in the generated local SQL Server schema; Tier 1 leaves them NULL.
 - `CustomerId` (int) is **not** a configured FK (no nav, no `[ForeignKey]`); it
   is non-nullable so it needs a value, but the DB does not enforce the link.
 - Must supply values: `ValidFromDate`, `CreatedOn`, `LastUpdatedOn` (real dates);
@@ -107,9 +115,11 @@ Organization -> SystemParameter -> Product -> CustomerSegment -> CustomerSubSegm
 - `CardMaster.OrganizationCode` participates in four relationships at once
   (Organization, Product, CustomerSegment, CustomerSubSegment). If set, every
   populated code must resolve under the **same** OrganizationCode.
-- `CardMaster.objProduct` has no `[ForeignKey]` and relies on EF Core convention
-  against Product's composite PK; EF may synthesize shadow FK columns. **Verify
-  against the generated model before populating it.**
+- `CardMaster.objProduct` has no explicit `[ForeignKey]` and relies on EF Core
+  convention against Product's composite PK; EF creates shadow FK columns. The
+  generated local SQL Server schema was inspected: the composite FK is present
+  and enforced when non-NULL. Tier 1 leaves its child columns NULL; Tier 2 must
+  populate a valid matching Product key.
 - Segment / SubSegment carry an `IsDefault` bool — a minimal seed should set
   exactly one `IsDefault = true` per Organization to avoid "default segment"
   ambiguity in later queries.
@@ -124,11 +134,15 @@ Organization -> SystemParameter -> Product -> CustomerSegment -> CustomerSubSegm
 New command `seed-synthetic-card` that reuses the existing `DEMO_ORG_001`:
 - Insert 1 `Customer` (synthetic flags/name, real `CreatedOn`/`LastUpdatedOn`,
   `OrganizationCode = DEMO_ORG_001`, all other FK codes NULL).
-- Insert 1 `CardMaster` (`CardNumber = "DEMO0000000000001"`, `CustomerId` =
+- Insert 1 `CardMaster` (`CardNumber = "SYNTH-DEMO-CARD-0001"`, `CustomerId` =
   generated id, `OrganizationCode = DEMO_ORG_001`, segment/product codes NULL,
-  `ValidFromDate`/dates set).
+  `ValidFromDate`/dates set). The alphabetic/hyphenated identifier is clearly
+  synthetic and is not a numeric PAN.
 - A matching `validate-synthetic-card` check and an idempotency re-run.
 - No new master tables; smallest reviewable surface.
+- Implemented in `SyntheticCardSeeder.cs`; validation checks fixture identity,
+  organization/customer linkage, key synthetic fields, dates, audit markers,
+  status, and that PII/product/segment/account fields remain NULL.
 
 ### Tier 2 — realistic (follow-up PR)
 Add, before the card: `SystemParameter` → `Product` (`DEMO_PROD_001`) →
