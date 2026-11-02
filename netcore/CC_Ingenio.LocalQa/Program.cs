@@ -1,18 +1,25 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using CC_Ingenio.Data;
+using CC_Ingenio.LocalQa;
 
-if (args.Length != 1 || string.IsNullOrWhiteSpace(args[0]))
+var command = args.Length == 1 ? "init" : args.Length == 2 ? args[0] : string.Empty;
+var connectionString = args.Length == 1 ? args[0] : args.Length == 2 ? args[1] : string.Empty;
+
+if (string.IsNullOrWhiteSpace(command) || string.IsNullOrWhiteSpace(connectionString) ||
+    command is not ("init" or "seed-synthetic" or "validate-synthetic"))
 {
     Console.Error.WriteLine("Usage:");
     Console.Error.WriteLine("  dotnet run --project netcore/CC_Ingenio.LocalQa -- \"<local integrated-security connection string>\"");
+    Console.Error.WriteLine("  dotnet run --project netcore/CC_Ingenio.LocalQa -- seed-synthetic \"<local integrated-security connection string>\"");
+    Console.Error.WriteLine("  dotnet run --project netcore/CC_Ingenio.LocalQa -- validate-synthetic \"<local integrated-security connection string>\"");
     return 2;
 }
 
 SqlConnectionStringBuilder connection;
 try
 {
-    connection = new SqlConnectionStringBuilder(args[0]);
+    connection = new SqlConnectionStringBuilder(connectionString);
 }
 catch (Exception ex)
 {
@@ -40,7 +47,7 @@ if (!IsLocalServer(connection.DataSource))
 }
 
 Console.WriteLine($"Target: local SQL Server '{connection.DataSource}', database '{connection.InitialCatalog}'.");
-Console.WriteLine("This operation creates the current EF Core model schema only. It does not seed data, drop objects, or import production data.");
+Console.WriteLine($"Operation: {command}. Production, shared QA, and remote SQL Server connections are rejected.");
 
 var options = new DbContextOptionsBuilder<UnitOfWork>()
     .UseLazyLoadingProxies()
@@ -50,24 +57,46 @@ var options = new DbContextOptionsBuilder<UnitOfWork>()
 try
 {
     await using var db = new UnitOfWork(options);
-    var created = await db.Database.EnsureCreatedAsync();
 
-    if (created)
+    switch (command)
     {
-        Console.WriteLine("SUCCESS: Ingenio_QA was created from the current EF Core model.");
-    }
-    else
-    {
-        Console.WriteLine("No changes made: the database already exists. EnsureCreated does not update an existing database.");
-        Console.WriteLine("Inspect the existing database in SSMS before taking any further action.");
+        case "init":
+        {
+            Console.WriteLine("Creating the current EF Core model schema only. No data is seeded, dropped, or imported.");
+            var created = await db.Database.EnsureCreatedAsync();
+
+            Console.WriteLine(created
+                ? "SUCCESS: Ingenio_QA was created from the current EF Core model."
+                : "No changes made: the database already exists. EnsureCreated does not update an existing database.");
+
+            Console.WriteLine($"EF Core model entity types: {db.Model.GetEntityTypes().Count()}");
+            break;
+        }
+        case "seed-synthetic":
+            if (!await db.Database.CanConnectAsync())
+                throw new InvalidOperationException("Ingenio_QA is not reachable. Run the schema initializer first.");
+
+            await SyntheticDemoSeeder.SeedAsync(db);
+            await SyntheticDemoSeeder.ValidateAsync(db);
+            Console.WriteLine("SUCCESS: synthetic reference fixtures are present and validated.");
+            Console.WriteLine("Created/verified: 1 synthetic organization and 3 synthetic transaction codes.");
+            Console.WriteLine("No customer, card, account, balance, payment, or real-person records were created.");
+            break;
+
+        case "validate-synthetic":
+            if (!await db.Database.CanConnectAsync())
+                throw new InvalidOperationException("Ingenio_QA is not reachable.");
+
+            await SyntheticDemoSeeder.ValidateAsync(db);
+            Console.WriteLine("SUCCESS: all synthetic reference fixtures match the expected deterministic values.");
+            break;
     }
 
-    Console.WriteLine($"EF Core model entity types: {db.Model.GetEntityTypes().Count()}");
     return 0;
 }
 catch (Exception ex)
 {
-    Console.Error.WriteLine("Local QA database initialization failed:");
+    Console.Error.WriteLine($"Local QA operation '{command}' failed:");
     Console.Error.WriteLine(ex);
     return 1;
 }
