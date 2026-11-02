@@ -75,6 +75,60 @@ namespace CC_Ingenio.Data.Tests
         }
 
         [TestMethod]
+        public void CardCreditSegment_Organization_ForeignKey_DoesNot_Cascade()
+        {
+            using (var context = CreateContext())
+            {
+                var entity = context.Model.FindEntityType(typeof(CardCreditSegment));
+                var foreignKey = entity.GetDeclaredForeignKeys()
+                    .Single(fk => fk.DependentToPrincipal != null &&
+                                  fk.DependentToPrincipal.Name == "objOrganization");
+
+                Assert.AreEqual(DeleteBehavior.NoAction, foreignKey.DeleteBehavior);
+                CollectionAssert.AreEqual(
+                    new[] { "OrganizationCode" },
+                    foreignKey.Properties.Select(p => p.Name).ToArray());
+            }
+        }
+
+        [TestMethod]
+        public void CardCreditSegment_PrimaryKey_Uses_Legacy_EF5_StringKey_Lengths()
+        {
+            using (var context = CreateContext())
+            {
+                var entity = context.Model.FindEntityType(typeof(CardCreditSegment));
+                var key = entity.FindPrimaryKey();
+                CollectionAssert.AreEqual(
+                    new[] { "CreditSegmentCode", "CardNumber", "OrganizationCode" },
+                    key.Properties.Select(p => p.Name).ToArray());
+
+                // SQL Server's clustered-key limit is 900 bytes. Three
+                // nvarchar(128) columns consume 768 bytes, not 2,700.
+                Assert.AreEqual(768, key.Properties.Sum(p => p.GetMaxLength().Value * 2));
+                Assert.IsTrue(key.Properties.All(p => p.GetMaxLength() == 128));
+            }
+        }
+
+        [TestMethod]
+        public void CardCreditSegment_ForeignKey_Columns_Match_Legacy_StringKey_Lengths()
+        {
+            using (var context = CreateContext())
+            {
+                var entity = context.Model.FindEntityType(typeof(CardCreditSegment));
+                foreach (var propertyName in new[]
+                {
+                    "CreditSegmentCode", "CustomerSegmentCode",
+                    "CustomerSubSegmentCode", "OrganizationCode"
+                })
+                {
+                    Assert.AreEqual(128,
+                        entity.FindProperty(propertyName).GetMaxLength(),
+                        propertyName);
+                }
+            }
+        }
+
+        [TestMethod]
         public void Composite_Keys_Follow_Column_Order()
         {
             using (var context = CreateContext())

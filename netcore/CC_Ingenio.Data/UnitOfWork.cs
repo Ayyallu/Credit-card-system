@@ -1881,6 +1881,33 @@ namespace CC_Ingenio.Data
             // data annotations.
             LegacyEf5ModelConventions.Apply(modelBuilder);
 
+            // Preserve EF5's 128-character default for string key columns on
+            // this relationship graph. EF Core's 450-character key default
+            // makes the three-column CardCreditSegment key 2,700 bytes.
+            modelBuilder.Entity<CardCreditSegment>(entity =>
+            {
+                entity.Property(x => x.CreditSegmentCode).HasMaxLength(128);
+                entity.Property(x => x.CardNumber).HasMaxLength(128);
+                entity.Property(x => x.CustomerSegmentCode).HasMaxLength(128);
+                entity.Property(x => x.CustomerSubSegmentCode).HasMaxLength(128);
+                entity.Property(x => x.OrganizationCode).HasMaxLength(128);
+
+                // Organization is also reached through CreditSegment. Keep
+                // the direct FK, but prevent a second cascade path.
+                entity.HasOne(x => x.objOrganization)
+                    .WithMany()
+                    .HasForeignKey(x => x.OrganizationCode)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<CreditSegment>().Property(x => x.CardSegmentCode).HasMaxLength(128);
+            modelBuilder.Entity<CreditSegment>().Property(x => x.OrganizationCode).HasMaxLength(128);
+            modelBuilder.Entity<CustomerSegment>().Property(x => x.SegmentCode).HasMaxLength(128);
+            modelBuilder.Entity<CustomerSegment>().Property(x => x.OrganizationCode).HasMaxLength(128);
+            modelBuilder.Entity<CustomerSubSegment>().Property(x => x.SubSegmentCode).HasMaxLength(128);
+            modelBuilder.Entity<CustomerSubSegment>().Property(x => x.OrganizationCode).HasMaxLength(128);
+            modelBuilder.Entity<Organization>().Property(x => x.OrganizationCode).HasMaxLength(128);
+
             modelBuilder.Entity<InsuranceCharge>().Property(q => q.InsuranceAmount).HasPrecision(15, 6);
             modelBuilder.Entity<SBIFInterestDetails>().Property(q => q.CreditLimitFrom).HasPrecision(15, 6);
             modelBuilder.Entity<SBIFInterestDetails>().Property(q => q.CreditLimitTo).HasPrecision(15, 6);
