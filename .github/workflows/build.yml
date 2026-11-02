@@ -92,6 +92,9 @@ jobs:
       - name: Build CC_Ingenio.Data (net8 / EF Core port)
         run: dotnet build netcore/CC_Ingenio.Data/CC_Ingenio.Data.csproj --configuration Release
 
+      - name: Build CC_Ingenio.LocalQa (guarded local schema and synthetic seeder CLI)
+        run: dotnet build netcore/CC_Ingenio.LocalQa/CC_Ingenio.LocalQa.csproj --configuration Release
+
       - name: Test CC_Ingenio.Data model (net8 / EF Core port)
         run: dotnet test netcore/CC_Ingenio.Data.Tests/CC_Ingenio.Data.Tests.csproj --configuration Release
 
